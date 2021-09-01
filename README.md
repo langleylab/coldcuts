@@ -93,6 +93,7 @@ The main workhorse of this package is its own S4 class, `segmentation`, which ho
 
 
 ##TODO
+- add maximum projection
 - add integration with external datasets (GTEx)
 - ontology graphs
 - ontology palettes
