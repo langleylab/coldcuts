@@ -90,3 +90,10 @@ The main workhorse of this package is its own S4 class, `segmentation`, which ho
 - **assays** is a list of `segmentationAssay` objects, another S4 class that holds numerical `values` - such as gene counts - sample metadata (`sampledata`) and most importantly a one-to-many `mapping` of structures to the relevant samples. For instance, the GTEx brain dataset contains "Caudate" which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation. 
 - **metadata** is a list of various types of information regarding the segmentation, such as the file name, orientation, pixel/voxel dimension, original citation, reference space, etc. Most of these are manually compiled by the user, although an attempt is made at extracting some of them from a file containing this information in its header (e.g. NiFTi).
 - **structure_tables** is a list of data.tables, one per anatomical axis, which is used by some internal functions to check which slices contain which structures.
+
+
+##TODO
+- add integration with external datasets (GTEx)
+- ontology graphs
+- ontology palettes
+- other species and access to their segmentations
