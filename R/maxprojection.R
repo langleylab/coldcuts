@@ -91,7 +91,7 @@ drawSegmentation <- function(nifti_file = NULL,
     n_image <- changeDirections(n_image, directions_from, directions_to)
     if (verbose) cat("done.\n")
   } else {
-    dirs = paste0(directions_from, " (unchanged)")
+    dirs = directions_from
   }
 
   if (!is.null(outliers)) n_image[t(outliers)] <- 0
@@ -614,8 +614,6 @@ plotSegmentation <- function(segmentation,
 }
 
 
-
-
 #' Plot numeric data on a segmentation
 #'
 #' Creates a `ggplot` plot where numeric data, mapped to structures, fill the segmentation shapes in a colour scale
@@ -640,38 +638,34 @@ plotBrainMap <- function(segmentation,
                          plane = "sagittal",
                          smooth = TRUE,
                          smoothness = 3,
-                         min_points = 5){
-
-  mapping = segmentation@assays[[assay]]@mapping
-
-  included_strs <- intersect(as.character(unique(unlist(mapping))), metaData(segmentation)$structures)
+                         min_points = 5,
+                         show_labels = TRUE){
 
     dmp_df <- do.call(rbind, lapply(segmentation@projections[[assay]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
     dmp2_df <- do.call(rbind, lapply(segmentation@projections[[assay]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
 
-  if(smooth) {
-    dmp_df <- smoothPolygons(dmp_df, smoothness = smoothness, min_points = min_points)
-    dmp2_df <- smoothPolygons(dmp2_df, smoothness = smoothness, min_points = min_points)
-  }
-
   centers <- as.data.frame(do.call(rbind, lapply(unique(dmp_df$structure), function(x) {
     df <- dmp_df[dmp_df$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
-    return(unlist(polylabelr::poi(df[, 1:2]))[1:2])
+    return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
 
   centers$structure <- unique(dmp_df$structure)
   centers$acronym <- segmentation@ontology[centers$structure, "acronym"]
 
-
   centers2 <- as.data.frame(do.call(rbind, lapply(unique(dmp2_df$structure), function(x) {
     df <- dmp2_df[dmp2_df$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
-    return(unlist(polylabelr::poi(df[, 1:2]))[1:2])
+    return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
 
   centers2$structure <- unique(dmp2_df$structure)
   centers2$acronym <- segmentation@ontology[centers2$structure, "acronym"]
+
+  if(smooth) {
+    dmp_df <- smoothPolygons(dmp_df, smoothness = smoothness, min_points = min_points)
+    dmp2_df <- smoothPolygons(dmp2_df, smoothness = smoothness, min_points = min_points)
+  }
 
   dmp_df$dir <-  centers$dir <- names(segmentation@projections[[assay]][[plane]])[1]
   dmp2_df$dir <- centers2$dir <-  names(segmentation@projections[[assay]][[plane]])[2]
@@ -689,7 +683,7 @@ plotBrainMap <- function(segmentation,
 
   dmp_all$gene_exp <- as.numeric(struct_df[dmp_all$structure, "gene_expression"])
 
-  p <- ggplot(dmp_all, aes(x = x, y = y, group = id, fill = gene_exp)) +
+  p <- ggplot2::ggplot(dmp_all, aes(x = x, y = y, group = id, fill = gene_exp)) +
     geom_polygon(col = "black", size = 0.3) +
     facet_wrap(~dir) +
     coord_fixed() +
@@ -697,24 +691,25 @@ plotBrainMap <- function(segmentation,
     theme_bw() +
     scale_fill_gradientn(na.value = "white",
                          colours =  colorspace::sequential_hcl(palette = "Sunset", n = 25)) +
-    labs(fill = paste0(feature, "\nexpression (TPM)")) +
+    labs(fill = feature) +
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank())
 
-  p <- p + ggrepel::geom_text_repel(
+  if(show_labels) {
+    p <- p + ggrepel::geom_text_repel(
     data = centers_all,
     aes(x = x, y = y, label = acronym),
     color = "white",
     segment.color = "black",
-    segment.size = 0.3,
+    segment.size = 0.2,
     bg.color = "black",
     bg.r = 0.15,
     alpha = 1,
-    box.padding = 0.2,
+    box.padding = 0.6,
     size = 2,
     max.overlaps = Inf,
     inherit.aes = FALSE
-  )
+  )}
 
   return(p)
 }
