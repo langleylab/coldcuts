@@ -1,11 +1,10 @@
-Package: mortazza
+Package: coldcuts
 Type: Package
 Title: Automated generation of segmentation polygons for plotting 
 Version: 0.0.0.900
 Author: Giuseppe DAgostino
 Maintainer: Giuseppe DAgostino <g.a.dagostino@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: automatically generates polygons to plot 3D segmentations in R
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
