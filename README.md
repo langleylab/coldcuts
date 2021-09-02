@@ -1,7 +1,10 @@
 # coldcuts
 
+<img src = "https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" width=200>
+
+
 ## Introduction
-This is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
+**`coldcuts`** is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
 
 Voxel arrays can come in different forms, either as NIfTI files, NRRD files, RAW files or directly imported in R as such.
 
