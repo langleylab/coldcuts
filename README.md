@@ -47,6 +47,48 @@ Segmentation from file:  annotation.nii.gz
 Type showCitation("name_of_segmentation") to display the citation(s) for this segmentation.
 ```
 
+## Inspecting a segmentation ontology
+
+We can access the `ontology` slot using the `ontology()` function: 
+
+```{r}
+head(ontology(seg))
+
+         id atlas_id                       name acronym st_level ontology_id hemisphere_id weight parent_structure_id depth graph_id graph_order
+10153 10153       NA               neural plate      NP       NA          11             3   8660                  NA     0       16           0
+10154 10154       NA                neural tube      NT       NA          11             3   8660               10153     1       16           1
+10155 10155       NA                      brain      Br       NA          11             3   8660               10154     2       16           2
+10156 10156       NA forebrain (prosencephalon)       F       NA          11             3   8660               10155     3       16           3
+10157 10157       NA   gray matter of forebrain     FGM       NA          11             3   8660               10156     4       16           4
+10158 10158       NA              telencephalon     Tel       NA          11             3   8660               10157     5       16         657
+                          structure_id_path color_hex_triplet neuro_name_structure_id neuro_name_structure_id_path failed sphinx_id structure_name_facet
+10153                               /10153/            D7D8D8                      NA                           NA      f      6600           3041346888
+10154                         /10153/10154/            D0D0D1                      NA                           NA      f      6601           1172862311
+10155                   /10153/10154/10155/            E0E0E0                      NA                           NA      f      6602           3016132225
+10156             /10153/10154/10155/10156/            EBD6D0                      NA                           NA      f      6603           2015023488
+10157       /10153/10154/10155/10156/10157/            EBD6D0                      NA                           NA      f      6604            545890574
+10158 /10153/10154/10155/10156/10157/10158/            EBD6D0                      NA                           NA      f      7257           2480649783
+      failed_facet                  safe_name     col
+10153    734881840               neural plate #D7D8D8
+10154    734881840                neural tube #D0D0D1
+10155    734881840                      brain #E0E0E0
+10156    734881840 forebrain (prosencephalon) #EBD6D0
+10157    734881840   gray matter of forebrain #EBD6D0
+10158    734881840              telencephalon #EBD6D0
+```
+
+This ontology was downloaded from the Allen Brain Atlas API, and it contains several information that we will not need. However, we do need the `id`, `name`, `acronym`, `parent_structure_id`, `structure_id_path` and `col` fields.
+
+Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. "hipothalamus" as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using `plotOntologyGraph()`:
+
+```{r}
+plotOntologyGraph(seg)
+```
+
+<img width="1010" alt="ontology_graph" src="https://user-images.githubusercontent.com/21171362/131797720-1f92d2ff-4b02-4671-a869-1787f8c160c1.png">
+
+Acronyms can be compared to their names looking at the ontology.
+
 ## Plotting a segmentation
 
 The basic functionality with no external datasets allows to plot all structures within specific slices. We pick 3 random slices with the `s_slice`, `c_slice` and `a_slice` arguments for sagittal, coronal and axial respectively. 
@@ -76,6 +118,105 @@ plotSegmentation(seg_sub, s_slice = 50, show_labels = TRUE)
 
 <img width="716" alt="slices_3" src="https://user-images.githubusercontent.com/21171362/131650045-91b1d568-f49f-498e-b6fa-059e1c0ea49a.png">
 
+## Creating a `segmentationAssay`
+
+The `segmentationAssay` S4 class was created to host an external dataset, adding numerical tables and other information to a segmentation. For instance, in the case of GTEx brain data, a `segmentationAssay` can host the median TPM count table (in the `values` slot), additional information on the samples (in the `sampledata` slot) and, most importantly, the mapping from samples to structures (`mapping` slot). 
+Depending on the segmentation, the assay may require a one-to-many mapping of samples to structures. For instance, the GTEx brain dataset contains "Nucleus Caudate", which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation. 
+This mapping has to be manually curated by the user, as there is no way to detect automatically this sort of correspondences. 
+
+Here we will show how to create this mapping for the GTEx bulk RNA-seq data, using median gene-level TPM values. These values can be found [here](https://www.gtexportal.org/home/datasets), in particular the _GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz_ file (available in the `data` folder of this repository as `gtex_tpm.gct`).
+
+```{r}
+# read the table
+gtex <- read.table("gtex_tpm.gct", header = TRUE, sep = "\t")
+
+# subsetting and wrangling names
+gtex <- gtex[,c(1, 2, grep("Brain", colnames(gtex)))]
+colnames(gtex) <- gsub(colnames(gtex), pattern = "Brain...", replacement = "")
+colnames(gtex) <- gsub(colnames(gtex), pattern = "[.]", replacement = "_")
+colnames(gtex) <- gsub(colnames(gtex), pattern = "__", replacement = "_")
+colnames(gtex) <- gsub(colnames(gtex), pattern = "_$", replacement = "")
+```
+
+Once the table is subsetted and readable, we map samples to structural IDs creating a list:
+
+```{r}
+# create mapping
+brain_regions <- list()
+
+brain_regions[["Amygdala"]] <- ontology(seg)[grep(pattern  ="amyg",
+                                                         x = ontology(test2)$name), "id"]
+
+brain_regions[["Cortex"]] <- ontology(seg)[grep(pattern  = "frontal",
+                                                       x = ontology(test2)$name), "id"]
+
+brain_regions[["Frontal_Cortex_BA9"]] <- ontology(seg)[grep(pattern  = "cingulate gyrus, rostral",
+                                                                   x = ontology(seg)$name), "id"]
+
+brain_regions[["Caudate_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "caudate",
+                                                                      x = ontology(seg)$name), "id"]
+
+brain_regions[["Putamen_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "putamen",
+                                                                      x = ontology(seg)$name), "id"]
+
+brain_regions[["Hypothalamus"]] <- ontology(seg)$id[grep(ontology(seg)[which(ontology(seg)$acronym == "HTH"),"id"], ontology(seg)$parent_structure_id)]
+
+brain_regions[["Substantia_nigra"]] <- ontology(seg)$id[grep(pattern  = "SN", x = ontology(test2)$acronym)]
+
+brain_regions[["Hippocampus"]] <- ontology(seg)[grep(pattern  = "hipp",
+                                                            x = ontology(seg)$name), "id"]
+
+brain_regions[["Nucleus_accumbens_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "accumbens",
+                                                                                x = ontology(seg)$name), "id"]
+
+brain_regions[["Cerebellum"]] <- ontology(seg)[grep(pattern  = "cerebell",
+                                                           x = ontology(seg)$name), "id"]
+
+brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][2:length(brain_regions[["Hippocampus"]])]
+
+brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][brain_regions[["Hippocampus"]] != "10377"]
+```
+
+We now have everything we need to create a `segmentationAssay` object and add it to our segmentation:
+
+```{r}
+gtexAssay <- new("segmentationAssay",
+                 values = as.matrix(gtex),
+                 mapping = brain_regions)
+
+# placeholder until the getter and setter functions are written
+seg@assays <- list("gtex" = gtexAssay)
+
+```
+
+## Creating a maximum projection and plotting external data
+
+When plotting data such as expression values in the segmentation, not all structures will be visible within the same slice, making the choice of a specific slice hard. For this reason we can create a maximum projection of structure slices on every plane, in both directions: slice-level polygons for every structure are joined together into single polygons and displayed in the order that they appear from both points of view, e.g. in the sagittal plane, from left to right (LR) and from right to left (RL). 
+
+Structures can be subset for maximum projections, since using all structures may just result in producing a side view of the segmentation (which may be a desired behaviour in some cases). Since maximum projections are specifically important for plotting datasets, we create a projection that has the same name as the dataset using the `addMaxProjection()` function, only for the sagittal plane:
+
+```{r}
+
+structures_chosen <- unlist(seg@assays$gtex@mapping)
+structures_chosen <- intersect(structures_chosen, metaData(seg)$structures)
+
+seg <- addMaxProjection(name = "gtex", 
+                        segmentation = seg, 
+                        structures = structures_chosen, 
+                        planes_chosen = "sagittal")
+```
+At this point we can plot data from one of our assays (GTEx) in the sagittal projection, using `plotBrainMap()`, specifying the `assay` name and the gene (`feature` argument):
+
+```{r}
+plotBrainMap(segmentation = seg,
+             assay = "gtex",
+             feature = "APP")
+```
+
+<img width="1033" alt="gtex_map" src="https://user-images.githubusercontent.com/21171362/131799896-cdede3a8-fb22-4558-906f-45db8eef2b13.png">
+
+
+# Additional details
 ## The `segmentation` class and its components
 
 The main workhorse of this package is its own S4 class, `segmentation`, which hosts many components necessary for plotting and integrating with external datasets.
@@ -87,14 +228,11 @@ The main workhorse of this package is its own S4 class, `segmentation`, which ho
 - **slices** is a list with 3 nested lists, named **sagittal**, **coronal** and **axial** for the three anatomical planes. Every anatomical plane is a list of slices along the plane spaced by 1 voxel (SL1...SLN in the figure), every slice is a list of structures (ST1...STN in the figure), with every structure being a list of `segPointSet` objects, another S4 class that holds polygon information in a lightweight format (P1...PN). 
 - **ontology** is a data frame containing all relevant information for structures: their IDs, names, acronyms, hierarchical relationship if present, colour codes etc. 
 - **projections** contains maximum projections for a series of structures in each plane. More than one maximum projection can be hosted in each `segmentation` object to accommodate for more assays. Every projection can be differentiated by the subset of structures that are being projected, which is usually done to match between an assay (external dataset) and a segmentation.
-- **assays** is a list of `segmentationAssay` objects, another S4 class that holds numerical `values` - such as gene counts - sample metadata (`sampledata`) and most importantly a one-to-many `mapping` of structures to the relevant samples. For instance, the GTEx brain dataset contains "Caudate" which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation. 
+- **assays** is a list of `segmentationAssay` objects, another S4 class that holds numerical `values` - such as gene counts - sample metadata (`sampledata`) and most importantly a one-to-many `mapping` of structures to the relevant samples. 
 - **metadata** is a list of various types of information regarding the segmentation, such as the file name, orientation, pixel/voxel dimension, original citation, reference space, etc. Most of these are manually compiled by the user, although an attempt is made at extracting some of them from a file containing this information in its header (e.g. NiFTi).
 - **structure_tables** is a list of data.tables, one per anatomical axis, which is used by some internal functions to check which slices contain which structures.
 
 
-##TODO
-- add maximum projection
-- add integration with external datasets (GTEx)
-- ontology graphs
+## TODO
 - ontology palettes
 - other species and access to their segmentations
