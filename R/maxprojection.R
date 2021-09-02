@@ -396,8 +396,9 @@ drawOutline <- function(M,
 #'
 #' @export
 
-makeOntologyGraph <- function(o,
+plotOntologyGraph <- function(seg,
                               circular = TRUE) {
+  o <- ontology(seg)
   cols <- o$col
   names(cols) <- o$acronym
 
