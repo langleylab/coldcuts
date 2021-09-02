@@ -123,7 +123,7 @@ plotSegmentation(seg_sub, s_slice = 50, show_labels = TRUE)
 The `segmentationAssay` S4 class was created to host an external dataset, adding numerical tables and other information to a segmentation. 
 For instance, in the case of GTEx brain data, a `segmentationAssay` can host the median TPM count table (in the `values` slot), additional information on the samples (in the `sampledata` slot) and, most importantly, the mapping from samples to structures (`mapping` slot). 
 
-Depending on the segmentation, the assay may require a one-to-many mapping of samples to structures. For instance, the GTEx brain dataset contains "Nucleus Caudate", which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation. 
+Depending on the segmentation, the assay may require a one-to-many mapping of samples to structures. For instance, the GTEx brain dataset contains "caudate basal ganglia", which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation. 
 
 This mapping has to be manually curated by the user, as there is no way to detect automatically this sort of correspondences. 
 
