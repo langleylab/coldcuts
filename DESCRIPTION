@@ -1,12 +1,27 @@
 Package: coldcuts
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Automated generation of segmentation polygons for plotting 
+Version: 0.0.0.900
+Author: Giuseppe D'Agostino
+Maintainer: Giuseppe D'Agostino <g.a.dagostino@gmail.com>
+Description: coldcuts automatically generates polygons from 3D segmentations or
+   parcellations along all anatomical axes, and provides plotting functions 
+   to visualize structures and colour them according to user-defined datasets.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports:
+    data.table,
+    ggplot2,
+    ggraph,
+    ggrepel,
+    isoband,
+    oro.nifti,
+    polylabelr,
+    qualpalr,
+    smoothr,
+    splancs,
+    tidygraph
+Suggests:
+    freesurferformats
 RoxygenNote: 7.1.1

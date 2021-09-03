@@ -19,7 +19,7 @@
 #' @param citation list of character strings, what is the citation for this segmentation? Default is \code{NULL}.
 #' @param parallel logical, should the polygons be drawn using parallel processing? Uses \code{future.apply::future_lapply()}, so the proper setup must be done beforehand. Default is \code{FALSE}.
 #'
-#' @return a `segmentation` S4 object containing the following slots:
+#' @return a `segmentation` S4 object.
 #'
 #' @export
 
