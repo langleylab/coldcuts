@@ -170,7 +170,7 @@ brain_regions[["Putamen_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "putam
 
 brain_regions[["Hypothalamus"]] <- ontology(seg)$id[grep(ontology(seg)[which(ontology(seg)$acronym == "HTH"),"id"], ontology(seg)$parent_structure_id)]
 
-brain_regions[["Substantia_nigra"]] <- ontology(seg)$id[grep(pattern  = "SN", x = ontology(test2)$acronym)]
+brain_regions[["Substantia_nigra"]] <- ontology(seg)$id[grep(pattern  = "SN", x = ontology(seg)$acronym)]
 
 brain_regions[["Hippocampus"]] <- ontology(seg)[grep(pattern  = "hipp",
                                                             x = ontology(seg)$name), "id"]
