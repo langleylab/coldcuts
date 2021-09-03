@@ -194,7 +194,7 @@ We now have everything we need to create a `segmentationAssay` object and add it
 
 ```{r}
 gtexAssay <- new("segmentationAssay",
-                 values = as.matrix(gtex[,3:nrow(gtex)]),
+                 values = as.matrix(gtex[,3:ncol(gtex)]),
                  mapping = brain_regions)
 
 # placeholder until the getter and setter functions are written
