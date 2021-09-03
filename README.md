@@ -19,6 +19,13 @@ Since some of the polygons can have holes in a specific slice - as is the case, 
 
 Once the drawing procedure is finished, a `segmentation` object is created which can be plotted and accessed in different ways. 
 
+## Installing the package
+
+You can install this package using `devtools::install_github()`:
+
+```{r}
+devtools::install_github("langleylab/coldcuts")
+```
 
 ## Drawing a segmentation
 
