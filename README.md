@@ -145,6 +145,10 @@ colnames(gtex) <- gsub(colnames(gtex), pattern = "Brain...", replacement = "")
 colnames(gtex) <- gsub(colnames(gtex), pattern = "[.]", replacement = "_")
 colnames(gtex) <- gsub(colnames(gtex), pattern = "__", replacement = "_")
 colnames(gtex) <- gsub(colnames(gtex), pattern = "_$", replacement = "")
+
+#removing duplicates (mostly 0 TPM genes)
+gtex <- gtex[!duplicated(gtex$Description),]
+rownames(gtex) <- gtex$Description
 ```
 
 Once the table is subsetted and readable, we map samples to structural IDs creating a list:
@@ -190,7 +194,7 @@ We now have everything we need to create a `segmentationAssay` object and add it
 
 ```{r}
 gtexAssay <- new("segmentationAssay",
-                 values = as.matrix(gtex),
+                 values = as.matrix(gtex[,3:nrow(gtex)]),
                  mapping = brain_regions)
 
 # placeholder until the getter and setter functions are written
