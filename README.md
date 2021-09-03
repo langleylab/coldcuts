@@ -37,7 +37,7 @@ seg <- drawSegmentation(nifti_file = "./data/annotation.nii.gz",
                         
 seg
 
-Segmentation from file:  annotation.nii.gz 
+Segmentation from file:  ./data/annotation.nii.gz 
                     Plane(s):  sagittal, coronal, axial 
                   Directions:  RAS 
        Dimensions (original):  394 x 466 x 378 
@@ -137,7 +137,7 @@ These values can be found [here](https://www.gtexportal.org/home/datasets), in p
 
 ```{r}
 # read the table
-gtex <- read.table("gtex_tpm.gct", header = TRUE, sep = "\t")
+gtex <- read.table("./data/gtex_tpm.gct", header = TRUE, sep = "\t")
 
 # subsetting and wrangling names
 gtex <- gtex[,c(1, 2, grep("Brain", colnames(gtex)))]
