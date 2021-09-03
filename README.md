@@ -7,7 +7,7 @@
 ## Introduction
 **`coldcuts`** is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
 
-The name is inspired by the way machines in delis cut a block of ham in thin, delicious slices. 
+The name is inspired by one of Italy's best products.
 
 Voxel arrays can come in different forms, either as NIfTI files, NRRD files, RAW files or directly imported in R as such.
 
