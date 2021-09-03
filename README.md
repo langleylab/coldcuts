@@ -157,7 +157,7 @@ brain_regions[["Amygdala"]] <- ontology(seg)[grep(pattern  ="amyg",
                                                          x = ontology(test2)$name), "id"]
 
 brain_regions[["Cortex"]] <- ontology(seg)[grep(pattern  = "frontal",
-                                                       x = ontology(test2)$name), "id"]
+                                                       x = ontology(seg)$name), "id"]
 
 brain_regions[["Frontal_Cortex_BA9"]] <- ontology(seg)[grep(pattern  = "cingulate gyrus, rostral",
                                                                    x = ontology(seg)$name), "id"]
