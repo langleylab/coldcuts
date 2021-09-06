@@ -36,7 +36,7 @@ In this package we refer to 2 different types of operations: **drawing** is the 
 Therefore the creation of a `segmentation` object is achieved by calling `drawSegmentation()`. 
 
 To use this function we need to have access to 2 files: the voxel array and the ontology table. We then have to instruct the function on whether array rotations are required, and add other types of metadata on the fly.
-In this example, after cloning the git repository, we use the `annotation.nii.gz` file from the Allen Institute for Brain Sciences, containing a 500&mu;-spaced voxel array with 141 annotated structures. We add the ontology file `allen_human_ontology.csv` as well, both of which can be found in the `data` folder of this repository.
+In this example, **after cloning the git repository**, we use the `annotation.nii.gz` file from the Allen Institute for Brain Sciences, containing a 500&mu;-spaced voxel array with 141 annotated structures. We add the ontology file `allen_human_ontology.csv` as well, both of which can be found in the `data` folder of this repository.
 We add the MNI152 reference space to the metadata. Since this NIfTI file has already some relevant information in its header, the function will add it for us.
 
 ```{r}
