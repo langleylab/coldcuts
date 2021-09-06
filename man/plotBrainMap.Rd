@@ -8,6 +8,7 @@ plotBrainMap(
   segmentation,
   feature,
   assay,
+  projection = NULL,
   plane = "sagittal",
   smooth = TRUE,
   smoothness = 3,
@@ -22,6 +23,8 @@ plotBrainMap(
 
 \item{assay}{character, the name of the \code{assay} slot in the \code{segmentation}.}
 
+\item{projection}{Character, name of the maximum projection slot to be used? Default is \code{NULL}, which uses the same name as selected in \code{assay}.}
+
 \item{plane}{character, the plane for the maximum projection. Default is "sagittal".}
 
 \item{smooth}{logical, should shapes be smoothed? Default is \code{TRUE}.}
@@ -29,8 +32,6 @@ plotBrainMap(
 \item{smoothness}{numeric, the smoothing to be used. Default is 3.}
 
 \item{min_points}{numeric, the minimum points to smooth polygons. Default is 5.}
-
-\item{max_projection}{logical, should the maximum projection be computed beforehand? Default is \code{TRUE}.}
 }
 \value{
 a `ggplot` plot in which structures are coloured according to a numeric value

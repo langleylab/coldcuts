@@ -2,10 +2,11 @@
 #'
 #' Creates a `segmentation` object from an array or a `NIfTI` file
 #'
-#' @param nifti_file a character string pointing to the NIfTI file address
-#' @param ontology_file a character string pointing to the ontology .csv file address
+#' @param nifti_file a character string pointing to the NIfTI file address. Default is \code{NULL}
+#' @param nrrd_file a character string pointing to the NRRD file address. Default is \code{NULL}
 #' @param array a 3D array containing structure annotations (optional if \code{nifti_file} and \code{molten_array} are not specified). Default is \code{NULL}
 #' @param molten_array an array in molten form, such as the result of \code{reshape2::melt()} (optional if \code{nifti_file} and \code{array} are not specified). Default is \code{NULL}
+#' @param ontology_file a character string pointing to the ontology .csv file address
 #' @param outliers a numeric vector indicating outlier points to be eliminated before drawing polygons. Default is \code{NULL}
 #' @param verbose logical, should messages on the process be displayed? Default is \code{TRUE}
 #' @param directions_from character, indicates the original orientation of the array. Default is \code{"RAS"} (Left to Right, Posterior to Anterior, Inferior to Superior).
@@ -24,9 +25,10 @@
 #' @export
 
 drawSegmentation <- function(nifti_file = NULL,
-                             ontology_file,
+                             nrrd_file = NULL,
                              array = NULL,
                              molten_array = NULL,
+                             ontology_file,
                              outliers = NULL,
                              verbose = TRUE,
                              directions_from = "RAS",
@@ -41,7 +43,7 @@ drawSegmentation <- function(nifti_file = NULL,
                              citation = NULL,
                              parallel = TRUE) {
   #Sanity checks
-  if (is.null(nifti_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least one 3D array or one NIfTI file.")
+  if (is.null(nifti_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
   if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_coronal) & class(subset_coronal) != "numeric") stop("You must provide numeric indices to subset planes")
@@ -66,7 +68,7 @@ drawSegmentation <- function(nifti_file = NULL,
     subsets <- subsets[!is.null(subsets)]
   }
 
-  if (!is.null(nifti_file) & is.null(array) & is.null(molten_array)) {
+  if (!is.null(nifti_file) & is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     if (verbose) cat("Reading NIfTI file...")
     nifti <- oro.nifti::readNIfTI(nifti_file)
     if (verbose) cat("done.\n")
@@ -74,12 +76,14 @@ drawSegmentation <- function(nifti_file = NULL,
     pixdims <- oro.nifti::pixdim(nifti)[2:4]
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
-  } else if (is.null(nifti_file) & !is.null(array) & is.null(molten_array)) {
+  } else if (is.null(nifti_file) & is.null(array) & is.null(molten_array) & !is.null(nrrd_file)) {
+    n_image <- nat::read.nrrd(file = nrrd_file, ReadData = TRUE)
+  } else if (is.null(nifti_file) & !is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     n_image <- array
     pixdims <- "Unknown"
     units <- "Unknown"
     filename = paste0("Array named \"", deparse(substitute(molten_array)), "\".")
-  } else if (is.null(nifti_file) & is.null(array) & !is.null(molten_array)) {
+  } else if (is.null(nifti_file) & is.null(array) & !is.null(molten_array) & is.null(nrrd_file)) {
     pixdims <- "Unknown"
     units <- "Unknown"
     filename = paste0("Molten array named \"", deparse(substitute(molten_array)), "\".")
@@ -662,7 +666,7 @@ plotBrainMap <- function(segmentation,
                          show_labels = TRUE){
 
   if(is.null(projection)) {
-    if(length(segmentation@projections) = 0) stop("The segmentation must include a projection to plot assay data. Run `addMaxProjection()` first.")
+    if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `addMaxProjection()` first.")
     projection = assay
   } else {
     projection = projection

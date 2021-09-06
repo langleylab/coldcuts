@@ -23,5 +23,6 @@ Imports:
     splancs,
     tidygraph
 Suggests:
-    freesurferformats
+    freesurferformats,
+    nat
 RoxygenNote: 7.1.1

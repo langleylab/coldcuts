@@ -6,9 +6,10 @@
 \usage{
 drawSegmentation(
   nifti_file = NULL,
-  ontology_file,
+  nrrd_file = NULL,
   array = NULL,
   molten_array = NULL,
+  ontology_file,
   outliers = NULL,
   verbose = TRUE,
   directions_from = "RAS",
@@ -25,13 +26,15 @@ drawSegmentation(
 )
 }
 \arguments{
-\item{nifti_file}{a character string pointing to the NIfTI file address}
+\item{nifti_file}{a character string pointing to the NIfTI file address. Default is \code{NULL}}
 
-\item{ontology_file}{a character string pointing to the ontology .csv file address}
+\item{nrrd_file}{a character string pointing to the NRRD file address. Default is \code{NULL}}
 
 \item{array}{a 3D array containing structure annotations (optional if \code{nifti_file} and \code{molten_array} are not specified). Default is \code{NULL}}
 
 \item{molten_array}{an array in molten form, such as the result of \code{reshape2::melt()} (optional if \code{nifti_file} and \code{array} are not specified). Default is \code{NULL}}
+
+\item{ontology_file}{a character string pointing to the ontology .csv file address}
 
 \item{outliers}{a numeric vector indicating outlier points to be eliminated before drawing polygons. Default is \code{NULL}}
 
@@ -58,7 +61,7 @@ drawSegmentation(
 \item{parallel}{logical, should the polygons be drawn using parallel processing? Uses \code{future.apply::future_lapply()}, so the proper setup must be done beforehand. Default is \code{FALSE}.}
 }
 \value{
-a `segmentation` S4 object containing the following slots:
+a `segmentation` S4 object.
 }
 \description{
 Creates a `segmentation` object from an array or a `NIfTI` file
