@@ -372,7 +372,7 @@ makePolygonSets <- function(structure_list,
   polygon_list <- lapply(names(structure_list), function(n) {
     applyfun(names(structure_list[[n]]), function(y) {
       if(verbose) {
-        cat("\r", "Drawing from slice " , n, ", #", which(names(structure_list) == n), " of ", length(structure_list), sep = "")
+        cat("\r", "Drawing from slice " , n, ", #", which(names(structure_list) == n), " of ", length(structure_list), "...", sep = "")
       }
       ib_df <- makePolygon(structure_list[[n]][[y]])
       ib_df$structure <- unique(structure_list[[n]][[y]]$structure)
