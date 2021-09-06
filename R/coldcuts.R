@@ -79,6 +79,7 @@ drawSegmentation <- function(nifti_file = NULL,
   } else if (is.null(nifti_file) & is.null(array) & is.null(molten_array) & !is.null(nrrd_file)) {
     if (verbose) cat("Reading NRRD file...")
     n_image <- nat::read.nrrd(file = nrrd_file, ReadData = TRUE)
+    filename = nrrd_file
     if (verbose) cat("done.\n")
   } else if (is.null(nifti_file) & !is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     n_image <- array
