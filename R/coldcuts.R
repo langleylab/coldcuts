@@ -79,7 +79,9 @@ drawSegmentation <- function(nifti_file = NULL,
   } else if (is.null(nifti_file) & is.null(array) & is.null(molten_array) & !is.null(nrrd_file)) {
     if (verbose) cat("Reading NRRD file...")
     n_image <- nat::read.nrrd(file = nrrd_file, ReadData = TRUE)
-    filename = nrrd_file
+    filename <- nrrd_file
+    pixdims <- "Unknown"
+    units <- "Unknown"
     if (verbose) cat("done.\n")
   } else if (is.null(nifti_file) & !is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     n_image <- array
@@ -677,7 +679,9 @@ plotBrainMap <- function(segmentation,
   } else {
     projection = projection
   }
-
+  if(length(feature) > 1) stop("You can only one plot one feature at a time.")
+  if(class(feature) != "character") stop("feature must be a character.")
+ if(feature %nin% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
 
   dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
   dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
