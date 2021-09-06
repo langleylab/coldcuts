@@ -640,7 +640,7 @@ plotSegmentation <- function(segmentation,
 #' @param segmentation a \code{segmentation} class object.
 #' @param feature character, feature to be plotted from the \code{assay} slot.
 #' @param assay character, the name of the \code{assay} slot in the \code{segmentation}.
-#' @param max_projection logical, should the maximum projection be computed beforehand? Default is \code{TRUE}.
+#' @param projection Character, name of the maximum projection slot to be used? Default is \code{NULL}, which uses the same name as selected in \code{assay}.
 #' @param plane character, the plane for the maximum projection. Default is "sagittal".
 #' @param smooth logical, should shapes be smoothed? Default is \code{TRUE}.
 #' @param smoothness numeric, the smoothing to be used. Default is 3.
@@ -654,14 +654,23 @@ plotSegmentation <- function(segmentation,
 plotBrainMap <- function(segmentation,
                          feature,
                          assay,
+                         projection = NULL,
                          plane = "sagittal",
                          smooth = TRUE,
                          smoothness = 3,
                          min_points = 5,
                          show_labels = TRUE){
 
-    dmp_df <- do.call(rbind, lapply(segmentation@projections[[assay]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
-    dmp2_df <- do.call(rbind, lapply(segmentation@projections[[assay]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
+  if(is.null(projection)) {
+    if(length(segmentation@projections) = 0) stop("The segmentation must include a projection to plot assay data. Run `addMaxProjection()` first.")
+    projection = assay
+  } else {
+    projection = projection
+  }
+
+
+  dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
+  dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
 
   centers <- as.data.frame(do.call(rbind, lapply(unique(dmp_df$structure), function(x) {
     df <- dmp_df[dmp_df$structure == x,]
@@ -686,8 +695,8 @@ plotBrainMap <- function(segmentation,
     dmp2_df <- smoothPolygons(dmp2_df, smoothness = smoothness, min_points = min_points)
   }
 
-  dmp_df$dir <-  centers$dir <- names(segmentation@projections[[assay]][[plane]])[1]
-  dmp2_df$dir <- centers2$dir <-  names(segmentation@projections[[assay]][[plane]])[2]
+  dmp_df$dir <-  centers$dir <- names(segmentation@projections[[projection]][[plane]])[1]
+  dmp2_df$dir <- centers2$dir <-  names(segmentation@projections[[projection]][[plane]])[2]
 
   dmp_all <- rbind(dmp_df, dmp2_df)
   centers_all <- rbind(centers, centers2)
@@ -716,19 +725,20 @@ plotBrainMap <- function(segmentation,
 
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
-    data = centers_all,
-    aes(x = x, y = y, label = acronym),
-    color = "white",
-    segment.color = "black",
-    segment.size = 0.2,
-    bg.color = "black",
-    bg.r = 0.15,
-    alpha = 1,
-    box.padding = 0.6,
-    size = 2,
-    max.overlaps = Inf,
-    inherit.aes = FALSE
-  )}
+      data = centers_all,
+      aes(x = x, y = y, label = acronym),
+      color = "white",
+      segment.color = "black",
+      segment.size = 0.2,
+      bg.color = "black",
+      bg.r = 0.15,
+      alpha = 1,
+      box.padding = 0.6,
+      size = 2,
+      max.overlaps = Inf,
+      inherit.aes = FALSE
+    )}
 
   return(p)
 }
+
