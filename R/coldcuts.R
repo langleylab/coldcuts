@@ -43,7 +43,7 @@ drawSegmentation <- function(nifti_file = NULL,
                              citation = NULL,
                              parallel = TRUE) {
   #Sanity checks
-  if (is.null(nifti_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
+  if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
   if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_coronal) & class(subset_coronal) != "numeric") stop("You must provide numeric indices to subset planes")
@@ -77,7 +77,9 @@ drawSegmentation <- function(nifti_file = NULL,
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
   } else if (is.null(nifti_file) & is.null(array) & is.null(molten_array) & !is.null(nrrd_file)) {
+    if (verbose) cat("Reading NRRD file...")
     n_image <- nat::read.nrrd(file = nrrd_file, ReadData = TRUE)
+    if (verbose) cat("done.\n")
   } else if (is.null(nifti_file) & !is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     n_image <- array
     pixdims <- "Unknown"
@@ -112,7 +114,7 @@ drawSegmentation <- function(nifti_file = NULL,
   } else if (is.null(array) & !is.null(molten_array)) {
     if (any(M$value == 0)) M <- M[M$value > 0, ]
     M <- molten_array
-  } else if (is.null(array) & is.null(molten_array) & !is.null(nifti_file)) {
+  } else if (is.null(array) & is.null(molten_array) & (!is.null(nifti_file) | !is.null(nrrd_file))) {
     if (verbose) cat("Melting array...")
     M <- as.data.table(n_image)
     M <- M[M$value > 0, ]
@@ -126,7 +128,10 @@ drawSegmentation <- function(nifti_file = NULL,
   }
 
   if(any(unique(M$value) %nin% ontology$id)) {
-    stop(paste0("Structures ", paste(setdiff(unique(M$value), ontology$id), collapse = ", "), " were found in the array but not in the ontology. Make sure you are using the correct ontology for this array." ))
+    missing_strs <- setdiff(unique(M$value), ontology$id)
+    max <- min(c(10, length(missing_strs)))
+    if(length(missing_strs) > 10) error_add_str <- paste0(" and ", length(missing_strs) - 10, " more ") else error_add_str <- ""
+    stop(paste0("Structures ", paste(setdiff(unique(M$value)[1:max], ontology$id), collapse = ", "),  error_add_str,  "were found in the array but not in the ontology.\n Make sure you are using the correct ontology for this file." ))
   }
 
   if (draw_outline) {
