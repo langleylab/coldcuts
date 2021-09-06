@@ -95,7 +95,7 @@ drawSegmentation <- function(nifti_file = NULL,
   }
 
   if (directions_from != directions_to) {
-    dirs = c(directions_from, directions_to)
+    dirs = directions_to
     if (verbose) cat("Changing directions...")
     n_image <- changeDirections(n_image, directions_from, directions_to)
     if (verbose) cat("done.\n")
@@ -527,7 +527,11 @@ plotSegmentation <- function(segmentation,
   }
 
   # Smoothing
-  if (smooth) slicelist <- lapply(dflist, function(x) smoothPolygons(x, smoothness = smoothness))
+  if (smooth) {
+    slicelist <- lapply(dflist, function(x) smoothPolygons(x, smoothness = smoothness))
+  } else {
+    slicelist <- dflist
+    }
 
   # Create the data frame containing all slices and their (selected) polygons
 
