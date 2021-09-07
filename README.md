@@ -42,7 +42,8 @@ We add the MNI152 reference space to the metadata. Since this NIfTI file has alr
 ```{r}
 seg <- drawSegmentation(nifti_file = "./data/annotation.nii.gz", 
                         ontology_file = "./data/allen_human_ontology.csv",
-                        reference_space = "MNI152")
+                        reference_space = "MNI152",
+                        verbose = FALSE)
                         
 seg
 
@@ -90,7 +91,7 @@ head(ontology(seg))
 10158    734881840              telencephalon #EBD6D0
 ```
 
-This ontology was downloaded from the Allen Brain Atlas API, and it contains several information that we will not need. However, we do need the `id`, `name`, `acronym`, `parent_structure_id`, `structure_id_path` and `col` fields.
+This ontology was downloaded from the Allen Brain Atlas API, and it contains several pieces of information that we will not need. However, we do need the `id`, `name`, `acronym`, `parent_structure_id`, `structure_id_path` and `col` fields.
 
 Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. "hipothalamus" as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using `plotOntologyGraph()`:
 
