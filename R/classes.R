@@ -59,6 +59,15 @@ setMethod("metaData", c(x = "segmentation"), function(x) {
   return(x@metadata)
 })
 
+setGeneric("metaData<-", function(x, value) {
+  standardGeneric("metaData<-")
+})
+
+setMethod("metaData<-", c(x = "segmentation"), function(x, value) {
+  x@metadata <- value
+  x
+})
+
 setGeneric("ontology", function(x) {
   standardGeneric("ontology")
 })
@@ -82,6 +91,16 @@ setGeneric("assays", function(x) {
 
 setMethod("assays", c(x = "segmentation"), function(x) {
   return(x@assays)
+})
+
+setGeneric("assays<-", function(x, value, name) {
+  standardGeneric("assays<-")
+})
+
+setMethod("assays<-", c(x = "segmentation"), function(x, value, name) {
+  if(class(value) != "segmentationAssay") stop("Must provide a `segmentationAssay` type object")
+  x@assays$name <- value
+  x
 })
 
 
