@@ -12,6 +12,8 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     data.table,
+    freesurferformats,
+    future.apply,
     ggplot2,
     ggraph,
     ggrepel,
@@ -24,6 +26,5 @@ Imports:
     splancs,
     tidygraph
 Suggests:
-    freesurferformats,
     nat
 RoxygenNote: 7.1.1

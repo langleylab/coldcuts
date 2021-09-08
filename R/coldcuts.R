@@ -43,6 +43,7 @@ drawSegmentation <- function(nifti_file = NULL,
                              citation = NULL,
                              parallel = TRUE) {
   #Sanity checks
+  if(!is.null(nrrd_file) & "nat" %nin% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
   if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
@@ -50,12 +51,26 @@ drawSegmentation <- function(nifti_file = NULL,
   if (!is.null(subset_axial) & class(subset_axial) != "numeric") stop("You must provide numeric indices to subset planes")
 
   if (verbose) cat("Adding ontology...")
-  ontology <- read.csv(ontology_file, header = TRUE, sep = ",")
+  if(grepl("\\.csv$", ontology_file){
+    read_fun <- read.csv
+    read_sep = ","
+  } else if (grepl("\\.txt$", ontology_file) {
+    read_fun <- read.table
+    read_sep = "\t"
+  }
+
+  ontology <- read_fun(ontology_file, header = TRUE, sep = read_sep)
+
+  missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(ontology))
+
+  if(length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
+
   colnames(ontology)[grep("id|ID|Id|iD", fixed = TRUE, colnames(ontology))] <- "id"
   ontology$id <- as.character(ontology$id)
   rownames(ontology) <- ontology$id
+
   if(any(subset_structures %nin% ontology$id)) {
-    stop(paste0("Structures ", paste(setdiff(subset_structures, ontology$id), collapse = ", "), " were not found in the ontology. Make sure you are using the correct ontology for this array." ))
+    stop(paste0("Subset structures ", paste(setdiff(subset_structures, ontology$id), collapse = ", "), " were not found in the ontology. \n Make sure you are using the correct ontology for this volume, or subsetting the right structures." ))
   }
   if (verbose) cat("done.\n")
 
@@ -134,7 +149,7 @@ drawSegmentation <- function(nifti_file = NULL,
     missing_strs <- setdiff(unique(M$value), ontology$id)
     max <- min(c(10, length(missing_strs)))
     if(length(missing_strs) > 10) error_add_str <- paste0(" and ", length(missing_strs) - 10, " more ") else error_add_str <- ""
-    stop(paste0("Structures ", paste(setdiff(unique(M$value)[1:max], ontology$id), collapse = ", "),  error_add_str,  "were found in the array but not in the ontology.\n Make sure you are using the correct ontology for this file." ))
+    stop(paste0("Structures ", paste(setdiff(unique(M$value)[1:max], ontology$id), collapse = ", "),  error_add_str,  "were found in the array but not in the ontology.\n Make sure you are using the correct ontology for this volume." ))
   }
 
   if (draw_outline) {
@@ -212,10 +227,10 @@ drawSegmentation <- function(nifti_file = NULL,
   })
   names(str_table_all) <- planes_chosen
   for(i in names(slices)) {
-         for(j in names(slices[[i]])) {
-              names(slices[[i]][[j]]) <- str_table_all[[i]][str_table_all[[i]]$slice == j, structure]
-           }
-     }
+    for(j in names(slices[[i]])) {
+      names(slices[[i]][[j]]) <- str_table_all[[i]][str_table_all[[i]]$slice == j, structure]
+    }
+  }
   if (verbose) cat("done.\n")
 
   if (verbose) cat("Compiling metadata...")
@@ -234,12 +249,12 @@ drawSegmentation <- function(nifti_file = NULL,
   if (verbose) cat("done.\n")
 
   return(new("segmentation",
-    slices = slices,
-    ontology = ontology,
-    outlines = outlines,
-    metadata = metadata,
-    structure_tables = str_table_all,
-    projections = list()
+             slices = slices,
+             ontology = ontology,
+             outlines = outlines,
+             metadata = metadata,
+             structure_tables = str_table_all,
+             projections = list()
   ))
 }
 
@@ -268,18 +283,6 @@ changeDirections <- function(array,
   return(array_rot)
 }
 
-#' Get visual center
-#'
-#' Finds the visual center (pole of inaccessibility) for a polygon.
-#'
-#' @param poly a polygon in array or matrix form, in which the first two columns contain x and y vertex coordinates
-#'
-#' @return a vector containing the coordinates of the visual center of the input polygon
-
-getCenter <- function(poly) {
-  return(unlist(polylabelr::poi(poly[, 1:2]))[1:2])
-}
-
 #' Check slices
 #'
 #' Checks which slices in a polygon list contain a given structure id
@@ -303,8 +306,8 @@ sliceCheck <- function(structures,
   }
 
   structure_by_plane <- lapply(planes, function(x) {
-      unique(segmentation@structure_tables[[x]][structure %in% structures,slice])
-    })
+    unique(segmentation@structure_tables[[x]][structure %in% structures,slice])
+  })
   names(structure_by_plane) <- planes
   return(structure_by_plane)
 }
@@ -332,8 +335,8 @@ smoothPolygons <- function(polygon_set,
       poly_sm <- poly[, 1:2]
     } else {
       poly_sm <- as.data.frame(smoothr::smooth_ksmooth(as.matrix(poly[, 1:2]),
-        smoothness = smoothness,
-        wrap = TRUE
+                                                       smoothness = smoothness,
+                                                       wrap = TRUE
       ))
     }
 
@@ -369,7 +372,7 @@ smoothPolygons <- function(polygon_set,
 #' @export
 
 drawOutline <- function(M,
-  plane) {
+                        plane) {
   switch(plane,
          "sagittal" = {
            uc <- 1
@@ -514,7 +517,7 @@ plotSegmentation <- function(segmentation,
           function(x) {
             chosen_poly <- dflist[[d]][dflist[[d]]$structure == x, ]
             chosen_poly <- chosen_poly[chosen_poly$id == names(which.max(table(chosen_poly$id))), ]
-            return(unlist(polylabelr::poi(chosen_poly[, 1:2]))[1:2])
+            return(unlist(polylabelr::poi(chosen_poly[, 1:2], precision = 0.01))[1:2])
           }
         )
       ))
@@ -531,7 +534,7 @@ plotSegmentation <- function(segmentation,
     slicelist <- lapply(dflist, function(x) smoothPolygons(x, smoothness = smoothness))
   } else {
     slicelist <- dflist
-    }
+  }
 
   # Create the data frame containing all slices and their (selected) polygons
 
@@ -612,12 +615,12 @@ plotSegmentation <- function(segmentation,
 
     outlines <- lapply(planes, function(x) {
       if (smooth) { outline_poly <- smoothPolygons(segmentation@outlines[[x]],
-                                               by = "cluster",
-                                               smoothness = smoothness)
-        } else { outline_poly = segmentation@outlines[[x]] }
-        outline_poly$axis <- unique(dflist[[x]]$axis)
-        return(outline_poly)
-        })
+                                                   by = "cluster",
+                                                   smoothness = smoothness)
+      } else { outline_poly = segmentation@outlines[[x]] }
+      outline_poly$axis <- unique(dflist[[x]]$axis)
+      return(outline_poly)
+    })
     all_outlines <- do.call(rbind, outlines)
     p <- p + geom_polygon(
       data = all_outlines,
@@ -685,7 +688,7 @@ plotBrainMap <- function(segmentation,
   }
   if(length(feature) > 1) stop("You can only one plot one feature at a time.")
   if(class(feature) != "character") stop("feature must be a character.")
- if(feature %nin% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
+  if(feature %nin% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
 
   dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
   dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
