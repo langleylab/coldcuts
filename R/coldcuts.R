@@ -51,10 +51,10 @@ drawSegmentation <- function(nifti_file = NULL,
   if (!is.null(subset_axial) & class(subset_axial) != "numeric") stop("You must provide numeric indices to subset planes")
 
   if (verbose) cat("Adding ontology...")
-  if(grepl("\\.csv$", ontology_file){
+  if(grepl("\\.csv$", ontology_file)){
     read_fun <- read.csv
     read_sep = ","
-  } else if (grepl("\\.txt$", ontology_file) {
+  } else if (grepl("\\.txt$", ontology_file)) {
     read_fun <- read.table
     read_sep = "\t"
   }

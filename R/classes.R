@@ -63,10 +63,18 @@ setGeneric("ontology", function(x) {
   standardGeneric("ontology")
 })
 
+setGeneric("ontology<-", function(x, value) {
+  standardGeneric("ontology<-")
+})
+
 setMethod("ontology", c(x = "segmentation"), function(x) {
   return(x@ontology)
 })
 
+setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
+  x@ontology <- value
+  x
+})
 
 setGeneric("assays", function(x) {
   standardGeneric("assays")
@@ -75,6 +83,7 @@ setGeneric("assays", function(x) {
 setMethod("assays", c(x = "segmentation"), function(x) {
   return(x@assays)
 })
+
 
 setMethod("show", "segmentation", function(object) {
   if(metaData(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[metaData(object)$units + 1]
