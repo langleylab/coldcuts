@@ -516,25 +516,25 @@ makeOntologyPalettes <- function(o,
 
   # Assign color palettes to structures that are drawn (no children)
   for (i in names(st_pal_hex)) {
-    colvec <- o$col[grepl(i, o$parent_path) & o$has_children == FALSE & o$visited == FALSE]
+    colvec <- o$col[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE]
 
     if (length(colvec) < 2) {
       colvec <- st_pal_hex[i]
     } else {
       H_factor <- 15 / (length(colvec)^2)
 
-      colvec <- hex(colorspace::HLS(
+      colvec <- colorspace::hex(colorspace::HLS(
         seq(st_pal_HSL[st_pal_hex[i], 1], st_pal_HSL[st_pal_hex[i], 1] + (H_factor * length(colvec)), length.out = length(colvec)),
         scales::rescale(seq(st_pal_HSL[st_pal_hex[i], 3], st_pal_HSL[st_pal_hex[i], 3] - (0.045 * length(colvec)), length.out = length(colvec)), to = c(st_pal_HSL[st_pal_hex[i], 3], 0.2)),
         scales::rescale(seq(st_pal_HSL[st_pal_hex[i], 2], st_pal_HSL[st_pal_hex[i], 2] + (0.015 * length(colvec)), length.out = length(colvec)), to = c(st_pal_HSL[st_pal_hex[i], 2], 0.8))
       ))
 
-      o$col[grepl(i, o$parent_path) & o$has_children == FALSE & o$visited == FALSE] <- colvec
-      o$visited[grepl(i, o$parent_path) & o$has_children == FALSE & o$visited == FALSE] <- TRUE
+      o$col[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE] <- colvec
+      o$visited[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE] <- TRUE
 
       # Color the rest of the nodes with children but not root using the root node color
-      o$col[grepl(i, o$parent_path) & o$has_children == TRUE & o$visited == FALSE] <- st_pal_hex[i]
-      o$visited[grepl(i, o$parent_path) & o$has_children == TRUE & o$visited == FALSE] <- TRUE
+      o$col[grepl(i, o$structure_id_path) & o$has_children == TRUE & o$visited == FALSE] <- st_pal_hex[i]
+      o$visited[grepl(i, o$structure_id_path) & o$has_children == TRUE & o$visited == FALSE] <- TRUE
     }
   }
 

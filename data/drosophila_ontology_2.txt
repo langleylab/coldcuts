@@ -1,0 +1,94 @@
+acronym	name	id	FBbt	parent_structure_id	structure_id_path	graph_depth	has_children
+AME_R	accessory medulla	2	FBbt:00045003	87	/105/87/	3	FALSE
+LO_R	lobula	3	FBbt:00003852	99	/105/87/99/	4	FALSE
+NO	nodulus	4	FBbt:00003680	89	/105/89/	3	FALSE
+BU_R	bulb	5	FBbt:00003682	90	/105/90/	3	FALSE
+PB	protocerebral bridge	6	FBbt:00003668	89	/105/89/	3	FALSE
+LH_R	lateral horn	7	lateral horn	92	/105/92/	3	FALSE
+LAL_R	lateral accessory lobe	8	FBbt:00003681	90	/105/90/	3	FALSE
+SAD	saddle	9	FBbt:00045048	97	/105/97/	3	FALSE
+CAN_R	cantle	10	FBbt:00045051	97	/105/97/	3	FALSE
+AMMC_R	antennal mechanosensory and motor center	11	FBbt:00003982	9	/105/97/9/	4	FALSE
+ICL_R	inferior clamp	12	FBbt:00040049	102	/105/94/102/	4	FALSE
+VES_R	vest	13	FBbt:00040041	103	/105/96/103/	4	FALSE
+IB_R	inferior bridge	14	FBbt:00040050	94	/105/94/	3	FALSE
+ATL_R	antler	15	FBbt:00045039	94	/105/94/	3	FALSE
+CRE_R	crepine	16	FBbt:00045037	94	/105/94/	3	FALSE
+MB_PED_R	pedunculus of adult mushroom body	17	FBbt:00007453	88	/105/88/	3	FALSE
+MB_VL_R	vertical lobe of adult mushroom body	18	FBbt:00015407	88	/105/88/	3	FALSE
+MB_ML_R	medial lobe of adult mushroom body	19	FBbt:00007677	88	/105/88/	3	FALSE
+FLA_R	flange	20	FBbt:00045050	97	/105/97/	3	FALSE
+LOP_R	lobula plate	22	FBbt:00003885	99	/105/87/99/	4	FALSE
+EB	ellipsoid body	23	FBbt:00003678	100	/105/89/100/	4	FALSE
+AL_R	adult antennal lobe	24	FBbt:00007401	95	/105/95/	3	FALSE
+ME_R	medulla	25	FBbt:00003748	87	/105/87/	3	FALSE
+FB	fan-shaped body	26	FBbt:00003679	100	/105/89/100/	4	FALSE
+SLP_R	superior lateral protocerebrum	27	FBbt:00007054	93	/105/93/	3	FALSE
+SIP_R	superior intermediate protocerebrum	28	FBbt:00045032	93	/105/93/	3	FALSE
+SMP_R	superior medial protocerebrum	29	FBbt:00007055	93	/105/93/	3	FALSE
+AVLP_R	anterior ventrolateral protocerebrum	30	FBbt:00040043	101	/105/91/101/	4	FALSE
+PVLP_R	posterior ventrolateral protocerebrum	31	FBbt:00040042	101	/105/91/101/	4	FALSE
+IVLP_R	wedge	32	FBbt:00045027	91	/105/91/	3	FALSE
+PLP_R	posterior lateral protocerebrum	33	FBbt:00040044	91	/105/91/	3	FALSE
+AOTU_R	anterior optic tubercle	34	FBbt:00007059	91	/105/91/	3	FALSE
+GOR_R	gorget	35	FBbt:00040039	103	/105/96/103/	4	FALSE
+MB_CA_R	calyx of adult mushroom body	36	FBbt:00007385	88	/105/88/	3	FALSE
+SPS_R	superior posterior slope	37	FBbt:00045040	104	/105/96/104/	4	FALSE
+IPS_R	inferior posterior slope	38	FBbt:00045046	104	/105/96/104/	4	FALSE
+SCL_R	superior clamp	39	FBbt:00040048	102	/105/94/102/	4	FALSE
+EPA_R	epaulette	40	FBbt:00040040	103	/105/96/103/	4	FALSE
+GNG	adult gnathal ganglion	49	FBbt:00014013	105	/105/98/	3	FALSE
+PRW	prow	50	FBbt:00040051	97	/105/97/	3	FALSE
+GA_R	gall	51	FBbt:00040060	90	/105/90/	3	FALSE
+AME_L	accessory medulla	52	FBbt:00045003	87	/105/87/	3	FALSE
+LO_L	lobula	53	FBbt:00003852	99	/105/87/99/	4	FALSE
+BU_L	bulb	54	FBbt:00003682	90	/105/90/	3	FALSE
+LH_L	lateral horn	55	lateral horn	92	/105/92/	3	FALSE
+LAL_L	lateral accessory lobe	56	FBbt:00003681	90	/105/90/	3	FALSE
+CAN_L	cantle	57	FBbt:00045051	97	/105/97/	3	FALSE
+AMMC_L	antennal mechanosensory and motor center	58	FBbt:00003982	9	/105/97/9/	4	FALSE
+ICL_L	inferior clamp	59	FBbt:00040049	102	/105/94/102/	4	FALSE
+VES_L	vest	60	FBbt:00040041	103	/105/96/103/	4	FALSE
+IB_L	inferior bridge	61	FBbt:00040050	94	/105/94/	3	FALSE
+ATL_L	antler	62	FBbt:00045039	94	/105/94/	3	FALSE
+CRE_L	crepine	63	FBbt:00045037	94	/105/94/	3	FALSE
+MB_PED_L	pedunculus of adult mushroom body	64	FBbt:00007453	88	/105/88/	3	FALSE
+MB_VL_L	vertical lobe of adult mushroom body	65	FBbt:00015407	88	/105/88/	3	FALSE
+MB_ML_L	medial lobe of adult mushroom body	66	FBbt:00007677	88	/105/88/	3	FALSE
+FLA_L	flange	67	FBbt:00045050	97	/105/97/	3	FALSE
+LOP_L	lobula plate	69	FBbt:00003885	99	/105/87/99/	4	FALSE
+AL_L	adult antennal lobe	70	FBbt:00007401	95	/105/95/	3	FALSE
+ME_L	medulla	71	FBbt:00003748	87	/105/87/	3	FALSE
+SLP_L	superior lateral protocerebrum	72	FBbt:00007054	93	/105/93/	3	FALSE
+SIP_L	superior intermediate protocerebrum	73	FBbt:00045032	93	/105/93/	3	FALSE
+SMP_L	superior medial protocerebrum	74	FBbt:00007055	93	/105/93/	3	FALSE
+AVLP_L	anterior ventrolateral protocerebrum	75	FBbt:00040043	101	/105/91/101/	4	FALSE
+PVLP_L	posterior ventrolateral protocerebrum	76	FBbt:00040042	101	/105/91/101/	4	FALSE
+IVLP_L	wedge	77	FBbt:00045027	91	/105/91/	3	FALSE
+PLP_L	posterior lateral protocerebrum	78	FBbt:00040044	91	/105/91/	3	FALSE
+AOTU_L	anterior optic tubercle	79	FBbt:00007059	91	/105/91/	3	FALSE
+GOR_L	gorget	80	FBbt:00040039	103	/105/96/103/	4	FALSE
+MB_CA_L	calyx of adult mushroom body	81	FBbt:00007385	88	/105/88/	3	FALSE
+SPS_L	superior posterior slope	82	FBbt:00045040	104	/105/96/104/	4	FALSE
+IPS_L	inferior posterior slope	83	FBbt:00045046	104	/105/96/104/	4	FALSE
+SCL_L	superior clamp	84	FBbt:00040048	102	/105/94/102/	4	FALSE
+EPA_L	epaulette	85	FBbt:00040040	103	/105/96/103/	4	FALSE
+GA_L	gall	86	FBbt:00040060	90	/105/90/	3	FALSE
+OL	optic lobe	87	optic lobe	105	/105/	2	TRUE
+MB	mushroom body	88	mushroom body	105	/105/	2	TRUE
+CX	central complex	89	central complex	105	/105/	2	TRUE
+LX	lateral complex	90	lateral complex	105	/105/	2	TRUE
+VLNP	ventrolateral neuropils	91	ventrolateral neuropils	105	/105/	2	TRUE
+LH	lateral horn	92	lateral horn	105	/105/	2	TRUE
+SNP	superior neuropils	93	superior neuropils	105	/105/	2	TRUE
+INP	inferior neuropils	94	inferior neuropils	105	/105/	2	TRUE
+AL	antennal lobe	95	antennal lobe	105	/105/	2	TRUE
+VMNP	ventromedial neuropils	96	ventromedial neuropils	105	/105/	2	TRUE
+PENP	periesophageal neuropils	97	periesophageal neuropils	105	/105/	2	TRUE
+LOX	lobula complex	99	lobula complex	87	/105/87/	3	TRUE
+CB	central body	100	central body	89	/105/89/	3	TRUE
+VLP	ventrolateral protocerebrum	101	ventrolateral protocerebrum	91	/105/91/	3	TRUE
+CL	clamp	102	clamp	94	/105/94/	3	TRUE
+VX	ventral complex	103	ventral complex	96	/105/96/	3	TRUE
+PS	posterior slope	104	posterior slope	96	/105/96/	3	TRUE
+BR	brain	105	brain	105	/105/	1	TRUE
