@@ -13,6 +13,7 @@ plotBrainMap(
   smooth = TRUE,
   smoothness = 3,
   min_points = 5,
+  color_pal = NULL,
   show_labels = TRUE
 )
 }
@@ -32,6 +33,10 @@ plotBrainMap(
 \item{smoothness}{numeric, the smoothing to be used. Default is 3.}
 
 \item{min_points}{numeric, the minimum points to smooth polygons. Default is 5.}
+
+\item{color_pal}{character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}}
+
+\item{show_labels}{logical, should segmentation labels be showed? Default is \code{TRUE}}
 }
 \value{
 a `ggplot` plot in which structures are coloured according to a numeric value

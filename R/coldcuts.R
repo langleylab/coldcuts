@@ -6,7 +6,8 @@
 #' @param nrrd_file a character string pointing to the NRRD file address. Default is \code{NULL}
 #' @param array a 3D array containing structure annotations (optional if \code{nifti_file} and \code{molten_array} are not specified). Default is \code{NULL}
 #' @param molten_array an array in molten form, such as the result of \code{reshape2::melt()} (optional if \code{nifti_file} and \code{array} are not specified). Default is \code{NULL}
-#' @param ontology_file a character string pointing to the ontology .csv file address
+#' @param ontology an object containing the segmentation ontology (e.g. from another segmentation). Default is \code{NULL}
+#' @param ontology_file a character string pointing to the ontology .csv or .txt file address. Default is \code{NULL}
 #' @param outliers a numeric vector indicating outlier points to be eliminated before drawing polygons. Default is \code{NULL}
 #' @param verbose logical, should messages on the process be displayed? Default is \code{TRUE}
 #' @param directions_from character, indicates the original orientation of the array. Default is \code{"RAS"} (Left to Right, Posterior to Anterior, Inferior to Superior).
@@ -28,7 +29,8 @@ drawSegmentation <- function(nifti_file = NULL,
                              nrrd_file = NULL,
                              array = NULL,
                              molten_array = NULL,
-                             ontology_file,
+                             ontology = NULL,
+                             ontology_file = NULL,
                              outliers = NULL,
                              verbose = TRUE,
                              directions_from = "RAS",
@@ -45,12 +47,14 @@ drawSegmentation <- function(nifti_file = NULL,
   #Sanity checks
   if(!is.null(nrrd_file) & "nat" %nin% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
+  if (is.null(ontology) & is.null(ontology_file)) stop("Must provide at least an ontology or an ontology file.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
   if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_coronal) & class(subset_coronal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_axial) & class(subset_axial) != "numeric") stop("You must provide numeric indices to subset planes")
 
   if (verbose) cat("Adding ontology...")
+  if(!is.null(ontology_file) & is.null(ontology)) {
   if(grepl("\\.csv$", ontology_file)){
     read_fun <- read.csv
     read_sep = ","
@@ -60,6 +64,9 @@ drawSegmentation <- function(nifti_file = NULL,
   }
 
   ontology <- read_fun(ontology_file, header = TRUE, sep = read_sep)
+  } else if(is.null(ontology_file) & !is.null(ontology)) {
+    ontology = ontology
+  }
 
   missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(ontology))
 
@@ -541,9 +548,9 @@ plotSegmentation <- function(segmentation,
   all_str_polys_axes <- do.call(rbind, slicelist)
   all_str_polys_axes$structure <- all_str_polys_axes$structure
 
-  all_str_polys_axes$col <- segmentation@ontology[as.character(all_str_polys_axes$structure), "col"]
+  all_str_polys_axes$col <- ontology(segmentation)[as.character(all_str_polys_axes$structure), "col"]
 
-  all_str_polys_axes$acronym <- segmentation@ontology[as.character(all_str_polys_axes$structure), "acronym"]
+  all_str_polys_axes$acronym <- ontology(segmentation)[as.character(all_str_polys_axes$structure), "acronym"]
 
   # Color palette wrangling - several polygons have the same color, so this is necessary
   cols <- sapply(
@@ -664,6 +671,8 @@ plotSegmentation <- function(segmentation,
 #' @param smooth logical, should shapes be smoothed? Default is \code{TRUE}.
 #' @param smoothness numeric, the smoothing to be used. Default is 3.
 #' @param min_points numeric, the minimum points to smooth polygons. Default is 5.
+#' @param color_pal character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}
+#' @param show_labels logical, should segmentation labels be showed? Default is \code{TRUE}
 #'
 #' @return a `ggplot` plot in which structures are coloured according to a numeric value
 #'
@@ -678,6 +687,7 @@ plotBrainMap <- function(segmentation,
                          smooth = TRUE,
                          smoothness = 3,
                          min_points = 5,
+                         color_pal = NULL,
                          show_labels = TRUE){
 
   if(is.null(projection)) {
@@ -689,6 +699,8 @@ plotBrainMap <- function(segmentation,
   if(length(feature) > 1) stop("You can only one plot one feature at a time.")
   if(class(feature) != "character") stop("feature must be a character.")
   if(feature %nin% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
+
+  if(is.null(color_pal)) cpal = colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal = color_pal
 
   dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
   dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
@@ -735,11 +747,10 @@ plotBrainMap <- function(segmentation,
   p <- ggplot2::ggplot(dmp_all, aes(x = x, y = y, group = id, fill = gene_exp)) +
     geom_polygon(col = "black", size = 0.3) +
     facet_wrap(~dir) +
-    coord_fixed() +
     geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes(x = x, y = y, group = cluster), inherit.aes = FALSE, col = "black", fill = "NA") +
     theme_bw() +
     scale_fill_gradientn(na.value = "white",
-                         colours =  colorspace::sequential_hcl(palette = "Sunset", n = 25)) +
+                         colours = cpal) +
     labs(fill = feature) +
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank())
@@ -760,6 +771,130 @@ plotBrainMap <- function(segmentation,
       inherit.aes = FALSE
     )}
 
-  return(p)
+  return(p + coord_fixed())
 }
 
+#' Remove a projection from a segmentation
+#'
+#' Removes a named projection from a segmentation
+#'
+#' @param segmentation a \code{segmentation} class object.
+#' @param name character, name of the projection to be removed from the \code{segmentation} slot.
+#'
+#' @return a segmentation object without the named projection
+#'
+#' @export
+
+removeProjections <- function(segmentation,
+                              name) {
+  if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
+  if(name %nin% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  segmentation@projections[name] <- NULL
+  return(segmentation)
+}
+
+#' Plot a projection from a segmentation
+#'
+#' Plots a named projection from a segmentation using the ontology color schme
+#'
+#' @param segmentation a \code{segmentation} class object.
+#' @param plane characeter, name of the plane (one of `sagittal`, `coronal`, or `axial`)
+#' @param name character, name of the projection to be plotted from the \code{segmentation} slot.
+#' @param smooth logical, should polygons be smoothed? Default is \code{TRUE}
+#' @param smoothness numeric, the kernel bandwidth for kernel smoothing. Default is 3.
+#' @param show_labels logical, should structure acronyms be shown as labels? Default is \code{FALSE}
+#'
+#' @return a `ggplot` plot of the projection in both directions
+#'
+#' @export
+
+plotMaxProjection <- function(segmentation,
+                              plane,
+                              name,
+                              smooth = TRUE,
+                              smoothness = 3,
+                              show_labels = FALSE
+                              ){
+
+  if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
+  if(name %nin% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  if(plane %nin% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+
+  proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], buildPolygon))
+
+  centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
+    df <- proj_1[proj_1$structure == x,]
+    df <- df[df$id == df$id[which.max(table(df$id))],]
+    return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
+  })))
+
+  centers$structure <- unique(proj_1$structure)
+  centers$acronym <- ontology(segmentation)[centers$structure, "acronym"]
+  centers$col <- ontology(segmentation)[centers$structure, "col"]
+
+  if(smooth) proj_1 <- smoothPolygons(proj_1, by = "subid", smoothness = smoothness)
+  proj_1$dir <- names(projections(segmentation, name)[[plane]])[1]
+  centers$dir <- unique(proj_1$dir)
+
+  proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], buildPolygon))
+
+  centers2 <- as.data.frame(do.call(rbind, lapply(unique(proj_2$structure), function(x) {
+    df <- proj_2[proj_2$structure == x,]
+    df <- df[df$id == df$id[which.max(table(df$id))],]
+    return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
+  })))
+
+  centers2$structure <- unique(proj_2$structure)
+  centers2$acronym <- ontology(segmentation)[centers2$structure, "acronym"]
+  centers2$col <- ontology(segmentation)[centers2$structure, "col"]
+
+  if(smooth) proj_2 <- smoothPolygons(proj_2, by = "subid", smoothness = smoothness)
+  proj_2$dir <- names(projections(segmentation, name)[[plane]])[2]
+  centers2$dir <- unique(proj_2$dir)
+
+  proj_all <- rbind(proj_1, proj_2)
+  proj_all$acronym <- ontology(segmentation)[as.character(proj_all$structure), "acronym"]
+
+  centers_all <- rbind(centers, centers2)
+
+  cols_1 <- sapply(
+    unique(centers$acronym),
+    function(x) unique(centers[centers$acronym == x, "col"])
+  )
+
+  cols_1 <- as.character(cols_1[levels(factor(centers$acronym))])
+
+  cols_2 <- sapply(
+    unique(centers$acronym),
+    function(x) unique(centers[centers2$acronym == x, "col"])
+  )
+
+  cols_2 <- as.character(cols_2[levels(factor(centers2$acronym))])
+
+  p <- ggplot2::ggplot(proj_all, aes(x = x, y = y, group = id, fill = acronym)) +
+    geom_polygon(col = "black", size = 0.3) +
+    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes(x = x, y = y, group = cluster), inherit.aes = FALSE, col = "black", fill = "NA") +
+    theme_bw() +
+    scale_fill_manual(values = c(cols_1, "white")) +
+    theme(legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+
+  if(show_labels) {
+    p <- p + ggrepel::geom_text_repel(
+      data = centers_all,
+      aes(x = x, y = y, label = acronym),
+      color = "white",
+      segment.color = "black",
+      segment.size = 0.2,
+      bg.color = "black",
+      bg.r = 0.15,
+      alpha = 1,
+      box.padding = 0.6,
+      size = 2,
+      max.overlaps = Inf,
+      inherit.aes = FALSE
+    )}
+
+  return(p + facet_wrap(~dir) + coord_fixed())
+}

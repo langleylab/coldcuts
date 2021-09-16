@@ -9,7 +9,8 @@ drawSegmentation(
   nrrd_file = NULL,
   array = NULL,
   molten_array = NULL,
-  ontology_file,
+  ontology = NULL,
+  ontology_file = NULL,
   outliers = NULL,
   verbose = TRUE,
   directions_from = "RAS",
@@ -34,7 +35,9 @@ drawSegmentation(
 
 \item{molten_array}{an array in molten form, such as the result of \code{reshape2::melt()} (optional if \code{nifti_file} and \code{array} are not specified). Default is \code{NULL}}
 
-\item{ontology_file}{a character string pointing to the ontology .csv file address}
+\item{ontology}{an object containing the segmentation ontology (e.g. from another segmentation). Default is \code{NULL}}
+
+\item{ontology_file}{a character string pointing to the ontology .csv or .txt file address. Default is \code{NULL}}
 
 \item{outliers}{a numeric vector indicating outlier points to be eliminated before drawing polygons. Default is \code{NULL}}
 

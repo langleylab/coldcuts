@@ -81,6 +81,10 @@ setMethod("ontology", c(x = "segmentation"), function(x) {
 })
 
 setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
+  if(is.null(value)) stop("Segmentation objects must have an ontology")
+  if(class(value) != "data.frame") stop("The ontology must be of class `data.frame`")
+  missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(value))
+  if(length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
   x@ontology <- value
   x
 })
@@ -98,9 +102,22 @@ setGeneric("assays<-", function(x, value, name) {
 })
 
 setMethod("assays<-", c(x = "segmentation"), function(x, value, name) {
-  if(class(value) != "segmentationAssay") stop("Must provide a `segmentationAssay` type object")
-  x@assays$name <- value
+  if(class(value) != "segmentationAssay" & !is.null(value)) {
+    stop("Must provide a `segmentationAssay` type object")
+    x@assays$name <- value
+  } else if(is.null(value)) {
+    x@assays$name <- NULL
+  }
   x
+})
+
+
+setGeneric("projections", function(x, name) {
+  standardGeneric("projections")
+})
+
+setMethod("projections", c(x = "segmentation"), function(x, name) {
+  return(x@projections[[name]])
 })
 
 
