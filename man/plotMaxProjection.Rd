@@ -16,7 +16,7 @@ plotMaxProjection(
 \arguments{
 \item{segmentation}{a \code{segmentation} class object.}
 
-\item{plane}{characeter, name of the plane (one of `sagittal`, `coronal`, or `axial`)}
+\item{plane}{character, name of the plane (one of `sagittal`, `coronal`, or `axial`)}
 
 \item{name}{character, name of the projection to be plotted from the \code{segmentation} slot.}
 
@@ -30,5 +30,5 @@ plotMaxProjection(
 a `ggplot` plot of the projection in both directions
 }
 \description{
-Plots a named projection from a segmentation using the ontology color schme
+Plots a named projection from a segmentation using the ontology color scheme
 }

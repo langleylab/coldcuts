@@ -795,10 +795,10 @@ removeProjections <- function(segmentation,
 
 #' Plot a projection from a segmentation
 #'
-#' Plots a named projection from a segmentation using the ontology color schme
+#' Plots a named projection from a segmentation using the ontology color scheme
 #'
 #' @param segmentation a \code{segmentation} class object.
-#' @param plane characeter, name of the plane (one of `sagittal`, `coronal`, or `axial`)
+#' @param plane character, name of the plane (one of `sagittal`, `coronal`, or `axial`)
 #' @param name character, name of the projection to be plotted from the \code{segmentation} slot.
 #' @param smooth logical, should polygons be smoothed? Default is \code{TRUE}
 #' @param smoothness numeric, the kernel bandwidth for kernel smoothing. Default is 3.
@@ -897,4 +897,36 @@ plotMaxProjection <- function(segmentation,
     )}
 
   return(p + facet_wrap(~dir) + coord_fixed())
+}
+
+
+#' Get a specific slice from a segmentation
+#'
+#' Renders a slice from a plane of a segmentation as a data frame
+#'
+#' @param segmentation a \code{segmentation} class object.
+#' @param plane character, name of the plane (one of `sagittal`, `coronal`, or `axial`)
+#' @param slice numeric or character, the slice number. If numeric, it will be used as index of the slice. If character, it will be the slice as named in the segmentation.
+#' @param fill logical, should the function return just the polygon vertices or all voxels? Default is \code{FALSE}.
+#'
+#' @return a `data.frame` containing the x y coordinates for all points within the slice (filled polygons)
+#'
+#' @export
+
+getSlice <- function(segmentation,
+                     plane,
+                     slice,
+                     fill = FALSE) {
+
+  if(plane %nin% c("sagittal", "coronal", "axial")) stop("The plane argument must be one of \"sagittal\", \"coronal\" or \"axial\".")
+  if(plane %nin% names(segmentation@slices)) stop(paste0("the ", plane, " plane was not found in this segmentation."))
+  if(class(slice) == "numeric" & length(segmentation@slices[[plane]]) < slice) stop(paste0("Slice ", slice, " is higher than total amount of slices for this plane"))
+  if(class(slice) == "character" & slice %nin% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
+
+  if(fill)  {
+    df <- do.call(rbind, lapply(seg@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) fillPolygon(buildPolygon(y))))))
+  } else {
+    df <- do.call(rbind, lapply(seg@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) buildPolygon(y)))))
+  }
+  return(df)
 }
