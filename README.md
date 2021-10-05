@@ -1,9 +1,13 @@
 
  
+<<<<<<< HEAD
 <!-- badges: start -->
   [![](https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg)](https://github.com/langleylab/coldcuts)
   [![R-CMD-check](https://github.com/langleylab/coldcuts/workflows/R-CMD-check/badge.svg)](https://github.com/langleylab/coldcuts/actions)
   <!-- badges: end -->
+=======
+[![](https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg)](https://github.com/langleylab/coldcuts)
+>>>>>>> b4c926471b51132941acbcfed1f453d25cded7ea
 <img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200" />
 
 # coldcuts 
