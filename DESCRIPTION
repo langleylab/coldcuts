@@ -11,20 +11,24 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    colorspace,
     data.table,
     freesurferformats,
     future.apply,
     ggplot2,
     ggraph,
     ggrepel,
+    igraph,
     isoband,
+    methods,
     oro.nifti,
     polylabelr,
     qualpalr,
     reshape2,
+    scales,
     smoothr,
     splancs,
     tidygraph
 Suggests:
     nat
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

@@ -3,9 +3,9 @@
 \docType{class}
 \name{segPointSet-class}
 \alias{segPointSet-class}
-\title{S4 class representing a segmentation point set}
+\title{Segmentation point set class}
 \description{
-Holds all the data necessary to build a set of polygons via `buildPolygon` in order to be plotted.
+S4 class holding all the data necessary to build a set of polygons via `buildPolygon` in order to be plotted.
 }
 \section{Slots}{
 

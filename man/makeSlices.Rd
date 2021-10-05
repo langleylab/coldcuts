@@ -4,7 +4,7 @@
 \alias{makeSlices}
 \title{Make slices}
 \usage{
-makeSlices(M, plane = "sagittal", return = "structures", parallel = FALSE)
+makeSlices(M, plane = "sagittal", return = "structures")
 }
 \arguments{
 \item{M}{a data frame molten from a 3D array in long format, with x, y and z columns as \code{"Var1"}, \code{"Var2"}, \code{"Var3"} and the value column containing the voxel annotation}

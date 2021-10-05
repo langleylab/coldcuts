@@ -9,6 +9,8 @@ smoothPolygons(polygon_set, by = "subid", smoothness = 3, min_points = 5)
 \arguments{
 \item{polygon_set}{a data frame containing polygons, separated by `subid`}
 
+\item{by}{a character containing the name of the column grouping polygons to be smoothed. Default is \code{subid}}
+
 \item{smoothness}{a numeric indicating the smoothing parameter, passed to `smooth_ksmooth`}
 
 \item{min_points}{a numeric indicating the minimum number of points to smooth. If a polygon has less than this number of points, it is not smoothed.}

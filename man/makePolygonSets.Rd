@@ -8,6 +8,10 @@ makePolygonSets(structure_list, parallel = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{structure_list}{a list of point sets divided by structure}
+
+\item{parallel}{logical, should the drawing be done using multithreading? Uses the `future.apply` backend. Default is \code{NULL}}
+
+\item{verbose}{logical, should messages about the process be printed? Default is \code{FALSE}}
 }
 \value{
 A nested list containing ordered coordinates of points for every polygon for every structure in every slice, each point with an identifier for its grouping and hole status.

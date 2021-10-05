@@ -3,9 +3,9 @@
 \docType{class}
 \name{segmentationAssay-class}
 \alias{segmentationAssay-class}
-\title{S4 class representing an assay associated with a segmentation}
+\title{segmentationAssay class}
 \description{
-Holds numerical values for features in samples, and provides a one-to-many mapping for every sample to one or more structures
+S4 class holding numerical values for features in samples, and a one-to-many mapping for every sample to one or more structures
 }
 \section{Slots}{
 

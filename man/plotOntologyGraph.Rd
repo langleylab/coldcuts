@@ -4,12 +4,12 @@
 \alias{plotOntologyGraph}
 \title{Plot the ontology graph}
 \usage{
-plotOntologyGraph(seg, circular = TRUE)
+plotOntologyGraph(segmentation, circular = TRUE)
 }
 \arguments{
-\item{circular}{a logical indicating whether the layout should be circular}
+\item{segmentation}{a \code{segmentation} class object}
 
-\item{o}{a data frame containing the ontology/tree}
+\item{circular}{a logical indicating whether the layout should be circular}
 }
 \value{
 a `ggplot` object with the graph

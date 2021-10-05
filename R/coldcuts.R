@@ -13,6 +13,7 @@
 #' @param directions_from character, indicates the original orientation of the array. Default is \code{"RAS"} (Left to Right, Posterior to Anterior, Inferior to Superior).
 #' @param directions_to character, indicates the final orientation of the array. The array is rotated only if it is different from \code{directions_from}. Default is \code{"RAS"}, which results in the proper assignment of axis labels.
 #' @param planes character, either \code{"all"} (default) or any subset of \code{"sagittal"}, \code{"coronal"}, and \code{"axial"}. Determines along which axes the array wil be sliced.
+#' @param subset_structures character vector, structures to be subset for the segmentation. Default is \code{NULL}
 #' @param draw_outline logical, should the outline of the whole array be drawn? Default is `TRUE`
 #' @param subset_sagittal numeric vector, indicates a subset of slices along the sagittal plane that will be drawn. Default is \code{NULL}
 #' @param subset_coronal numeric vector, indicates a subset of slices along the coronal plane that will be drawn. Default is \code{NULL}
@@ -45,7 +46,7 @@ drawSegmentation <- function(nifti_file = NULL,
                              citation = NULL,
                              parallel = TRUE) {
   #Sanity checks
-  if(!is.null(nrrd_file) & "nat" %nin% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
+  if(!is.null(nrrd_file) & !"nat" %in% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
   if (is.null(ontology) & is.null(ontology_file)) stop("Must provide at least an ontology or an ontology file.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
@@ -76,7 +77,7 @@ drawSegmentation <- function(nifti_file = NULL,
   ontology$id <- as.character(ontology$id)
   rownames(ontology) <- ontology$id
 
-  if(any(subset_structures %nin% ontology$id)) {
+  if(any(!subset_structures %in% ontology$id)) {
     stop(paste0("Subset structures ", paste(setdiff(subset_structures, ontology$id), collapse = ", "), " were not found in the ontology. \n Make sure you are using the correct ontology for this volume, or subsetting the right structures." ))
   }
   if (verbose) cat("done.\n")
@@ -152,7 +153,7 @@ drawSegmentation <- function(nifti_file = NULL,
     if (verbose) cat("done.\n")
   }
 
-  if(any(unique(M$value) %nin% ontology$id)) {
+  if(any(!unique(M$value) %in% ontology$id)) {
     missing_strs <- setdiff(unique(M$value), ontology$id)
     max <- min(c(10, length(missing_strs)))
     if(length(missing_strs) > 10) error_add_str <- paste0(" and ", length(missing_strs) - 10, " more ") else error_add_str <- ""
@@ -266,9 +267,25 @@ drawSegmentation <- function(nifti_file = NULL,
 }
 
 
+#' Change array directions
+#'
+#' Rotates the array so that it goes from one orientation to another. Currently supports PIR, RAS and LPS. Depends on \code{freesurferformats}.
+#'
+#' @param array a 3D array containing voxel data.
+#' @param from character, a 3-word direction code that the array is in. One of \code{PIR}, \code{RAS}, or \code{LPS}.
+#' @param to character, a 3-word direction code that the array will be rotated to. One of \code{PIR}, \code{RAS}, or \code{LPS}.
+#'
+#' @return a 3D array rotated according to original and destination directions
+#'
+#' @export
+
 changeDirections <- function(array,
                              from = "PIR",
                              to = "RAS") {
+
+  if(!from %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument from: PIR, RAS, LPS")
+  if(!to %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument to: PIR, RAS, LPS")
+
   if (from == "PIR" & to == "RAS") {
     array_rot <- freesurferformats::rotate3D(freesurferformats::rotate3D(array, axis = 1, degrees = 90), axis = 3, degrees = 90)
   }
@@ -306,14 +323,14 @@ sliceCheck <- function(structures,
                        segmentation,
                        planes) {
   structures <- as.character(structures)
-  if(any(structures %nin% unique(do.call(rbind, segmentation@structure_tables)$structure))) {
+  if(any(!structures %in% unique(do.call(rbind, segmentation@structure_tables)$structure))) {
     not_found <- setdiff(structures, unique(do.call(rbind, segmentation@structure_tables)$structure))
     stop("Structure(s) ", paste(not_found, collapse = ", "), " not found in this segmentation.
   Perhaps there is a typo? Check `metaData(segmentation)` and/or `segmentation@structure_tables` to see the available structures.")
   }
 
   structure_by_plane <- lapply(planes, function(x) {
-    unique(segmentation@structure_tables[[x]][structure %in% structures,slice])
+    unique(segmentation@structure_tables[[x]][structure %in% structures, "slice"])
   })
   names(structure_by_plane) <- planes
   return(structure_by_plane)
@@ -324,6 +341,7 @@ sliceCheck <- function(structures,
 #' Uses kernel smoothing to smooth polygon sets
 #'
 #' @param polygon_set a data frame containing polygons, separated by `subid`
+#' @param by a character containing the name of the column grouping polygons to be smoothed. Default is \code{subid}
 #' @param smoothness a numeric indicating the smoothing parameter, passed to `smooth_ksmooth`
 #' @param min_points a numeric indicating the minimum number of points to smooth. If a polygon has less than this number of points, it is not smoothed.
 #'
@@ -360,19 +378,13 @@ smoothPolygons <- function(polygon_set,
   return(smooth_df)
 }
 
-#' Not in
-#'
-#' The opposite of `%in%`
-#'
-#' @return a logical value indicating which elements are NOT included in the input
-
-`%nin%` <- Negate(`%in%`)
 
 #' Draw maximum outline
 #'
 #' Draws a polygon obtained by projecting all polygons on the plane
 #'
 #' @param M a molten array (of class `data.table`) containing coordinates
+#' @param plane character, one of "sagittal", "coronal", "axial"
 #'
 #' @return a data frame containing ordered coordinates for the outline polygon
 #'
@@ -380,6 +392,7 @@ smoothPolygons <- function(polygon_set,
 
 drawOutline <- function(M,
                         plane) {
+
   switch(plane,
          "sagittal" = {
            uc <- 1
@@ -400,7 +413,7 @@ drawOutline <- function(M,
   )
 
   columns <- c(xc, yc)
-  df <- M[, ..columns]
+  df <- M[, columns, with = FALSE]
   df <- df[!duplicated(df[, 1:2]), ]
   colnames(df) <- c("x", "y")
   outline <- makePolygon(df)
@@ -411,16 +424,16 @@ drawOutline <- function(M,
 #'
 #' Creates a `ggplot` plot of the ontology graph/tree
 #'
-#' @param o a data frame containing the ontology/tree
+#' @param segmentation a \code{segmentation} class object
 #' @param circular a logical indicating whether the layout should be circular
 #'
 #' @return a `ggplot` object with the graph
 #'
 #' @export
 
-plotOntologyGraph <- function(seg,
+plotOntologyGraph <- function(segmentation,
                               circular = TRUE) {
-  o <- ontology(seg)
+  o <- ontology(segmentation)
   cols <- o$col
   names(cols) <- o$acronym
 
@@ -438,8 +451,8 @@ plotOntologyGraph <- function(seg,
 
   p <- ggraph(g, "dendrogram", circular = circular) +
     geom_edge_elbow() +
-    geom_node_point(aes(fill = name), shape = 21, color = "black", size = 8) +
-    geom_node_text(aes(label = name), color = "black", size = 2) +
+    geom_node_point(aes_string(fill = "name"), shape = 21, color = "black", size = 8) +
+    geom_node_text(aes_string(label = "name"), color = "black", size = 2) +
     scale_fill_manual(values = cols) +
     theme(legend.position = "none")
 
@@ -564,7 +577,7 @@ plotSegmentation <- function(segmentation,
   p <- ggplot() +
     geom_polygon(
       data = all_str_polys_axes,
-      aes(x = x, y = y, group = id, subgroup = subid, fill = acronym),
+      aes_string(x = "x", y = "y", group = "id", subgroup = "subid", fill = "acronym"),
       color = "black"
     ) +
     scale_fill_manual(values = c(cols, "white")) +
@@ -604,13 +617,13 @@ plotSegmentation <- function(segmentation,
 
     p <- p +
       geom_vline(
-        data = rulers, aes(xintercept = xi),
+        data = rulers, aes_string(xintercept = "xi"),
         linetype = "dashed",
         color = "gray",
         size = 0.5
       ) +
       geom_hline(
-        data = rulers, aes(yintercept = yi),
+        data = rulers, aes_string(yintercept = "yi"),
         linetype = "dashed",
         color = "gray",
         size = 0.5
@@ -631,7 +644,7 @@ plotSegmentation <- function(segmentation,
     all_outlines <- do.call(rbind, outlines)
     p <- p + geom_polygon(
       data = all_outlines,
-      aes(x = x, y = y, group = cluster),
+      aes_string(x = "x", y = "y", group = "cluster"),
       col = "black",
       fill = "NA"
     )
@@ -642,7 +655,7 @@ plotSegmentation <- function(segmentation,
   if (show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_axes,
-      aes(x = x, y = y, label = acronym),
+      aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.3,
@@ -698,7 +711,7 @@ plotBrainMap <- function(segmentation,
   }
   if(length(feature) > 1) stop("You can only one plot one feature at a time.")
   if(class(feature) != "character") stop("feature must be a character.")
-  if(feature %nin% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
+  if(!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
 
   if(is.null(color_pal)) cpal = colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal = color_pal
 
@@ -744,10 +757,10 @@ plotBrainMap <- function(segmentation,
 
   dmp_all$gene_exp <- as.numeric(struct_df[dmp_all$structure, "gene_expression"])
 
-  p <- ggplot2::ggplot(dmp_all, aes(x = x, y = y, group = id, fill = gene_exp)) +
+  p <- ggplot2::ggplot(dmp_all, aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
     geom_polygon(col = "black", size = 0.3) +
     facet_wrap(~dir) +
-    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes(x = x, y = y, group = cluster), inherit.aes = FALSE, col = "black", fill = "NA") +
+    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
     theme_bw() +
     scale_fill_gradientn(na.value = "white",
                          colours = cpal) +
@@ -758,7 +771,7 @@ plotBrainMap <- function(segmentation,
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_all,
-      aes(x = x, y = y, label = acronym),
+      aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.2,
@@ -788,7 +801,7 @@ plotBrainMap <- function(segmentation,
 removeProjections <- function(segmentation,
                               name) {
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
-  if(name %nin% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   segmentation@projections[name] <- NULL
   return(segmentation)
 }
@@ -817,8 +830,8 @@ plotMaxProjection <- function(segmentation,
                               ){
 
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
-  if(name %nin% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
-  if(plane %nin% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
 
   proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], buildPolygon))
 
@@ -871,9 +884,9 @@ plotMaxProjection <- function(segmentation,
 
   cols_2 <- as.character(cols_2[levels(factor(centers2$acronym))])
 
-  p <- ggplot2::ggplot(proj_all, aes(x = x, y = y, group = id, fill = acronym)) +
+  p <- ggplot2::ggplot(proj_all, aes_string(x = "x", y = "y", group = "id", fill = "acronym")) +
     geom_polygon(col = "black", size = 0.3) +
-    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes(x = x, y = y, group = cluster), inherit.aes = FALSE, col = "black", fill = "NA") +
+    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
     theme_bw() +
     scale_fill_manual(values = c(cols_1, "white")) +
     theme(legend.position = "none",
@@ -883,7 +896,7 @@ plotMaxProjection <- function(segmentation,
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_all,
-      aes(x = x, y = y, label = acronym),
+      aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.2,
@@ -918,15 +931,15 @@ getSlice <- function(segmentation,
                      slice,
                      fill = FALSE) {
 
-  if(plane %nin% c("sagittal", "coronal", "axial")) stop("The plane argument must be one of \"sagittal\", \"coronal\" or \"axial\".")
-  if(plane %nin% names(segmentation@slices)) stop(paste0("the ", plane, " plane was not found in this segmentation."))
+  if(!plane %in% c("sagittal", "coronal", "axial")) stop("The plane argument must be one of \"sagittal\", \"coronal\" or \"axial\".")
+  if(!plane %in% names(segmentation@slices)) stop(paste0("the ", plane, " plane was not found in this segmentation."))
   if(class(slice) == "numeric" & length(segmentation@slices[[plane]]) < slice) stop(paste0("Slice ", slice, " is higher than total amount of slices for this plane"))
-  if(class(slice) == "character" & slice %nin% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
+  if(class(slice) == "character" & !slice %in% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
 
   if(fill)  {
-    df <- do.call(rbind, lapply(seg@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) fillPolygon(buildPolygon(y))))))
+    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) fillPolygon(buildPolygon(y))))))
   } else {
-    df <- do.call(rbind, lapply(seg@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) buildPolygon(y)))))
+    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) buildPolygon(y)))))
   }
   return(df)
 }

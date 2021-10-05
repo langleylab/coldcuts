@@ -8,6 +8,8 @@ drawOutline(M, plane)
 }
 \arguments{
 \item{M}{a molten array (of class `data.table`) containing coordinates}
+
+\item{plane}{character, one of "sagittal", "coronal", "axial"}
 }
 \value{
 a data frame containing ordered coordinates for the outline polygon

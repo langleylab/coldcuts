@@ -49,6 +49,8 @@ drawSegmentation(
 
 \item{planes}{character, either \code{"all"} (default) or any subset of \code{"sagittal"}, \code{"coronal"}, and \code{"axial"}. Determines along which axes the array wil be sliced.}
 
+\item{subset_structures}{character vector, structures to be subset for the segmentation. Default is \code{NULL}}
+
 \item{draw_outline}{logical, should the outline of the whole array be drawn? Default is `TRUE`}
 
 \item{subset_sagittal}{numeric vector, indicates a subset of slices along the sagittal plane that will be drawn. Default is \code{NULL}}

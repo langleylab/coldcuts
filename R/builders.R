@@ -27,15 +27,14 @@ buildPolygon <- function(seg_point_set) {
 #' @param M a data frame molten from a 3D array in long format, with x, y and z columns as \code{"Var1"}, \code{"Var2"}, \code{"Var3"} and the value column containing the voxel annotation
 #' @param plane character, one of \code{"sagittal"}, \code{"coronal"}, or \code{"axial"}. The plane along which to slice the array. Default is \code{"sagittal"}
 #' @param return character, one of \code{"planes"} or \code{"structures"}. Decides whether the returning object is a list of planes, or a nested list of structures (i.e. data frames divided by unique \code{value} values). Default is \code{"structures"}.
-#'
 #' @return A list of planes, one per slice (if `return` is set to \code{"planes"}), or a list of lists of structures, one list per slice
 #'
 #' @export
 
 makeSlices <- function(M,
                        plane = "sagittal",
-                       return = "structures",
-                       parallel = FALSE) {
+                       return = "structures") {
+
   switch(plane,
          "sagittal" = {
            uc <- 1
@@ -60,12 +59,12 @@ makeSlices <- function(M,
   columns <- c(xc, yc, uc, 4)
 
   for (i in seq_len(length(axis_plane))) {
-    axis_plane[[i]] <- axis_plane[[i]][, ..columns]
+    axis_plane[[i]] <- axis_plane[[i]][, columns, with = FALSE]
     colnames(axis_plane[[i]]) <- c("x", "y", "slice", "structure")
   }
 
   # Naming slices and ordering
-  names(axis_plane) <- unique(M[, ..uc])[[1]]
+  names(axis_plane) <- unique(M[, uc, with = FALSE])[[1]]
   axis_plane <- axis_plane[order(as.numeric(names(axis_plane)))]
 
   if (return == "planes") {
@@ -182,7 +181,7 @@ fillPolygon <- function(point_set,
 
 makePolygon <- function(point_set,
                         step_size = 1) {
-  if ("x" %nin% colnames(point_set) | "y" %nin% colnames(point_set)) stop("point_set must have columns named \"x\" and \"y\"")
+  if (!"x" %in% colnames(point_set) | !"y" %in% colnames(point_set)) stop("point_set must have columns named \"x\" and \"y\"")
 
   m <- t(reshape2::acast(boundingBox(point_set, step_size = step_size), formula = x ~ y))
 
@@ -196,7 +195,7 @@ makePolygon <- function(point_set,
 
   if ("slice" %in% colnames(point_set)) ib_df$slice <- unique(point_set$slice)
 
-  ib_df <- ib_df[which(ib_df$x %nin% range(ib_df$x) & ib_df$y %nin% range(ib_df$y)), ]
+  ib_df <- ib_df[which(!ib_df$x %in% range(ib_df$x) & !ib_df$y %in% range(ib_df$y)), ]
 
   ib_df$x <- ib_df$x + min(point_set$x) - 2
   ib_df$y <- ib_df$y + min(point_set$y) - 2
@@ -230,7 +229,7 @@ subsetByStructures <- function(segmentation,
                                planes = planes_chosen)
 
   segmentation@slices <- lapply(planes_chosen, function(x) {
-    segmentation@slices[[x]] <- segmentation@slices[[x]][as.character(which_slice_ok[[x]])]
+    segmentation@slices[[x]] <- segmentation@slices[[x]][as.character(which_slice_ok[[x]]$slice)]
     segmentation@slices[[x]] <- lapply(segmentation@slices[[x]], function(y) y[structures])
   })
 
@@ -357,6 +356,8 @@ addMaxProjection <- function(name,
 #' Creates a list of polygons for every structure in every slice
 #'
 #' @param structure_list a list of point sets divided by structure
+#' @param parallel logical, should the drawing be done using multithreading? Uses the `future.apply` backend. Default is \code{NULL}
+#' @param verbose logical, should messages about the process be printed? Default is \code{FALSE}
 #'
 #' @return A nested list containing ordered coordinates of points for every polygon for every structure in every slice, each point with an identifier for its grouping and hole status.
 #'
@@ -542,4 +543,24 @@ makeOntologyPalettes <- function(o,
   if (any(o$col == default_col)) warning(paste0("The following nodes will not be coloured: ", paste(o$acronym[o$col == default_col], collapse = ", ")))
 
   return(o$col)
+}
+
+#' Assay setter
+#'
+#' Function to set the \code{assays} slot in \code{segmentation} class objects
+#' @param segmentation a \code{segmentation} class object
+#' @param assay a \code{segmentationAssay} class object
+#' @param name character, the name of the assay
+#' @export
+
+addAssay <- function(segmentation,
+                    assay,
+                    name) {
+  if(class(assay) != "segmentationAssay" & !is.null(assay)) {
+    stop("Must provide a `segmentationAssay` type object")
+    segmentation@assays$name <- assay
+  } else if(is.null(assay)) {
+    segmentation@assays$name <- NULL
+  }
+  return(segmentation)
 }
