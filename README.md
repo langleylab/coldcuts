@@ -1,13 +1,15 @@
+
+ 
 [![](https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg)](https://github.com/langleylab/coldcuts)
+<img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200" />
 
-# coldcuts
+# coldcuts 
 
-<img src = "https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" width=200>
-
-## Introduction
 **`coldcuts`** is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
 
 The name is inspired by one of Italy's best products.
+
+## Introduction
 
 Voxel arrays can come in different forms, either as NIfTI files, NRRD files, RAW files or directly imported in R as such.
 
@@ -147,7 +149,7 @@ These values can be found [here](https://www.gtexportal.org/home/datasets), in p
 
 ```{r}
 # read the table
-gtex <- read.table("./data/gtex_tpm.gct", header = TRUE, sep = "\t")
+gtex <- read.table("./data/gtex_tpm.gct", header = TRUE, sep = "\t", skip = 2)
 
 # subsetting and wrangling names
 gtex <- gtex[,c(1, 2, grep("Brain", colnames(gtex)))]
@@ -168,7 +170,7 @@ Once the table is subsetted and readable, we map samples to structural IDs creat
 brain_regions <- list()
 
 brain_regions[["Amygdala"]] <- ontology(seg)[grep(pattern  ="amyg",
-                                                         x = ontology(test2)$name), "id"]
+                                                         x = ontology(seg)$name), "id"]
 
 brain_regions[["Cortex"]] <- ontology(seg)[grep(pattern  = "frontal",
                                                        x = ontology(seg)$name), "id"]
@@ -207,8 +209,9 @@ gtexAssay <- new("segmentationAssay",
                  values = as.matrix(gtex[,3:ncol(gtex)]),
                  mapping = brain_regions)
 
-# placeholder until the getter and setter functions are written
-seg@assays <- list("gtex" = gtexAssay)
+assays(seg) <- addAssay(segmentation = seg, 
+                        assay = gtexAssay, 
+                        name = "gtex")
 
 ```
 
@@ -220,7 +223,7 @@ Structures can be subset for maximum projections, since using all structures may
 
 ```{r}
 
-structures_chosen <- unlist(seg@assays$gtex@mapping)
+structures_chosen <- unlist(assays(seg)$gtex@mapping)
 structures_chosen <- intersect(structures_chosen, metaData(seg)$structures)
 
 seg <- addMaxProjection(name = "gtex", 
