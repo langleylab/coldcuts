@@ -18,9 +18,9 @@ language such as R which does not have trivial implementations for the visualiza
 
 To bridge this gap, some R packages have been recently published:
 
- - [https://github.com/ggseg/ggseg](ggseg) by Athanasia Mo Mowinckel and Didac Vidal-Piñeiro
- - [https://github.com/ethanbahl/cerebroViz](cerebroViz) by Ethan Bahl, Tanner Koomar, and Jacob J Michaelson
- - [https://github.com/dfsp-spirit/fsbrain](fsbrain) by Tim Schäfer and Christine Ecker
+ - [ggseg](https://github.com/ggseg/ggseg) by Athanasia Mo Mowinckel and Didac Vidal-Piñeiro
+ - [cerebroViz](https://github.com/ethanbahl/cerebroViz) by Ethan Bahl, Tanner Koomar, and Jacob J Michaelson
+ - [fsbrain](https://github.com/dfsp-spirit/fsbrain) by Tim Schäfer and Christine Ecker
 
 **`ggseg`** and **`cerebroviz`** offer 2D (and 3D in the case of **`ggseg3d`**) visualizations of human brain segmentations, with the possibility of integration with external datasets. These segmentations are manually curated, which means that new datasets must be manually inserted, and they are limited to the human brain in scope. **`ggseg`** in particular has made available several segmentations of human cortical surface atlases. 
 **`fsbrain`** focuses on 3D visualization of human MRI data with external data integration and visualization in both native space and transformed spaces. It does not depend on manually curated datastes (beyond segmentations).
