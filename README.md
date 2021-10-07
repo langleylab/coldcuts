@@ -55,7 +55,7 @@ devtools::install_github("langleylab/coldcuts")
 
 In this package we refer to 2 different types of operations: **drawing** is the procedure which effectively constructs polygons, whereas **plotting** consists in creating plots where polygons are selected and coloured according to user-defined rules.
 
-Therefore the creation of a `segmentation` object is achieved by calling `drawSegmentation()`. 
+Therefore the creation of a `segmentation` object is achieved by calling `seg_draw()`. 
 
 To use this function we need to have access to 2 files: the voxel array and the ontology table. We then have to instruct the function on whether array rotations are required, and add other types of metadata on the fly.
 In this example, **after cloning the git repository**, we use the `annotation.nii.gz` file from the Allen Institute for Brain Sciences, containing a 500&mu;-spaced voxel array with 141 annotated structures. We add the ontology file `allen_human_ontology.csv` as well, both of which can be found in the `data` folder of this repository.
@@ -115,7 +115,7 @@ head(ontology(seg))
 
 This ontology was downloaded from the Allen Brain Atlas API, and it contains several pieces of information that we will not need. However, we do need the `id`, `name`, `acronym`, `parent_structure_id`, `structure_id_path` and `col` fields.
 
-Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. "hipothalamus" as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using `plotOntologyGraph()`:
+Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. "hipothalamus" as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using `ontology_plot()`:
 
 ```{r}
 ontology_plot(seg)
@@ -244,7 +244,7 @@ Structures can be subset for maximum projections, since using all structures may
 ```{r}
 
 structures_chosen <- unlist(assays(seg)$gtex@mapping)
-structures_chosen <- intersect(structures_chosen, metaData(seg)$structures)
+structures_chosen <- intersect(structures_chosen, seg)metadata(seg)$structures)
 
 seg <- seg_projection_add(name = "gtex", 
                         segmentation = seg, 
