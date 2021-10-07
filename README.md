@@ -289,3 +289,28 @@ The main workhorse of this package is its own S4 class, `segmentation`, which ho
 - **assays** is a list of `segmentationAssay` objects, another S4 class that holds numerical `values` - such as gene counts - sample metadata (`sampledata`) and most importantly a one-to-many `mapping` of structures to the relevant samples. 
 - **metadata** is a list of various types of information regarding the segmentation, such as the file name, orientation, pixel/voxel dimension, original citation, reference space, etc. Most of these are manually compiled by the user, although an attempt is made at extracting some of them from a file containing this information in its header (e.g. NiFTi).
 - **structure_tables** is a list of data.tables, one per anatomical axis, which is used by some internal functions to check which slices contain which structures.
+
+## Some `coldcuts` grammar
+
+We have written functions according to a consistent grammar, where the object (e.g. **`seg`**) is followed by a verb (e.g. **`plot`**) separated by an underscore. Users should mostly be using `seg_*` functions, which contain higher level executions. This should make the usage easier and more intuitive.
+Details for each function are in the manual, but we summarize some of them below:
+
+For `segmentation` class objects we have:
+
+- `seg_draw()`: creates the whole `segmentation` class object from inputs
+- `seg_plot()`: plots a set of slices from a `segmentation` class object
+- `seg_feature_plot()`: plots a feature (e.g. a gene expression value) taken from the `assay` slot and using a given `projection` 
+- `seg_slice_check()`: checks which slices in each plane contain given structure IDs
+- `seg_get_slice()`: renders a specific slice from a as a data frame
+- `seg_projection_add()` and `seg_projection_remove()`: create or remove a maximum projection within a `segmentation` class object
+- `seg_projection_plote()`: plot a projection using structure label colors, on both sides
+- `seg_sub_str()`: subset a `segmentation` class object retaining only specific structure IDs
+- `seg_assay_add()`: add a `segmentationAssay` class object to a `segmentation` class object
+
+For more low-level operations on polygons, we have:
+
+- `poly_make()`: uses 2D marching squares to create a polygon (or group of polygons) from a grid of points
+- `poly_set_make()`: creates a `segPointSet` given a list of slices separated by structures, running `poly_make()` but also calculating holes 
+- `poly_build()`: creates a data frame containing coordinates and other information from a `segPointSet` object. Useful for plotting single polygons.
+- `poly_fill()`: creates a filled data frame containing coordinates for all points enclosed within a polygon
+- `poly_smooth()`: creates smooth polygon contours using kernel smoothing

@@ -280,8 +280,8 @@ seg_draw <- function(nifti_file = NULL,
 #' @export
 
 dir_change <- function(array,
-                             from = "PIR",
-                             to = "RAS") {
+                       from = "PIR",
+                       to = "RAS") {
 
   if(!from %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument from: PIR, RAS, LPS")
   if(!to %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument to: PIR, RAS, LPS")
