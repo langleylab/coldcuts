@@ -3,9 +3,6 @@
   [![R-CMD-check](https://github.com/langleylab/coldcuts/workflows/R-CMD-check/badge.svg)](https://github.com/langleylab/coldcuts/actions)
 <!-- badges: end -->
 
-[![](https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg)](https://github.com/langleylab/coldcuts)
-
-
 <img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200" />
 
 # coldcuts 
@@ -13,6 +10,24 @@
 **`coldcuts`** is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
 
 The name is inspired by one of Italy's best products.
+
+## Motivation
+
+When dealing with neuroimaging data, or any other type of numerical data derived from brain tissues, it is important to situate it in its anatomical and structural context. Various authors provide parcellations or segmentations of the brain, according to their best interpretation of which functional and anatomical boundaries make sense for our understanding of the brain. There are several stand-alone tools that allow to visualize and manipulate segmentations. However, neuroimaging data, together with other functional data such as transcriptomics, is often manipulated in a statistical programming
+language such as R which does not have trivial implementations for the visualization of segmentations.
+
+To bridge this gap, some R packages have been recently published:
+
+ - [https://github.com/ggseg/ggseg](ggseg) by Athanasia Mo Mowinckel and Didac Vidal-Piñeiro
+ - [https://github.com/ethanbahl/cerebroViz](cerebroViz) by Ethan Bahl, Tanner Koomar, and Jacob J Michaelson
+ - [https://github.com/dfsp-spirit/fsbrain](fsbrain) by Tim Schäfer and Christine Ecker
+
+**`ggseg`** and **`cerebroviz`** offer 2D (and 3D in the case of **`ggseg3d`**) visualizations of human brain segmentations, with the possibility of integration with external datasets. These segmentations are manually curated, which means that new datasets must be manually inserted, and they are limited to the human brain in scope. **`ggseg`** in particular has made available several segmentations of human cortical surface atlases. 
+**`fsbrain`** focuses on 3D visualization of human MRI data with external data integration and visualization in both native space and transformed spaces. It does not depend on manually curated datastes (beyond segmentations).
+
+While these tools provide a wealth of beautiful visualization interfaces, we felt the need to implement a tool to systematically create 2D (and potentially 3D) objects that are easily shared and manipulated in R, with the addition of labels, external datasets and simple operations such as subsetting and projecting, with minimal need for manual curation and without limiting ourselves to a particular species. 
+
+Thus, **`coldcuts`** is our attempt at bridging the gap between imaging/high throughput brain data and R through data visualization.
 
 ## Introduction
 
@@ -47,7 +62,7 @@ In this example, **after cloning the git repository**, we use the `annotation.ni
 We add the MNI152 reference space to the metadata. Since this NIfTI file has already some relevant information in its header, the function will add it for us.
 
 ```{r}
-seg <- drawSegmentation(nifti_file = "./data/annotation.nii.gz", 
+seg <- seg_draw(nifti_file = "./data/annotation.nii.gz", 
                         ontology_file = "./data/allen_human_ontology.csv",
                         reference_space = "MNI152",
                         verbose = FALSE)
@@ -103,7 +118,7 @@ This ontology was downloaded from the Allen Brain Atlas API, and it contains sev
 Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. "hipothalamus" as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using `plotOntologyGraph()`:
 
 ```{r}
-plotOntologyGraph(seg)
+ontology_plot(seg)
 ```
 
 <img width="1010" alt="ontology_graph" src="https://user-images.githubusercontent.com/21171362/131797720-1f92d2ff-4b02-4671-a869-1787f8c160c1.png">
@@ -115,7 +130,7 @@ Acronyms can be compared to their names looking at the ontology.
 The basic functionality with no external datasets allows to plot all structures within specific slices. We pick 3 random slices with the `s_slice`, `c_slice` and `a_slice` arguments for sagittal, coronal and axial respectively. 
 
 ```{r}
-plotSegmentation(seg, s_slice = 50, c_slice = 60, a_slice = 30)
+seg_plot(seg, s_slice = 50, c_slice = 60, a_slice = 30)
 ```
 
 <img width="1144" alt="slices_1" src="https://user-images.githubusercontent.com/21171362/131649114-0c9aeee4-4f54-46f9-b0ed-d440af18bbe3.png">
@@ -123,7 +138,7 @@ plotSegmentation(seg, s_slice = 50, c_slice = 60, a_slice = 30)
 We can also choose only one axis, and we can show structural labels (as acronyms from the ontology table):
 
 ```{r}
-plotSegmentation(seg, s_slice = 50, show_labels = TRUE)
+seg_plot(seg, s_slice = 50, show_labels = TRUE)
 
 ```
 
@@ -132,9 +147,9 @@ plotSegmentation(seg, s_slice = 50, show_labels = TRUE)
 Additionally, we can subset a `segmentation` object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):
 
 ```{r}
-seg_sub <- subsetByStructures(segmentation = seg, planes_chosen = "sagittal", structures = "10557")
+seg_sub <- seg_sub_str(segmentation = seg, planes_chosen = "sagittal", structures = "10557")
 
-plotSegmentation(seg_sub, s_slice = 50, show_labels = TRUE)
+seg_plot(seg_sub, s_slice = 50, show_labels = TRUE)
 ```
 
 <img width="716" alt="slices_3" src="https://user-images.githubusercontent.com/21171362/131650045-91b1d568-f49f-498e-b6fa-059e1c0ea49a.png">
@@ -214,7 +229,7 @@ gtexAssay <- new("segmentationAssay",
                  values = as.matrix(gtex[,3:ncol(gtex)]),
                  mapping = brain_regions)
 
-assays(seg) <- addAssay(segmentation = seg, 
+assays(seg) <- seg_assay_add(segmentation = seg, 
                         assay = gtexAssay, 
                         name = "gtex")
 
@@ -224,22 +239,22 @@ assays(seg) <- addAssay(segmentation = seg,
 
 When plotting data such as expression values in the segmentation, not all structures will be visible within the same slice, making the choice of a specific slice hard. For this reason we can create a maximum projection of structure slices on every plane, in both directions: slice-level polygons for every structure are joined together into single polygons and displayed in the order that they appear from both points of view, e.g. in the sagittal plane, from left to right (LR) and from right to left (RL). 
 
-Structures can be subset for maximum projections, since using all structures may just result in producing a side view of the segmentation (which may be a desired behaviour in some cases). Since maximum projections are specifically important for plotting datasets, we create a projection that has the same name as the dataset using the `addMaxProjection()` function, only for the sagittal plane:
+Structures can be subset for maximum projections, since using all structures may just result in producing a side view of the segmentation (which may be a desired behaviour in some cases). Since maximum projections are specifically important for plotting datasets, we create a projection that has the same name as the dataset using the `seg_projection_add()` function, only for the sagittal plane:
 
 ```{r}
 
 structures_chosen <- unlist(assays(seg)$gtex@mapping)
 structures_chosen <- intersect(structures_chosen, metaData(seg)$structures)
 
-seg <- addMaxProjection(name = "gtex", 
+seg <- seg_projection_add(name = "gtex", 
                         segmentation = seg, 
                         structures = structures_chosen, 
                         planes_chosen = "sagittal")
 ```
-At this point we can plot data from one of our assays (GTEx) in the sagittal projection, using `plotBrainMap()`, specifying the `assay` name and the gene (`feature` argument):
+At this point we can plot data from one of our assays (GTEx) in the sagittal projection, using `seg_feature_plot()`, specifying the `assay` name and the gene (`feature` argument):
 
 ```{r}
-plotBrainMap(segmentation = seg,
+seg_feature_plot(segmentation = seg,
              assay = "gtex",
              feature = "APP")
 ```

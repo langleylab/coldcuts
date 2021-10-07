@@ -26,7 +26,7 @@
 #'
 #' @export
 
-drawSegmentation <- function(nifti_file = NULL,
+seg_draw <- function(nifti_file = NULL,
                              nrrd_file = NULL,
                              array = NULL,
                              molten_array = NULL,
@@ -120,7 +120,7 @@ drawSegmentation <- function(nifti_file = NULL,
   if (directions_from != directions_to) {
     dirs = directions_to
     if (verbose) cat("Changing directions...")
-    n_image <- changeDirections(n_image, directions_from, directions_to)
+    n_image <- dir_change(n_image, directions_from, directions_to)
     if (verbose) cat("done.\n")
   } else {
     dirs = directions_from
@@ -163,7 +163,7 @@ drawSegmentation <- function(nifti_file = NULL,
   if (draw_outline) {
     for (i in planes_chosen) {
       if (verbose) cat("Drawing", i, "outline...")
-      ol <- drawOutline(M, plane = i)
+      ol <- outline_draw(M, plane = i)
       outlines[[i]] <- ol
       if (verbose) cat("done.\n")
     }
@@ -200,25 +200,25 @@ drawSegmentation <- function(nifti_file = NULL,
   if (is.null(subset_sagittal) & is.null(subset_coronal) & is.null(subset_axial)) {
     for (i in planes_chosen) {
       if (verbose) cat("Slicing along the", i, "plane...")
-      sl <- makeSlices(M, plane = i)
+      sl <- slice_make(M, plane = i)
       if (verbose) cat("done.\n")
 
       if (verbose) cat("Drawing polygons...")
-      sp <- makePolygonSets(sl, parallel = parallel, verbose = verbose)
+      sp <- poly_set_make(sl, parallel = parallel, verbose = verbose)
       slices[[i]] <- sp
       if (verbose) cat("done.\n")
     }
   } else if (!is.null(subset_sagittal) | !is.null(subset_coronal) | !is.null(subset_axial)) {
-    sl_s <- makeSlices(M_s, plane = "sagittal")
-    sl_c <- makeSlices(M_c, plane = "coronal")
-    sl_a <- makeSlices(M_a, plane = "axial")
+    sl_s <- slice_make(M_s, plane = "sagittal")
+    sl_c <- slice_make(M_c, plane = "coronal")
+    sl_a <- slice_make(M_a, plane = "axial")
 
     if (verbose) cat("Drawing polygons...")
-    sp_s <- makePolygonSets(sl_s, parallel = parallel)
+    sp_s <- poly_set_make(sl_s, parallel = parallel)
     slices[["sagittal"]] <- sp_s
-    sp_c <- makePolygonSets(sl_c, parallel = parallel)
+    sp_c <- poly_set_make(sl_c, parallel = parallel)
     slices[["coronal"]] <- sp_c
-    sp_a <- makePolygonSets(sl_a, parallel = parallel)
+    sp_a <- poly_set_make(sl_a, parallel = parallel)
     slices[["axial"]] <- sp_a
     if (verbose) cat("done.\n")
   }
@@ -279,7 +279,7 @@ drawSegmentation <- function(nifti_file = NULL,
 #'
 #' @export
 
-changeDirections <- function(array,
+dir_change <- function(array,
                              from = "PIR",
                              to = "RAS") {
 
@@ -319,14 +319,14 @@ changeDirections <- function(array,
 #'
 #' @export
 
-sliceCheck <- function(structures,
+seg_slice_check <- function(structures,
                        segmentation,
                        planes) {
   structures <- as.character(structures)
   if(any(!structures %in% unique(do.call(rbind, segmentation@structure_tables)$structure))) {
     not_found <- setdiff(structures, unique(do.call(rbind, segmentation@structure_tables)$structure))
     stop("Structure(s) ", paste(not_found, collapse = ", "), " not found in this segmentation.
-  Perhaps there is a typo? Check `metaData(segmentation)` and/or `segmentation@structure_tables` to see the available structures.")
+  Perhaps there is a typo? Check `seg_metadata(segmentation)` and/or `segmentation@structure_tables` to see the available structures.")
   }
 
   structure_by_plane <- lapply(planes, function(x) {
@@ -349,7 +349,7 @@ sliceCheck <- function(structures,
 #'
 #' @export
 
-smoothPolygons <- function(polygon_set,
+poly_smooth <- function(polygon_set,
                            by = "subid",
                            smoothness = 3,
                            min_points = 5) {
@@ -390,7 +390,7 @@ smoothPolygons <- function(polygon_set,
 #'
 #' @export
 
-drawOutline <- function(M,
+outline_draw <- function(M,
                         plane) {
 
   switch(plane,
@@ -416,7 +416,7 @@ drawOutline <- function(M,
   df <- M[, columns, with = FALSE]
   df <- df[!duplicated(df[, 1:2]), ]
   colnames(df) <- c("x", "y")
-  outline <- makePolygon(df)
+  outline <- poly_make(df)
   return(outline)
 }
 
@@ -431,7 +431,7 @@ drawOutline <- function(M,
 #'
 #' @export
 
-plotOntologyGraph <- function(segmentation,
+ontology_plot <- function(segmentation,
                               circular = TRUE) {
   o <- ontology(segmentation)
   cols <- o$col
@@ -481,7 +481,7 @@ plotOntologyGraph <- function(segmentation,
 #'
 #' @export
 #'
-plotSegmentation <- function(segmentation,
+seg_plot <- function(segmentation,
                              s_slice = NULL,
                              c_slice = NULL,
                              a_slice = NULL,
@@ -510,7 +510,7 @@ plotSegmentation <- function(segmentation,
         if (nrow(y@coords) < minsize) {
           return(NULL)
         } else {
-          return(buildPolygon(y))
+          return(poly_build(y))
         }
       })
       return(polylist[!unlist(lapply(polylist, is.null))])
@@ -551,7 +551,7 @@ plotSegmentation <- function(segmentation,
 
   # Smoothing
   if (smooth) {
-    slicelist <- lapply(dflist, function(x) smoothPolygons(x, smoothness = smoothness))
+    slicelist <- lapply(dflist, function(x) poly_smooth(x, smoothness = smoothness))
   } else {
     slicelist <- dflist
   }
@@ -634,7 +634,7 @@ plotSegmentation <- function(segmentation,
   if (show_outline) {
 
     outlines <- lapply(planes, function(x) {
-      if (smooth) { outline_poly <- smoothPolygons(segmentation@outlines[[x]],
+      if (smooth) { outline_poly <- poly_smooth(segmentation@outlines[[x]],
                                                    by = "cluster",
                                                    smoothness = smoothness)
       } else { outline_poly = segmentation@outlines[[x]] }
@@ -692,7 +692,7 @@ plotSegmentation <- function(segmentation,
 #' @export
 
 
-plotBrainMap <- function(segmentation,
+seg_feature_plot <- function(segmentation,
                          feature,
                          assay,
                          projection = NULL,
@@ -704,7 +704,7 @@ plotBrainMap <- function(segmentation,
                          show_labels = TRUE){
 
   if(is.null(projection)) {
-    if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `addMaxProjection()` first.")
+    if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
     projection = assay
   } else {
     projection = projection
@@ -737,8 +737,8 @@ plotBrainMap <- function(segmentation,
   centers2$acronym <- segmentation@ontology[centers2$structure, "acronym"]
 
   if(smooth) {
-    dmp_df <- smoothPolygons(dmp_df, smoothness = smoothness, min_points = min_points)
-    dmp2_df <- smoothPolygons(dmp2_df, smoothness = smoothness, min_points = min_points)
+    dmp_df <- poly_smooth(dmp_df, smoothness = smoothness, min_points = min_points)
+    dmp2_df <- poly_smooth(dmp2_df, smoothness = smoothness, min_points = min_points)
   }
 
   dmp_df$dir <-  centers$dir <- names(segmentation@projections[[projection]][[plane]])[1]
@@ -752,7 +752,7 @@ plotBrainMap <- function(segmentation,
 
   struct_df$gene_expression <- segmentation@assays[[assay]]@values[feature, struct_df$structures]
 
-  struct_df <- struct_df[struct_df$id %in% metaData(segmentation)$structures,]
+  struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,]
   rownames(struct_df) <- struct_df$id
 
   dmp_all$gene_exp <- as.numeric(struct_df[dmp_all$structure, "gene_expression"])
@@ -760,7 +760,7 @@ plotBrainMap <- function(segmentation,
   p <- ggplot2::ggplot(dmp_all, aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
     geom_polygon(col = "black", size = 0.3) +
     facet_wrap(~dir) +
-    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
+    geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
     theme_bw() +
     scale_fill_gradientn(na.value = "white",
                          colours = cpal) +
@@ -798,7 +798,7 @@ plotBrainMap <- function(segmentation,
 #'
 #' @export
 
-removeProjections <- function(segmentation,
+seg_projection_remove <- function(segmentation,
                               name) {
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
@@ -821,7 +821,7 @@ removeProjections <- function(segmentation,
 #'
 #' @export
 
-plotMaxProjection <- function(segmentation,
+seg_projection_plot <- function(segmentation,
                               plane,
                               name,
                               smooth = TRUE,
@@ -833,7 +833,7 @@ plotMaxProjection <- function(segmentation,
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
 
-  proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], buildPolygon))
+  proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], poly_build))
 
   centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
     df <- proj_1[proj_1$structure == x,]
@@ -845,11 +845,11 @@ plotMaxProjection <- function(segmentation,
   centers$acronym <- ontology(segmentation)[centers$structure, "acronym"]
   centers$col <- ontology(segmentation)[centers$structure, "col"]
 
-  if(smooth) proj_1 <- smoothPolygons(proj_1, by = "subid", smoothness = smoothness)
+  if(smooth) proj_1 <- poly_smooth(proj_1, by = "subid", smoothness = smoothness)
   proj_1$dir <- names(projections(segmentation, name)[[plane]])[1]
   centers$dir <- unique(proj_1$dir)
 
-  proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], buildPolygon))
+  proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], poly_build))
 
   centers2 <- as.data.frame(do.call(rbind, lapply(unique(proj_2$structure), function(x) {
     df <- proj_2[proj_2$structure == x,]
@@ -861,7 +861,7 @@ plotMaxProjection <- function(segmentation,
   centers2$acronym <- ontology(segmentation)[centers2$structure, "acronym"]
   centers2$col <- ontology(segmentation)[centers2$structure, "col"]
 
-  if(smooth) proj_2 <- smoothPolygons(proj_2, by = "subid", smoothness = smoothness)
+  if(smooth) proj_2 <- poly_smooth(proj_2, by = "subid", smoothness = smoothness)
   proj_2$dir <- names(projections(segmentation, name)[[plane]])[2]
   centers2$dir <- unique(proj_2$dir)
 
@@ -886,7 +886,7 @@ plotMaxProjection <- function(segmentation,
 
   p <- ggplot2::ggplot(proj_all, aes_string(x = "x", y = "y", group = "id", fill = "acronym")) +
     geom_polygon(col = "black", size = 0.3) +
-    geom_polygon(data = smoothPolygons(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
+    geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
     theme_bw() +
     scale_fill_manual(values = c(cols_1, "white")) +
     theme(legend.position = "none",
@@ -926,7 +926,7 @@ plotMaxProjection <- function(segmentation,
 #'
 #' @export
 
-getSlice <- function(segmentation,
+seg_get_slice <- function(segmentation,
                      plane,
                      slice,
                      fill = FALSE) {
@@ -937,9 +937,9 @@ getSlice <- function(segmentation,
   if(class(slice) == "character" & !slice %in% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
 
   if(fill)  {
-    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) fillPolygon(buildPolygon(y))))))
+    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) poly_fill(poly_build(y))))))
   } else {
-    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) buildPolygon(y)))))
+    df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) poly_build(y)))))
   }
   return(df)
 }

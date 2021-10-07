@@ -1,0 +1,257 @@
+{
+  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@type": "SoftwareSourceCode",
+  "identifier": "coldcuts",
+  "description": "coldcuts automatically generates polygons from 3D segmentations or\n   parcellations along all anatomical axes, and provides plotting functions \n   to visualize structures and colour them according to user-defined datasets.",
+  "name": "coldcuts: Automated generation of segmentation polygons for plotting ",
+  "license": "https://spdx.org/licenses/MIT",
+  "version": "0.0.0.900",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.1.1 (2021-08-10)",
+  "author": {},
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {},
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Giuseppe",
+      "familyName": "D'Agostino",
+      "email": "g.a.dagostino@gmail.com"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "nat",
+      "name": "nat",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=nat"
+    }
+  ],
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "colorspace",
+      "name": "colorspace",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=colorspace"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "data.table",
+      "name": "data.table",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=data.table"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "freesurferformats",
+      "name": "freesurferformats",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=freesurferformats"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "future.apply",
+      "name": "future.apply",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=future.apply"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "ggplot2",
+      "name": "ggplot2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "ggraph",
+      "name": "ggraph",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggraph"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "ggrepel",
+      "name": "ggrepel",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggrepel"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "igraph",
+      "name": "igraph",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=igraph"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "isoband",
+      "name": "isoband",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=isoband"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "methods",
+      "name": "methods"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "oro.nifti",
+      "name": "oro.nifti",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=oro.nifti"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "polylabelr",
+      "name": "polylabelr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=polylabelr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "qualpalr",
+      "name": "qualpalr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=qualpalr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "reshape2",
+      "name": "reshape2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=reshape2"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "scales",
+      "name": "scales",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=scales"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "smoothr",
+      "name": "smoothr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=smoothr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "splancs",
+      "name": "splancs",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=splancs"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "tidygraph",
+      "name": "tidygraph",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tidygraph"
+    }
+  ],
+  "codeRepository": "https://github.com/langleylab/coldcuts",
+  "readme": "https://github.com/langleylab/coldcuts/blob/main/README.md",
+  "fileSize": "119.352KB",
+  "contIntegration": "https://github.com/langleylab/coldcuts/actions",
+  "keywords": ["imaging", "neuroscience", "neuroimaging", "data-visualization", "ggplot2", "r"]
+}

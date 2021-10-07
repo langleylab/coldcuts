@@ -9,7 +9,7 @@
 #'
 #' @export
 
-buildPolygon <- function(seg_point_set) {
+poly_build <- function(seg_point_set) {
   if (class(seg_point_set) != "segPointSet") stop("Must provide a `segPointSet` class object")
 
   return(as.data.frame(
@@ -31,7 +31,7 @@ buildPolygon <- function(seg_point_set) {
 #'
 #' @export
 
-makeSlices <- function(M,
+slice_make <- function(M,
                        plane = "sagittal",
                        return = "structures") {
 
@@ -96,7 +96,7 @@ makeSlices <- function(M,
 #'
 #' @export
 
-boundingBox <- function(point_set,
+box_make <- function(point_set,
                         step_size = 1) {
 
   # Make the bounding box larger than the structure by step_size (1 for non-transformed voxel arrays)
@@ -134,7 +134,7 @@ boundingBox <- function(point_set,
 #'
 #' @export
 
-fillPolygon <- function(point_set,
+poly_fill <- function(point_set,
                         step_size = 1) {
   point_set <- point_set[!duplicated(point_set[, 1:2]), ]
 
@@ -179,11 +179,11 @@ fillPolygon <- function(point_set,
 #' @export
 
 
-makePolygon <- function(point_set,
+poly_make <- function(point_set,
                         step_size = 1) {
   if (!"x" %in% colnames(point_set) | !"y" %in% colnames(point_set)) stop("point_set must have columns named \"x\" and \"y\"")
 
-  m <- t(reshape2::acast(boundingBox(point_set, step_size = step_size), formula = x ~ y))
+  m <- t(reshape2::acast(box_make(point_set, step_size = step_size), formula = x ~ y))
 
   ib <- isoband::isobands(seq_len(ncol(m)), seq_len(nrow(m)), m, levels_low = 0, levels_high = 1)
 
@@ -216,15 +216,15 @@ makePolygon <- function(point_set,
 #' @export
 
 
-subsetByStructures <- function(segmentation,
+seg_sub_str <- function(segmentation,
                                structures,
                                planes_chosen = NULL){
 
-  if(is.null(planes_chosen)) planes_chosen = metaData(segmentation)$planes
+  if(is.null(planes_chosen)) planes_chosen = seg_metadata(segmentation)$planes
 
   structures <- as.character(structures)
 
-  which_slice_ok <- sliceCheck(structures = structures,
+  which_slice_ok <- seg_slice_check(structures = structures,
                                segmentation = segmentation,
                                planes = planes_chosen)
 
@@ -257,7 +257,7 @@ subsetByStructures <- function(segmentation,
 #'
 #' @export
 
-addMaxProjection <- function(name,
+seg_projection_add <- function(name,
                              structures,
                              segmentation,
                              planes_chosen = NULL,
@@ -265,22 +265,22 @@ addMaxProjection <- function(name,
 
     if(is.null(planes_chosen)) planes_chosen = names(segmentation@slices)
 
-    sub_segmentation = subsetByStructures(segmentation = segmentation, structures = structures, planes_chosen = planes_chosen)
+    sub_segmentation = seg_sub_str(segmentation = segmentation, structures = structures, planes_chosen = planes_chosen)
 
     fill_list_AB <- list()
 
     for(i in planes_chosen) {
 
-      all_polygons <- lapply(unlist(sub_segmentation@slices[[i]]), function(x) buildPolygon(x))
+      all_polygons <- lapply(unlist(sub_segmentation@slices[[i]]), function(x) poly_build(x))
 
-      filled_polygons <- lapply(all_polygons, fillPolygon)
+      filled_polygons <- lapply(all_polygons, poly_fill)
       fill_df <- do.call(rbind, filled_polygons)
       fill_df <- fill_df[!duplicated(fill_df[, 1:2]), ]
       structure_projection <- fill_df[, c(1,2,4)]
       structure_projection$value <- 1
       colnames(structure_projection)[1:2] <- c("x", "y")
       if (make_polygon) ib_df <- do.call(rbind, lapply(unique(structure_projection$structure), function(x) {
-      ib_temp <- makePolygon(structure_projection[structure_projection$structure == x,])
+      ib_temp <- poly_make(structure_projection[structure_projection$structure == x,])
       ib_temp$structure <- x
       ib_temp$id <- paste0(ib_temp$structure, "_", ib_temp$cluster)
       return(ib_temp)
@@ -303,16 +303,16 @@ addMaxProjection <- function(name,
 
     for(i in planes_chosen) {
 
-      all_polygons <- lapply(unlist(sub_segmentation@slices[[i]]), function(x) buildPolygon(x))
+      all_polygons <- lapply(unlist(sub_segmentation@slices[[i]]), function(x) poly_build(x))
       all_polygons <- all_polygons[rev(seq_len(length(all_polygons)))]
-      filled_polygons <- lapply(all_polygons, fillPolygon)
+      filled_polygons <- lapply(all_polygons, poly_fill)
       fill_df <- do.call(rbind, filled_polygons)
       fill_df <- fill_df[!duplicated(fill_df[, 1:2]), ]
       structure_projection <- fill_df[, c(1,2,4)]
       structure_projection$value <- 1
       colnames(structure_projection)[1:2] <- c("x", "y")
       if (make_polygon) ib_df <- do.call(rbind, lapply(unique(structure_projection$structure), function(x) {
-        ib_temp <- makePolygon(structure_projection[structure_projection$structure == x,])
+        ib_temp <- poly_make(structure_projection[structure_projection$structure == x,])
         ib_temp$structure <- x
         ib_temp$id <- paste0(ib_temp$structure, "_", ib_temp$cluster)
         return(ib_temp)
@@ -363,7 +363,7 @@ addMaxProjection <- function(name,
 #'
 #' @export
 
-makePolygonSets <- function(structure_list,
+poly_set_make <- function(structure_list,
                             parallel = FALSE,
                             verbose = FALSE) {
 
@@ -375,7 +375,7 @@ makePolygonSets <- function(structure_list,
       if(verbose) {
         cat("\r", "Drawing from slice " , n, ", #", which(names(structure_list) == n), " of ", length(structure_list), "...", sep = "")
       }
-      ib_df <- makePolygon(structure_list[[n]][[y]])
+      ib_df <- poly_make(structure_list[[n]][[y]])
       ib_df$structure <- unique(structure_list[[n]][[y]]$structure)
 
       # If there is more than one cluster there could be a hole in the polygon set
@@ -484,7 +484,7 @@ makePolygonSets <- function(structure_list,
 #'
 #' @export
 
-makeOntologyPalettes <- function(o,
+ontology_make_palette <- function(o,
                                  graph_depth = NULL,
                                  start_nodes = NULL,
                                  colorspace = "pretty",
@@ -553,7 +553,7 @@ makeOntologyPalettes <- function(o,
 #' @param name character, the name of the assay
 #' @export
 
-addAssay <- function(segmentation,
+seg_assay_add <- function(segmentation,
                     assay,
                     name) {
   if(class(assay) != "segmentationAssay" & !is.null(assay)) {

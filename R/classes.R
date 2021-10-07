@@ -59,8 +59,8 @@ setClass("segmentationAssay", representation(
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setGeneric("metaData", function(x) {
-  standardGeneric("metaData")
+setGeneric("seg_metadata", function(x) {
+  standardGeneric("seg_metadata")
 })
 
 #' Metadata getter (method)
@@ -68,7 +68,7 @@ setGeneric("metaData", function(x) {
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setMethod("metaData", c(x = "segmentation"), function(x) {
+setMethod("seg_metadata", c(x = "segmentation"), function(x) {
   return(x@metadata)
 })
 
@@ -78,8 +78,8 @@ setMethod("metaData", c(x = "segmentation"), function(x) {
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
 
-setGeneric("metaData<-", function(x, value) {
-  standardGeneric("metaData<-")
+setGeneric("seg_metadata<-", function(x, value) {
+  standardGeneric("seg_metadata<-")
 })
 
 #' Metadata setter (method)
@@ -88,7 +88,7 @@ setGeneric("metaData<-", function(x, value) {
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
 
-setMethod("metaData<-", c(x = "segmentation"), function(x, value) {
+setMethod("seg_metadata<-", c(x = "segmentation"), function(x, value) {
   x@metadata <- value
   x
 })
@@ -180,18 +180,18 @@ setMethod("projections", c(x = "segmentation"), function(x, name) {
 #' @param object a \code{segmentation} class object
 
 setMethod("show", "segmentation", function(object) {
-  if(metaData(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[metaData(object)$units + 1]
-  cat("      Segmentation from file: ", metaData(object)$filename, "\n")
-  cat("                    Plane(s): ", paste(metaData(object)$planes, collapse = ", "), "\n")
-  cat("                  Directions: ", paste(metaData(object)$dirs, collapse = " to "), "\n")
-  cat("       Dimensions (original): ", paste(metaData(object)$dims_original, collapse = " x "), "\n")
-  cat("      Dimensions (effective): ", paste(metaData(object)$dims_effective, collapse = " x "), "\n")
-  cat("            Pixel dimensions: ", paste(metaData(object)$pixdim, collapse = " x "), "\n")
+  if(seg_metadata(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[seg_metadata(object)$units + 1]
+  cat("      Segmentation from file: ", seg_metadata(object)$filename, "\n")
+  cat("                    Plane(s): ", paste(seg_metadata(object)$planes, collapse = ", "), "\n")
+  cat("                  Directions: ", paste(seg_metadata(object)$dirs, collapse = " to "), "\n")
+  cat("       Dimensions (original): ", paste(seg_metadata(object)$dims_original, collapse = " x "), "\n")
+  cat("      Dimensions (effective): ", paste(seg_metadata(object)$dims_effective, collapse = " x "), "\n")
+  cat("            Pixel dimensions: ", paste(seg_metadata(object)$pixdim, collapse = " x "), "\n")
   cat("             Dimension units: ", units, "\n")
-  cat("             Reference space: ", metaData(object)$reference_space, "\n")
-  cat("              Structures (n): ", length(metaData(object)$structures), "\n")
-  cat("             Structures (ID): ", paste(head(metaData(object)$structures), collapse = ", "), "and", (length(metaData(object)$structures) - length(head(metaData(object)$structures))), "more. \n")
-  cat("       Structures (acronyms): ", paste(head(ontology(object)[as.character(metaData(object)$structures), "acronym"]), collapse = ", "), "and", (length(ontology(object)[metaData(object)$structures, "acronym"]) - length(head(ontology(object)[metaData(object)$structures, "acronym"]))), "more. \n")
+  cat("             Reference space: ", seg_metadata(object)$reference_space, "\n")
+  cat("              Structures (n): ", length(seg_metadata(object)$structures), "\n")
+  cat("             Structures (ID): ", paste(head(seg_metadata(object)$structures), collapse = ", "), "and", (length(seg_metadata(object)$structures) - length(head(seg_metadata(object)$structures))), "more. \n")
+  cat("       Structures (acronyms): ", paste(head(ontology(object)[as.character(seg_metadata(object)$structures), "acronym"]), collapse = ", "), "and", (length(ontology(object)[seg_metadata(object)$structures, "acronym"]) - length(head(ontology(object)[seg_metadata(object)$structures, "acronym"]))), "more. \n")
   cat("Type showCitation(\"name_of_segmentation\") to display the citation(s) for this segmentation.", sep = "")
   })
 
@@ -201,8 +201,8 @@ setMethod("show", "segmentation", function(object) {
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setGeneric("showCitation", function(x) {
-  standardGeneric("showCitation")
+setGeneric("citation", function(x) {
+  standardGeneric("citation")
 })
 
 #' Show citation (method)
@@ -210,10 +210,10 @@ setGeneric("showCitation", function(x) {
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setMethod("showCitation", "segmentation", function(x) {
-  for(n in names(x@metadata$citation)) {
+setMethod("citation", "segmentation", function(x) {
+  for(n in names(seg_metadata(x)$citation)) {
     cat("Citation (", n, "):\n", sep = "")
-    print(x@metadata$citation[[n]])
+    print(seg_metadata(x)$citation[[n]])
     }
 })
 
