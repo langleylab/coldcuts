@@ -27,24 +27,24 @@
 #' @export
 
 seg_draw <- function(nifti_file = NULL,
-                             nrrd_file = NULL,
-                             array = NULL,
-                             molten_array = NULL,
-                             ontology = NULL,
-                             ontology_file = NULL,
-                             outliers = NULL,
-                             verbose = TRUE,
-                             directions_from = "RAS",
-                             directions_to = "RAS",
-                             planes = "all",
-                             subset_structures = NULL,
-                             draw_outline = TRUE,
-                             subset_sagittal = NULL,
-                             subset_coronal = NULL,
-                             subset_axial = NULL,
-                             reference_space = NULL,
-                             citation = NULL,
-                             parallel = TRUE) {
+                     nrrd_file = NULL,
+                     array = NULL,
+                     molten_array = NULL,
+                     ontology = NULL,
+                     ontology_file = NULL,
+                     outliers = NULL,
+                     verbose = TRUE,
+                     directions_from = "RAS",
+                     directions_to = "RAS",
+                     planes = "all",
+                     subset_structures = NULL,
+                     draw_outline = TRUE,
+                     subset_sagittal = NULL,
+                     subset_coronal = NULL,
+                     subset_axial = NULL,
+                     reference_space = NULL,
+                     citation = NULL,
+                     parallel = TRUE) {
   #Sanity checks
   if(!is.null(nrrd_file) & !"nat" %in% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
@@ -53,35 +53,35 @@ seg_draw <- function(nifti_file = NULL,
   if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_coronal) & class(subset_coronal) != "numeric") stop("You must provide numeric indices to subset planes")
   if (!is.null(subset_axial) & class(subset_axial) != "numeric") stop("You must provide numeric indices to subset planes")
-
+  
   if (verbose) cat("Adding ontology...")
   if(!is.null(ontology_file) & is.null(ontology)) {
-  if(grepl("\\.csv$", ontology_file)){
-    read_fun <- read.csv
-    read_sep = ","
-  } else if (grepl("\\.txt$", ontology_file)) {
-    read_fun <- read.table
-    read_sep = "\t"
-  }
-
-  ontology <- read_fun(ontology_file, header = TRUE, sep = read_sep)
+    if(grepl("\\.csv$", ontology_file)){
+      read_fun <- read.csv
+      read_sep = ","
+    } else if (grepl("\\.txt$", ontology_file)) {
+      read_fun <- read.table
+      read_sep = "\t"
+    }
+    
+    ontology <- read_fun(ontology_file, header = TRUE, sep = read_sep)
   } else if(is.null(ontology_file) & !is.null(ontology)) {
     ontology = ontology
   }
-
+  
   missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(ontology))
-
+  
   if(length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
-
+  
   colnames(ontology)[grep("id|ID|Id|iD", fixed = TRUE, colnames(ontology))] <- "id"
   ontology$id <- as.character(ontology$id)
   rownames(ontology) <- ontology$id
-
+  
   if(any(!subset_structures %in% ontology$id)) {
     stop(paste0("Subset structures ", paste(setdiff(subset_structures, ontology$id), collapse = ", "), " were not found in the ontology. \n Make sure you are using the correct ontology for this volume, or subsetting the right structures." ))
   }
   if (verbose) cat("done.\n")
-
+  
   if (!is.null(subset_sagittal) | !is.null(subset_coronal) | !is.null(subset_axial)) {
     subsets <- list(
       "sagittal" = subset_sagittal,
@@ -90,7 +90,7 @@ seg_draw <- function(nifti_file = NULL,
     )
     subsets <- subsets[!is.null(subsets)]
   }
-
+  
   if (!is.null(nifti_file) & is.null(array) & is.null(molten_array) & is.null(nrrd_file)) {
     if (verbose) cat("Reading NIfTI file...")
     nifti <- oro.nifti::readNIfTI(nifti_file)
@@ -116,7 +116,7 @@ seg_draw <- function(nifti_file = NULL,
     units <- "Unknown"
     filename = paste0("Molten array named \"", deparse(substitute(molten_array)), "\".")
   }
-
+  
   if (directions_from != directions_to) {
     dirs = directions_to
     if (verbose) cat("Changing directions...")
@@ -125,16 +125,16 @@ seg_draw <- function(nifti_file = NULL,
   } else {
     dirs = directions_from
   }
-
+  
   if (!is.null(outliers)) n_image[t(outliers)] <- 0
   ndims <- dim(n_image)
-
+  
   if (planes == "all") planes_chosen <- c("sagittal", "coronal", "axial") else planes_chosen <- planes
   slices <- outlines <- list("sagittal" = NULL, "coronal" = NULL, "axial" = NULL)
-
+  
   if (!is.null(array) & is.null(molten_array) & (is.null(subset_sagittal) & is.null(subset_coronal) & is.null(subset_axial))) {
     if (verbose) cat("Melting array...")
-    M <- as.data.table(n_image)
+    M <- data.table::as.data.table(n_image)
     M <- M[M$value > 0, ]
     if (verbose) cat("done.\n")
   } else if (is.null(array) & !is.null(molten_array)) {
@@ -142,24 +142,24 @@ seg_draw <- function(nifti_file = NULL,
     M <- molten_array
   } else if (is.null(array) & is.null(molten_array) & (!is.null(nifti_file) | !is.null(nrrd_file))) {
     if (verbose) cat("Melting array...")
-    M <- as.data.table(n_image)
+    M <- data.table::as.data.table(n_image)
     M <- M[M$value > 0, ]
     if (verbose) cat("done.\n")
   }
-
+  
   if(!is.null(subset_structures)) {
     if (verbose) cat("Subsetting structures...")
     M <- M[M$value %in% subset_structures,]
     if (verbose) cat("done.\n")
   }
-
+  
   if(any(!unique(M$value) %in% ontology$id)) {
     missing_strs <- setdiff(unique(M$value), ontology$id)
     max <- min(c(10, length(missing_strs)))
     if(length(missing_strs) > 10) error_add_str <- paste0(" and ", length(missing_strs) - 10, " more ") else error_add_str <- ""
     stop(paste0("Structures ", paste(setdiff(unique(M$value)[1:max], ontology$id), collapse = ", "),  error_add_str,  "were found in the array but not in the ontology.\n Make sure you are using the correct ontology for this volume." ))
   }
-
+  
   if (draw_outline) {
     for (i in planes_chosen) {
       if (verbose) cat("Drawing", i, "outline...")
@@ -168,41 +168,41 @@ seg_draw <- function(nifti_file = NULL,
       if (verbose) cat("done.\n")
     }
   }
-
+  
   if (!is.null(subset_sagittal) | !is.null(subset_coronal) | !is.null(subset_axial)) {
     if (verbose) cat("Subsetting slices...")
-
+    
     M_s <- reshape2::melt(n_image[subset_sagittal, , ])
     M_s$V1 <- subset_sagittal
     M_s <- M_s[, c(4, 1, 2, 3)]
-    M_s <- as.data.table(M_s[M_s$value > 0, ])
-
+    M_s <- data.table::as.data.table(M_s[M_s$value > 0, ])
+    
     M_c <- reshape2::melt(n_image[, subset_coronal, ])
     M_c$V2 <- subset_coronal
     M_c <- M_c[, c(1, 4, 2, 3)]
-    M_c <- as.data.table(M_c[M_c$value > 0, ])
-
+    M_c <- data.table::as.data.table(M_c[M_c$value > 0, ])
+    
     M_a <- reshape2::melt(n_image[, , subset_axial])
     M_a$V3 <- subset_axial
     M_a <- M_a[, c(1, 2, 4, 3)]
-    M_a <- as.data.table(M_a[M_a$value > 0, ])
-
+    M_a <- data.table::as.data.table(M_a[M_a$value > 0, ])
+    
     colnames(M_s) <- colnames(M_c) <- colnames(M_a) <- c("V1", "V2", "V3", "value")
     if (verbose) cat("done.\n")
   }
-
+  
   if (is.null(subset_sagittal) & is.null(subset_coronal) & is.null(subset_axial)) {
     structure_ids <- unique(M$value)
   } else {
     structure_ids <- union(union(unique(M_s$value), unique(M_c$value)), unique(M_a$value))
   }
-
+  
   if (is.null(subset_sagittal) & is.null(subset_coronal) & is.null(subset_axial)) {
     for (i in planes_chosen) {
       if (verbose) cat("Slicing along the", i, "plane...")
       sl <- slice_make(M, plane = i)
       if (verbose) cat("done.\n")
-
+      
       if (verbose) cat("Drawing polygons...")
       sp <- poly_set_make(sl, parallel = parallel, verbose = verbose)
       slices[[i]] <- sp
@@ -212,7 +212,7 @@ seg_draw <- function(nifti_file = NULL,
     sl_s <- slice_make(M_s, plane = "sagittal")
     sl_c <- slice_make(M_c, plane = "coronal")
     sl_a <- slice_make(M_a, plane = "axial")
-
+    
     if (verbose) cat("Drawing polygons...")
     sp_s <- poly_set_make(sl_s, parallel = parallel)
     slices[["sagittal"]] <- sp_s
@@ -222,13 +222,13 @@ seg_draw <- function(nifti_file = NULL,
     slices[["axial"]] <- sp_a
     if (verbose) cat("done.\n")
   }
-
+  
   dims_eff = lengths(slices)
-
+  
   if (verbose) cat("Compiling structure tables...")
   str_table_all <- lapply(planes_chosen, function(n) {
-    structure_slices <- as.data.table(cbind(unlist(lapply(unlist(slices[[n]]), function(x) x@structure)),
-                                            unlist(unlist(lapply(unlist(slices[[n]]), function(x) x@slice)))))
+    structure_slices <- data.table::as.data.table(cbind(unlist(lapply(unlist(slices[[n]]), function(x) x@structure)),
+                                                        unlist(unlist(lapply(unlist(slices[[n]]), function(x) x@slice)))))
     structure_slices <- structure_slices[!duplicated(structure_slices[,1:2]),]
     colnames(structure_slices) <- c("structure", "slice")
     return(structure_slices)
@@ -240,7 +240,7 @@ seg_draw <- function(nifti_file = NULL,
     }
   }
   if (verbose) cat("done.\n")
-
+  
   if (verbose) cat("Compiling metadata...")
   metadata <- list(
     "filename" = filename,
@@ -255,7 +255,7 @@ seg_draw <- function(nifti_file = NULL,
     "citation" = citation
   )
   if (verbose) cat("done.\n")
-
+  
   return(new("segmentation",
              slices = slices,
              ontology = ontology,
@@ -282,10 +282,10 @@ seg_draw <- function(nifti_file = NULL,
 dir_change <- function(array,
                        from = "PIR",
                        to = "RAS") {
-
+  
   if(!from %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument from: PIR, RAS, LPS")
   if(!to %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument to: PIR, RAS, LPS")
-
+  
   if (from == "PIR" & to == "RAS") {
     array_rot <- freesurferformats::rotate3D(freesurferformats::rotate3D(array, axis = 1, degrees = 90), axis = 3, degrees = 90)
   }
@@ -320,15 +320,15 @@ dir_change <- function(array,
 #' @export
 
 seg_slice_check <- function(structures,
-                       segmentation,
-                       planes) {
+                            segmentation,
+                            planes) {
   structures <- as.character(structures)
   if(any(!structures %in% unique(do.call(rbind, segmentation@structure_tables)$structure))) {
     not_found <- setdiff(structures, unique(do.call(rbind, segmentation@structure_tables)$structure))
     stop("Structure(s) ", paste(not_found, collapse = ", "), " not found in this segmentation.
   Perhaps there is a typo? Check `seg_metadata(segmentation)` and/or `segmentation@structure_tables` to see the available structures.")
   }
-
+  
   structure_by_plane <- lapply(planes, function(x) {
     unique(segmentation@structure_tables[[x]][structure %in% structures, "slice"])
   })
@@ -350,12 +350,12 @@ seg_slice_check <- function(structures,
 #' @export
 
 poly_smooth <- function(polygon_set,
-                           by = "subid",
-                           smoothness = 3,
-                           min_points = 5) {
+                        by = "subid",
+                        smoothness = 3,
+                        min_points = 5) {
   smoothing_list <- lapply(unique(polygon_set[, by]), function(x) {
     poly <- as.data.frame(polygon_set[polygon_set[, by] == x, ])
-
+    
     if (nrow(poly) < min_points) {
       poly_sm <- poly[, 1:2]
     } else {
@@ -364,14 +364,14 @@ poly_smooth <- function(polygon_set,
                                                        wrap = TRUE
       ))
     }
-
+    
     # Restore/add original columns
     colnames(poly_sm) <- c("x", "y")
-
+    
     for (i in colnames(poly)[3:ncol(poly)]) {
       poly_sm[, i] <- unique(poly[, i])
     }
-
+    
     return(poly_sm)
   })
   smooth_df <- as.data.frame(do.call(rbind, smoothing_list))
@@ -391,8 +391,8 @@ poly_smooth <- function(polygon_set,
 #' @export
 
 outline_draw <- function(M,
-                        plane) {
-
+                         plane) {
+  
   switch(plane,
          "sagittal" = {
            uc <- 1
@@ -411,10 +411,10 @@ outline_draw <- function(M,
          },
          stop("Must select a `plane` out of \"sagittal\", \"coronal\", \"axial\"")
   )
-
+  
   columns <- c(xc, yc)
-  df <- M[, columns, with = FALSE]
-  df <- df[!duplicated(df[, 1:2]), ]
+  df <- data.table::as.data.table(M[, columns, with = FALSE])
+  df <- data.table::as.data.table(df[!duplicated(df[, 1:2]), ])
   colnames(df) <- c("x", "y")
   outline <- poly_make(df)
   return(outline)
@@ -432,30 +432,30 @@ outline_draw <- function(M,
 #' @export
 
 ontology_plot <- function(segmentation,
-                              circular = TRUE) {
+                          circular = TRUE) {
+  
   o <- ontology(segmentation)
   cols <- o$col
   names(cols) <- o$acronym
-
+  
   onto_graph <- data.frame("from" = o[as.character(o$parent_structure_id), "acronym"], "to" = o$acronym)
-
+  
   if (any(is.na(onto_graph[, 1]))) {
     onto_graph[which(is.na(onto_graph[, 1])), 1] <- onto_graph[which(is.na(onto_graph[, 1])), 2]
   } else if (any(is.na(onto_graph[, 2]))) {
     onto_graph[which(is.na(onto_graph[, 2])), 2] <- onto_graph[which(is.na(onto_graph[, 2])), 1]
   }
-
+  
   g <- igraph::graph_from_data_frame(onto_graph)
   g <- tidygraph::as_tbl_graph(g)
-
-
-  p <- ggraph(g, "dendrogram", circular = circular) +
-    geom_edge_elbow() +
-    geom_node_point(aes_string(fill = "name"), shape = 21, color = "black", size = 8) +
-    geom_node_text(aes_string(label = "name"), color = "black", size = 2) +
-    scale_fill_manual(values = cols) +
-    theme(legend.position = "none")
-
+  
+  p <- ggraph::ggraph(g, "dendrogram", circular = circular) +
+    ggraph::geom_edge_elbow() +
+    ggraph::geom_node_point(ggplot2::aes_string(fill = "name"), shape = 21, color = "black", size = 8) +
+    ggraph::geom_node_text(ggplot2::aes_string(label = "name"), color = "black", size = 2) +
+    ggplot2::scale_fill_manual(values = cols) +
+    ggplot2::theme(legend.position = "none")
+  
   return(p)
 }
 
@@ -482,18 +482,18 @@ ontology_plot <- function(segmentation,
 #' @export
 #'
 seg_plot <- function(segmentation,
-                             s_slice = NULL,
-                             c_slice = NULL,
-                             a_slice = NULL,
-                             smooth = TRUE,
-                             smoothness = 3,
-                             show_axis_rulers = TRUE,
-                             show_outline = TRUE,
-                             show_labels = FALSE,
-                             label_size = 2,
-                             minsize = 10,
-                             wrap_options = 1) {
-
+                     s_slice = NULL,
+                     c_slice = NULL,
+                     a_slice = NULL,
+                     smooth = TRUE,
+                     smoothness = 3,
+                     show_axis_rulers = TRUE,
+                     show_outline = TRUE,
+                     show_labels = FALSE,
+                     label_size = 2,
+                     minsize = 10,
+                     wrap_options = 1) {
+  
   planes = c("sagittal", "coronal", "axial")
   if(is.null(s_slice)) s_slice <- NULL
   if(is.null(c_slice)) c_slice <- NULL
@@ -502,7 +502,7 @@ seg_plot <- function(segmentation,
   planes <- planes[!sapply(selected_slices, is.null)]
   selected_slices <- unlist(selected_slices[!sapply(selected_slices, is.null)])
   names(selected_slices) <- planes
-
+  
   # Select the slices and add axis information (important for faceting the plot later)
   slicelist <- lapply(planes, function(p) {
     sagittal_list <- lapply(segmentation@slices[[p]][[selected_slices[p]]], function(x) {
@@ -516,17 +516,17 @@ seg_plot <- function(segmentation,
       return(polylist[!unlist(lapply(polylist, is.null))])
     })
   })
-
+  
   names(slicelist) <- planes
-
+  
   dflist <- lapply(names(slicelist), function(s) {
     df <-  as.data.frame(do.call(rbind, lapply(slicelist[[s]], function(x) do.call(rbind, x))))
     df$axis <- paste0(s, " slice ", unique(df$slice))
     return(df)
   })
-
+  
   names(dflist) <- names(slicelist)
-
+  
   if (show_labels) {
     # Centers for the sagittal plane
     centerlist <- lapply(names(dflist), function(d) {
@@ -545,58 +545,58 @@ seg_plot <- function(segmentation,
       centersdf$acronym <- segmentation@ontology[unique(dflist[[d]]$structure), "acronym"]
       return(centersdf)
     })
-
+    
     centers_axes <- do.call(rbind, centerlist)
   }
-
+  
   # Smoothing
   if (smooth) {
     slicelist <- lapply(dflist, function(x) poly_smooth(x, smoothness = smoothness))
   } else {
     slicelist <- dflist
   }
-
+  
   # Create the data frame containing all slices and their (selected) polygons
-
+  
   all_str_polys_axes <- do.call(rbind, slicelist)
   all_str_polys_axes$structure <- all_str_polys_axes$structure
-
+  
   all_str_polys_axes$col <- ontology(segmentation)[as.character(all_str_polys_axes$structure), "col"]
-
+  
   all_str_polys_axes$acronym <- ontology(segmentation)[as.character(all_str_polys_axes$structure), "acronym"]
-
+  
   # Color palette wrangling - several polygons have the same color, so this is necessary
   cols <- sapply(
     unique(all_str_polys_axes$acronym),
     function(x) unique(all_str_polys_axes[all_str_polys_axes$acronym == x, "col"])
   )
-
+  
   cols <- as.character(cols[levels(factor(all_str_polys_axes$acronym))])
-
+  
   # Plot
-  p <- ggplot() +
-    geom_polygon(
+  p <- ggplot2::ggplot() +
+    ggplot2::geom_polygon(
       data = all_str_polys_axes,
-      aes_string(x = "x", y = "y", group = "id", subgroup = "subid", fill = "acronym"),
+      ggplot2::aes_string(x = "x", y = "y", group = "id", subgroup = "subid", fill = "acronym"),
       color = "black"
     ) +
-    scale_fill_manual(values = c(cols, "white")) +
-    theme_bw() +
-    theme(
+    ggplot2::scale_fill_manual(values = c(cols, "white")) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
       legend.position = "none",
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank()
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank()
     ) +
-    facet_wrap(~axis, nrow = wrap_options)
-
+    ggplot2::facet_wrap(~axis, nrow = wrap_options)
+  
   # Axis rulers
   if(is.null(c_slice) | is.null(s_slice) | is.null(a_slice)) show_axis_rulers = FALSE
   if (show_axis_rulers) {
-
+    
     # We show how the coronal and axial planes are sliced on the sagittal plot;
     # how the sagittal and axial planes are sliced on the coronal plot;
     # how the coronal and sagittal planes are sliced on the axial plot
-
+    
     rulers <- data.frame(
       axis = c(
         unique(dflist$sagittal$axis),
@@ -614,48 +614,48 @@ seg_plot <- function(segmentation,
         as.numeric(names(segmentation@slices$coronal)[c_slice])
       )
     )
-
+    
     p <- p +
-      geom_vline(
-        data = rulers, aes_string(xintercept = "xi"),
+      ggplot2::geom_vline(
+        data = rulers, ggplot2::aes_string(xintercept = "xi"),
         linetype = "dashed",
         color = "gray",
         size = 0.5
       ) +
-      geom_hline(
-        data = rulers, aes_string(yintercept = "yi"),
+      ggplot2::geom_hline(
+        data = rulers, ggplot2::aes_string(yintercept = "yi"),
         linetype = "dashed",
         color = "gray",
         size = 0.5
       )
   }
-
+  
   # Include outline
   if (show_outline) {
-
+    
     outlines <- lapply(planes, function(x) {
       if (smooth) { outline_poly <- poly_smooth(segmentation@outlines[[x]],
-                                                   by = "cluster",
-                                                   smoothness = smoothness)
+                                                by = "cluster",
+                                                smoothness = smoothness)
       } else { outline_poly = segmentation@outlines[[x]] }
       outline_poly$axis <- unique(dflist[[x]]$axis)
       return(outline_poly)
     })
     all_outlines <- do.call(rbind, outlines)
-    p <- p + geom_polygon(
+    p <- p + ggplot2::geom_polygon(
       data = all_outlines,
-      aes_string(x = "x", y = "y", group = "cluster"),
+      ggplot2::aes_string(x = "x", y = "y", group = "cluster"),
       col = "black",
       fill = "NA"
     )
   }
-
+  
   # Adding labels
-
+  
   if (show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_axes,
-      aes_string(x = "x", y = "y", label = "acronym"),
+      ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.3,
@@ -668,7 +668,7 @@ seg_plot <- function(segmentation,
       inherit.aes = FALSE
     )
   }
-  return(p  + coord_fixed())
+  return(p  + ggplot2::coord_fixed())
 }
 
 
@@ -691,18 +691,17 @@ seg_plot <- function(segmentation,
 #'
 #' @export
 
-
 seg_feature_plot <- function(segmentation,
-                         feature,
-                         assay,
-                         projection = NULL,
-                         plane = "sagittal",
-                         smooth = TRUE,
-                         smoothness = 3,
-                         min_points = 5,
-                         color_pal = NULL,
-                         show_labels = TRUE){
-
+                             feature,
+                             assay,
+                             projection = NULL,
+                             plane = "sagittal",
+                             smooth = TRUE,
+                             smoothness = 3,
+                             min_points = 5,
+                             color_pal = NULL,
+                             show_labels = TRUE){
+  
   if(is.null(projection)) {
     if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
     projection = assay
@@ -712,66 +711,66 @@ seg_feature_plot <- function(segmentation,
   if(length(feature) > 1) stop("You can only one plot one feature at a time.")
   if(class(feature) != "character") stop("feature must be a character.")
   if(!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
-
+  
   if(is.null(color_pal)) cpal = colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal = color_pal
-
+  
   dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
   dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
-
+  
   centers <- as.data.frame(do.call(rbind, lapply(unique(dmp_df$structure), function(x) {
     df <- dmp_df[dmp_df$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
-
+  
   centers$structure <- unique(dmp_df$structure)
   centers$acronym <- segmentation@ontology[centers$structure, "acronym"]
-
+  
   centers2 <- as.data.frame(do.call(rbind, lapply(unique(dmp2_df$structure), function(x) {
     df <- dmp2_df[dmp2_df$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
-
+  
   centers2$structure <- unique(dmp2_df$structure)
   centers2$acronym <- segmentation@ontology[centers2$structure, "acronym"]
-
+  
   if(smooth) {
     dmp_df <- poly_smooth(dmp_df, smoothness = smoothness, min_points = min_points)
     dmp2_df <- poly_smooth(dmp2_df, smoothness = smoothness, min_points = min_points)
   }
-
+  
   dmp_df$dir <-  centers$dir <- names(segmentation@projections[[projection]][[plane]])[1]
   dmp2_df$dir <- centers2$dir <-  names(segmentation@projections[[projection]][[plane]])[2]
-
+  
   dmp_all <- rbind(dmp_df, dmp2_df)
   centers_all <- rbind(centers, centers2)
-
+  
   struct_df <- data.frame("structures" = rep(names(segmentation@assays[[assay]]@mapping), lengths(segmentation@assays[[assay]]@mapping)),
                           "id" = unlist(segmentation@assays[[assay]]@mapping))
-
+  
   struct_df$gene_expression <- segmentation@assays[[assay]]@values[feature, struct_df$structures]
-
+  
   struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,]
   rownames(struct_df) <- struct_df$id
-
+  
   dmp_all$gene_exp <- as.numeric(struct_df[dmp_all$structure, "gene_expression"])
-
-  p <- ggplot2::ggplot(dmp_all, aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
-    geom_polygon(col = "black", size = 0.3) +
-    facet_wrap(~dir) +
-    geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
-    theme_bw() +
-    scale_fill_gradientn(na.value = "white",
-                         colours = cpal) +
-    labs(fill = feature) +
-    theme(panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())
-
+  
+  p <- ggplot2::ggplot(dmp_all, ggplot2::aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
+    ggplot2::geom_polygon(col = "black", size = 0.3) +
+    ggplot2::facet_wrap(~dir) +
+    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
+    ggplot2::theme_bw() +
+    ggplot2::scale_fill_gradientn(na.value = "white",
+                                  colours = cpal) +
+    ggplot2::labs(fill = feature) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank())
+  
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_all,
-      aes_string(x = "x", y = "y", label = "acronym"),
+      ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.2,
@@ -783,8 +782,8 @@ seg_feature_plot <- function(segmentation,
       max.overlaps = Inf,
       inherit.aes = FALSE
     )}
-
-  return(p + coord_fixed())
+  
+  return(p + ggplot2::coord_fixed())
 }
 
 #' Remove a projection from a segmentation
@@ -799,7 +798,7 @@ seg_feature_plot <- function(segmentation,
 #' @export
 
 seg_projection_remove <- function(segmentation,
-                              name) {
+                                  name) {
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   segmentation@projections[name] <- NULL
@@ -822,81 +821,81 @@ seg_projection_remove <- function(segmentation,
 #' @export
 
 seg_projection_plot <- function(segmentation,
-                              plane,
-                              name,
-                              smooth = TRUE,
-                              smoothness = 3,
-                              show_labels = FALSE
-                              ){
-
+                                plane,
+                                name,
+                                smooth = TRUE,
+                                smoothness = 3,
+                                show_labels = FALSE
+){
+  
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
-
+  
   proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], poly_build))
-
+  
   centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
     df <- proj_1[proj_1$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
-
+  
   centers$structure <- unique(proj_1$structure)
   centers$acronym <- ontology(segmentation)[centers$structure, "acronym"]
   centers$col <- ontology(segmentation)[centers$structure, "col"]
-
+  
   if(smooth) proj_1 <- poly_smooth(proj_1, by = "subid", smoothness = smoothness)
   proj_1$dir <- names(projections(segmentation, name)[[plane]])[1]
   centers$dir <- unique(proj_1$dir)
-
+  
   proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], poly_build))
-
+  
   centers2 <- as.data.frame(do.call(rbind, lapply(unique(proj_2$structure), function(x) {
     df <- proj_2[proj_2$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
-
+  
   centers2$structure <- unique(proj_2$structure)
   centers2$acronym <- ontology(segmentation)[centers2$structure, "acronym"]
   centers2$col <- ontology(segmentation)[centers2$structure, "col"]
-
+  
   if(smooth) proj_2 <- poly_smooth(proj_2, by = "subid", smoothness = smoothness)
   proj_2$dir <- names(projections(segmentation, name)[[plane]])[2]
   centers2$dir <- unique(proj_2$dir)
-
+  
   proj_all <- rbind(proj_1, proj_2)
   proj_all$acronym <- ontology(segmentation)[as.character(proj_all$structure), "acronym"]
-
+  
   centers_all <- rbind(centers, centers2)
-
+  
   cols_1 <- sapply(
     unique(centers$acronym),
     function(x) unique(centers[centers$acronym == x, "col"])
   )
-
+  
   cols_1 <- as.character(cols_1[levels(factor(centers$acronym))])
-
+  
   cols_2 <- sapply(
     unique(centers$acronym),
     function(x) unique(centers[centers2$acronym == x, "col"])
   )
-
+  
   cols_2 <- as.character(cols_2[levels(factor(centers2$acronym))])
-
-  p <- ggplot2::ggplot(proj_all, aes_string(x = "x", y = "y", group = "id", fill = "acronym")) +
-    geom_polygon(col = "black", size = 0.3) +
-    geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
-    theme_bw() +
-    scale_fill_manual(values = c(cols_1, "white")) +
-    theme(legend.position = "none",
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())
-
+  
+  p <- ggplot2::ggplot(proj_all, ggplot2::aes_string(x = "x", y = "y", group = "id", fill = "acronym")) +
+    ggplot2::geom_polygon(col = "black", size = 0.3) +
+    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
+    ggplot2::theme_bw() +
+    ggplot2::scale_fill_manual(values = c(cols_1, "white")) +
+    ggplot2::theme(legend.position = "none",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank())
+  
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = centers_all,
-      aes_string(x = "x", y = "y", label = "acronym"),
+      ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
       segment.size = 0.2,
@@ -908,10 +907,9 @@ seg_projection_plot <- function(segmentation,
       max.overlaps = Inf,
       inherit.aes = FALSE
     )}
-
-  return(p + facet_wrap(~dir) + coord_fixed())
+  
+  return(p + ggplot2::facet_wrap(~dir) + ggplot2::coord_fixed())
 }
-
 
 #' Get a specific slice from a segmentation
 #'
@@ -927,15 +925,15 @@ seg_projection_plot <- function(segmentation,
 #' @export
 
 seg_get_slice <- function(segmentation,
-                     plane,
-                     slice,
-                     fill = FALSE) {
-
+                          plane,
+                          slice,
+                          fill = FALSE) {
+  
   if(!plane %in% c("sagittal", "coronal", "axial")) stop("The plane argument must be one of \"sagittal\", \"coronal\" or \"axial\".")
   if(!plane %in% names(segmentation@slices)) stop(paste0("the ", plane, " plane was not found in this segmentation."))
   if(class(slice) == "numeric" & length(segmentation@slices[[plane]]) < slice) stop(paste0("Slice ", slice, " is higher than total amount of slices for this plane"))
   if(class(slice) == "character" & !slice %in% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
-
+  
   if(fill)  {
     df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) poly_fill(poly_build(y))))))
   } else {

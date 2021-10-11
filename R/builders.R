@@ -54,12 +54,12 @@ slice_make <- function(M,
          stop("Must select a `plane` out of \"sagittal\", \"coronal\", \"axial\"")
   )
 
-  axis_plane <- data.table(split(M, by = colnames(M)[uc]))[[1]]
+  axis_plane <- data.table::data.table(split(M, by = colnames(M)[uc]))[[1]]
 
   columns <- c(xc, yc, uc, 4)
 
   for (i in seq_len(length(axis_plane))) {
-    axis_plane[[i]] <- axis_plane[[i]][, columns, with = FALSE]
+    axis_plane[[i]] <- data.table::as.data.table(axis_plane[[i]][, columns, with = FALSE])
     colnames(axis_plane[[i]]) <- c("x", "y", "slice", "structure")
   }
 

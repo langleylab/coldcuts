@@ -1,6 +1,3 @@
 exportPattern("^[[:alpha:]]+")
-import(data.table)
-import(ggplot2)
-import(ggraph)
 importFrom("methods", "new")
 importFrom("utils", "head", "installed.packages", "read.csv", "read.table")
