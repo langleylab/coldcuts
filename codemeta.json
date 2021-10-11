@@ -1,5 +1,8 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "coldcuts",
   "description": "coldcuts automatically generates polygons from 3D segmentations or\n   parcellations along all anatomical axes, and provides plotting functions \n   to visualize structures and colour them according to user-defined datasets.",
@@ -251,7 +254,14 @@
   ],
   "codeRepository": "https://github.com/langleylab/coldcuts",
   "readme": "https://github.com/langleylab/coldcuts/blob/main/README.md",
-  "fileSize": "119.352KB",
+  "fileSize": "123.403KB",
   "contIntegration": "https://github.com/langleylab/coldcuts/actions",
-  "keywords": ["imaging", "neuroscience", "neuroimaging", "data-visualization", "ggplot2", "r"]
+  "keywords": [
+    "imaging",
+    "neuroscience",
+    "neuroimaging",
+    "data-visualization",
+    "ggplot2",
+    "r"
+  ]
 }

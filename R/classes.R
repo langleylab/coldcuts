@@ -192,7 +192,7 @@ setMethod("show", "segmentation", function(object) {
   cat("              Structures (n): ", length(seg_metadata(object)$structures), "\n")
   cat("             Structures (ID): ", paste(head(seg_metadata(object)$structures), collapse = ", "), "and", (length(seg_metadata(object)$structures) - length(head(seg_metadata(object)$structures))), "more. \n")
   cat("       Structures (acronyms): ", paste(head(ontology(object)[as.character(seg_metadata(object)$structures), "acronym"]), collapse = ", "), "and", (length(ontology(object)[seg_metadata(object)$structures, "acronym"]) - length(head(ontology(object)[seg_metadata(object)$structures, "acronym"]))), "more. \n")
-  cat("Type showCitation(\"name_of_segmentation\") to display the citation(s) for this segmentation.", sep = "")
+  cat("Type citation_show(\"name_of_segmentation\") to display the citation(s) for this segmentation.", sep = "")
   })
 
 
@@ -201,8 +201,8 @@ setMethod("show", "segmentation", function(object) {
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setGeneric("citation", function(x) {
-  standardGeneric("citation")
+setGeneric("citation_show", function(x) {
+  standardGeneric("citation_show")
 })
 
 #' Show citation (method)
@@ -210,7 +210,7 @@ setGeneric("citation", function(x) {
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 
-setMethod("citation", "segmentation", function(x) {
+setMethod("citation_show", "segmentation", function(x) {
   for(n in names(seg_metadata(x)$citation)) {
     cat("Citation (", n, "):\n", sep = "")
     print(seg_metadata(x)$citation[[n]])

@@ -165,7 +165,7 @@ This mapping has to be manually curated by the user, as there is no way to detec
 
 Here we will show how to create this mapping for the GTEx bulk RNA-seq data, using median gene-level TPM values. 
 
-These values can be found [here](https://www.gtexportal.org/home/datasets), in particular the _GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz_ file (available in the `data` folder of this repository as `gtex_tpm.gct`).
+These values can be found [here](https://www.gtexportal.org/home/datasets), in particular the _GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz_ file.
 
 ```{r}
 # read the table
@@ -229,7 +229,7 @@ gtexAssay <- new("segmentationAssay",
                  values = as.matrix(gtex[,3:ncol(gtex)]),
                  mapping = brain_regions)
 
-assays(seg) <- seg_assay_add(segmentation = seg, 
+seg <- seg_assay_add(segmentation = seg, 
                         assay = gtexAssay, 
                         name = "gtex")
 
@@ -244,7 +244,7 @@ Structures can be subset for maximum projections, since using all structures may
 ```{r}
 
 structures_chosen <- unlist(assays(seg)$gtex@mapping)
-structures_chosen <- intersect(structures_chosen, seg)metadata(seg)$structures)
+structures_chosen <- intersect(structures_chosen, seg_metadata(seg)$structures)
 
 seg <- seg_projection_add(name = "gtex", 
                         segmentation = seg, 
@@ -271,7 +271,7 @@ In this table we curate a few segmentations including their source(s).
 | ABA Human Half | _H. sapiens_ | [source](https://community.brain-map.org/t/allen-human-reference-atlas-3d-2020-new/405) | NIfTI | 500 &mu;m | RAS | [ontology](http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph) | [RDS]() | [Ding et al.](https://pubmed.ncbi.nlm.nih.gov/27418273/) _J. Comp. Neurol._ 2016 |
 | ABA Human Full | _H. sapiens_ | [source](https://community.brain-map.org/t/allen-human-reference-atlas-3d-2020-new/405) | NIfTI | 500 &mu;m | RAS | [ontology](http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph) | [RDS]() | [Ding et al.](https://pubmed.ncbi.nlm.nih.gov/27418273/) _J. Comp. Neurol._ 2016 |
 | ABA Mouse CCF2017 | _M. musculus_ | [source](http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2017/structure_masks/) | NRRD | 50 &mu;m | PIR | [ontology](http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph) | [RDS]() | [Lein et al.](https://www.nature.com/articles/nature05453) _Nature_ 2007 |
-| Drosophila JRC2018 | _D. melanogaster_ | [source](https://www.janelia.org/open-science/jrc-2018-brain-templates) | NRRD | 38 &mu;m | RAS | custom ontology | [RDS]() |  [Bogovic et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0236495) _PlOS ONE_ 2020, [Ito et al.](https://www.cell.com/neuron/fulltext/S0896-6273(13)01178-1) _Neuron_ 2014 |
+| Drosophila JRC2018 | _D. melanogaster_ | [source](https://www.janelia.org/open-science/jrc-2018-brain-templates) | NRRD | 38 &mu;m | RAS | custom ontology | [RDS]() |  [Bogovic et al.](https://journals.plos.ocoldcutsrg/plosone/article?id=10.1371/journal.pone.0236495) _PlOS ONE_ 2020, [Ito et al.](https://www.cell.com/neuron/fulltext/S0896-6273(13)01178-1) _Neuron_ 2014 |
 
 
 # Additional details
@@ -303,7 +303,7 @@ For `segmentation` class objects we have:
 - `seg_slice_check()`: checks which slices in each plane contain given structure IDs
 - `seg_get_slice()`: renders a specific slice from a as a data frame
 - `seg_projection_add()` and `seg_projection_remove()`: create or remove a maximum projection within a `segmentation` class object
-- `seg_projection_plote()`: plot a projection using structure label colors, on both sides
+- `seg_projection_plot()`: plot a projection using structure label colors, on both sides
 - `seg_sub_str()`: subset a `segmentation` class object retaining only specific structure IDs
 - `seg_assay_add()`: add a `segmentationAssay` class object to a `segmentation` class object
 

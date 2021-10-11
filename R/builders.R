@@ -558,9 +558,10 @@ seg_assay_add <- function(segmentation,
                     name) {
   if(class(assay) != "segmentationAssay" & !is.null(assay)) {
     stop("Must provide a `segmentationAssay` type object")
-    segmentation@assays$name <- assay
+  } else if(class(assay) == "segmentationAssay" & !is.null(assay)) {
+    segmentation@assays[[name]] <- assay
   } else if(is.null(assay)) {
-    segmentation@assays$name <- NULL
+    segmentation@assays[[name]] <- NULL
   }
   return(segmentation)
 }

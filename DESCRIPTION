@@ -2,11 +2,20 @@ Package: coldcuts
 Type: Package
 Title: Automated generation of segmentation polygons for plotting 
 Version: 0.0.0.900
-Author: Giuseppe D'Agostino
+Authors@R: c(person(given = "Giuseppe",
+             family = "D'Agostino",
+             role = c("aut", "cre", "cph"),
+             email = "g.a.dagostino@gmail.com",
+             comment = c(ORCID = "0000-0001-8315-7406")),
+             person(given = "Sarah",
+             family = "Langley",
+             role = c("aut")))
 Maintainer: Giuseppe D'Agostino <g.a.dagostino@gmail.com>
 Description: coldcuts automatically generates polygons from 3D segmentations or
    parcellations along all anatomical axes, and provides plotting functions 
    to visualize structures and colour them according to user-defined datasets.
+URL: https://github.com/langleylab/coldcuts
+BugReports: https://github.com/langleylab/coldcuts/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
