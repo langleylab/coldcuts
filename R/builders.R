@@ -149,7 +149,7 @@ poly_fill <- function(point_set,
   )
 
   colnames(box) <- c("x", "y")
-  box <- box[which(splancs::inout(box, point_set, bound = NULL)),]
+  box <- box[which(splancs::inout(box, point_set, bound = NULL)), ]
   box <- rbind(box, point_set[, 1:2])
   box <- box[!duplicated(box), ]
 
