@@ -42,7 +42,7 @@ jobs:
       - name: Install system dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install pkg-config gdal proj geos
+          brew install pkg-config gdal proj geos xquartz
           gdal-config --version
 
       - uses: r-lib/actions/setup-r-dependencies@v1
