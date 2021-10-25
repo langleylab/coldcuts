@@ -47,7 +47,8 @@ slice_make <- function(M,
     yc <- 2
   } else stop("Must select a `plane` out of \"sagittal\", \"coronal\", \"axial\"")
   
-  
+  if(ncol(M) > 4) M <- M[, c(paste0("V",1:3), "value"), with = FALSE] #Remove 4th dimension
+    
   axis_plane <- data.table(split(M, by = colnames(M)[uc]))[[1]]
   
   columns <- c(xc, yc, uc, 4)
@@ -460,81 +461,6 @@ poly_set_make <- function(structure_list,
   return(polygon_list)
 }
 
-
-#' Create a palette for an ontology/tree
-#'
-#' Generates a maximally separated color palette for tree nodes taking into account the level at which colors should be initially resolved
-#'
-#' @param o a data frame containing the ontology/tree
-#' @param graph_depth a numeric defining the graph depth at which the initial colouring should be resolved. Can only be used if \code{start_nodes} is NULL
-#' @param start_nodes a character vector with the acronyms of the nodes that are being selected for initial colouring
-#' @param colorspace the color space to be used as input for \code{qualpal} - see \code{?qualpal} for more information. Defaults to \code{"pretty"}.
-#' @param default_col a character indicating the color to be used for nodes that will not be colored
-#'
-#' @return a vector of colors ordered by the same order as the nodes
-#'
-#' @export
-
-ontology_make_palette <- function(o,
-                                 graph_depth = NULL,
-                                 start_nodes = NULL,
-                                 colorspace = "pretty",
-                                 default_col = "white") {
-
-  # Start the colors with the default
-  rownames(o) <- o$id
-  o$col <- default_col
-  o$visited <- FALSE
-
-  if (is.null(start_nodes) & is.null(graph_depth)) stop("Must choose one between start_nodes or graph_depth")
-  if (!is.null(start_nodes) & !is.null(graph_depth)) stop("Must choose one between start_nodes or graph_depth")
-
-  # Maximally spaced color palette for the graph depth we will group on
-  if (is.null(start_nodes) & !is.null(graph_depth)) {
-    st_pal <- qualpalr::qualpal(n = sum(o$graph_depth == graph_depth & o$has_children == TRUE), colorspace = colorspace)
-    st_pal_hex <- st_pal$hex
-    st_pal_HSL <- st_pal$HSL
-    names(st_pal_hex) <- o$id[o$graph_depth == graph_depth & o$has_children == TRUE]
-  } else if (!is.null(start_nodes) & is.null(graph_depth)) {
-    st_pal <- qualpalr::qualpal(n = sum(o$acronym %in% start_nodes), colorspace = colorspace)
-    st_pal_hex <- st_pal$hex
-    st_pal_HSL <- st_pal$HSL
-    names(st_pal_hex) <- o$id[o$acronym %in% start_nodes]
-  }
-
-  # Assign colors to selected depth/nodes
-  o[names(st_pal_hex), "col"] <- st_pal_hex
-  o[names(st_pal_hex), "visited"] <- TRUE
-
-  # Assign color palettes to structures that are drawn (no children)
-  for (i in names(st_pal_hex)) {
-    colvec <- o$col[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE]
-
-    if (length(colvec) < 2) {
-      colvec <- st_pal_hex[i]
-    } else {
-      H_factor <- 15 / (length(colvec)^2)
-
-      colvec <- colorspace::hex(colorspace::HLS(
-        seq(st_pal_HSL[st_pal_hex[i], 1], st_pal_HSL[st_pal_hex[i], 1] + (H_factor * length(colvec)), length.out = length(colvec)),
-        scales::rescale(seq(st_pal_HSL[st_pal_hex[i], 3], st_pal_HSL[st_pal_hex[i], 3] - (0.045 * length(colvec)), length.out = length(colvec)), to = c(st_pal_HSL[st_pal_hex[i], 3], 0.2)),
-        scales::rescale(seq(st_pal_HSL[st_pal_hex[i], 2], st_pal_HSL[st_pal_hex[i], 2] + (0.015 * length(colvec)), length.out = length(colvec)), to = c(st_pal_HSL[st_pal_hex[i], 2], 0.8))
-      ))
-
-      o$col[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE] <- colvec
-      o$visited[grepl(i, o$structure_id_path) & o$has_children == FALSE & o$visited == FALSE] <- TRUE
-
-      # Color the rest of the nodes with children but not root using the root node color
-      o$col[grepl(i, o$structure_id_path) & o$has_children == TRUE & o$visited == FALSE] <- st_pal_hex[i]
-      o$visited[grepl(i, o$structure_id_path) & o$has_children == TRUE & o$visited == FALSE] <- TRUE
-    }
-  }
-
-  # Warn the user about nodes they did not pick/will not be coloured
-  if (any(o$col == default_col)) warning(paste0("The following nodes will not be coloured: ", paste(o$acronym[o$col == default_col], collapse = ", ")))
-
-  return(o$col)
-}
 
 #' Assay setter
 #'

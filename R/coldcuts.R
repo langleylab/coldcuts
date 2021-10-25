@@ -96,6 +96,7 @@ seg_draw <- function(nifti_file = NULL,
     nifti <- oro.nifti::readNIfTI(nifti_file)
     if (verbose) cat("done.\n")
     n_image <- oro.nifti::img_data(nifti)
+    if(sum(pixdim(nifti)[2:5] > 0) > 3) warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
     pixdims <- oro.nifti::pixdim(nifti)[2:4]
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
@@ -687,7 +688,8 @@ seg_plot <- function(segmentation,
 #' @param smoothness numeric, the smoothing to be used. Default is 3.
 #' @param min_points numeric, the minimum points to smooth polygons. Default is 5.
 #' @param color_pal character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}
-#' @param show_labels logical, should segmentation labels be showed? Default is \code{TRUE}
+#' @param show_labels logical, should segmentation labels be shown? Default is \code{TRUE}
+#' @param remove_axes logical, should axes be shown? Default is \code{FALSE}
 #'
 #' @return a `ggplot` plot in which structures are coloured according to a numeric value
 #'
@@ -702,7 +704,8 @@ seg_feature_plot <- function(segmentation,
                              smoothness = 3,
                              min_points = 5,
                              color_pal = NULL,
-                             show_labels = TRUE){
+                             show_labels = TRUE,
+                             remove_axes = TRUE){
   
   if(is.null(projection)) {
     if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
@@ -787,6 +790,13 @@ seg_feature_plot <- function(segmentation,
       inherit.aes = FALSE
     )}
   
+  if(remove_axes) {
+    p <- p + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                            axis.text.x = ggplot2::element_blank(),
+                            axis.text.y = ggplot2::element_blank(),
+                            axis.ticks = ggplot2::element_blank())
+  }
+    
   return(p + ggplot2::coord_fixed() + ggplot2::ggtitle(paste0(assay, " in projection ", projection)))
 }
 

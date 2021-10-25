@@ -14,7 +14,8 @@ seg_feature_plot(
   smoothness = 3,
   min_points = 5,
   color_pal = NULL,
-  show_labels = TRUE
+  show_labels = TRUE,
+  remove_axes = TRUE
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ seg_feature_plot(
 
 \item{color_pal}{character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}}
 
-\item{show_labels}{logical, should segmentation labels be showed? Default is \code{TRUE}}
+\item{show_labels}{logical, should segmentation labels be shown? Default is \code{TRUE}}
+
+\item{remove_axes}{logical, should axes be shown? Default is \code{FALSE}}
 }
 \value{
 a `ggplot` plot in which structures are coloured according to a numeric value
