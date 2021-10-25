@@ -37,7 +37,6 @@ Imports:
     reshape2,
     rgdal,
     scales,
-    smoothr,
     tidygraph
 Suggests:
     nat

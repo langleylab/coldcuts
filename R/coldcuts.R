@@ -44,7 +44,7 @@ seg_draw <- function(nifti_file = NULL,
                      subset_axial = NULL,
                      reference_space = NULL,
                      citation = NULL,
-                     parallel = TRUE) {
+                     parallel = FALSE) {
   #Sanity checks
   if(!is.null(nrrd_file) & !"nat" %in% rownames(installed.packages())) stop("In order to read a NRRD file you must first install the package `nat`.")
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
@@ -134,7 +134,7 @@ seg_draw <- function(nifti_file = NULL,
   
   if (!is.null(array) & is.null(molten_array) & (is.null(subset_sagittal) & is.null(subset_coronal) & is.null(subset_axial))) {
     if (verbose) cat("Melting array...")
-    M <- data.table::as.data.table(n_image)
+    M <- as.data.table(n_image)
     M <- M[M$value > 0, ]
     if (verbose) cat("done.\n")
   } else if (is.null(array) & !is.null(molten_array)) {
@@ -142,7 +142,7 @@ seg_draw <- function(nifti_file = NULL,
     M <- molten_array
   } else if (is.null(array) & is.null(molten_array) & (!is.null(nifti_file) | !is.null(nrrd_file))) {
     if (verbose) cat("Melting array...")
-    M <- data.table::as.data.table(n_image)
+    M <- as.data.table(n_image)
     M <- M[M$value > 0, ]
     if (verbose) cat("done.\n")
   }
@@ -175,17 +175,17 @@ seg_draw <- function(nifti_file = NULL,
     M_s <- reshape2::melt(n_image[subset_sagittal, , ])
     M_s$V1 <- subset_sagittal
     M_s <- M_s[, c(4, 1, 2, 3)]
-    M_s <- data.table::as.data.table(M_s[M_s$value > 0, ])
+    M_s <- data.table(M_s[M_s$value > 0, ])
     
     M_c <- reshape2::melt(n_image[, subset_coronal, ])
     M_c$V2 <- subset_coronal
     M_c <- M_c[, c(1, 4, 2, 3)]
-    M_c <- data.table::as.data.table(M_c[M_c$value > 0, ])
+    M_c <- data.table(M_c[M_c$value > 0, ])
     
     M_a <- reshape2::melt(n_image[, , subset_axial])
     M_a$V3 <- subset_axial
     M_a <- M_a[, c(1, 2, 4, 3)]
-    M_a <- data.table::as.data.table(M_a[M_a$value > 0, ])
+    M_a <- data.table(M_a[M_a$value > 0, ])
     
     colnames(M_s) <- colnames(M_c) <- colnames(M_a) <- c("V1", "V2", "V3", "value")
     if (verbose) cat("done.\n")
@@ -227,7 +227,7 @@ seg_draw <- function(nifti_file = NULL,
   
   if (verbose) cat("Compiling structure tables...")
   str_table_all <- lapply(planes_chosen, function(n) {
-    structure_slices <- data.table::as.data.table(cbind(unlist(lapply(unlist(slices[[n]]), function(x) x@structure)),
+    structure_slices <- data.table(cbind(unlist(lapply(unlist(slices[[n]]), function(x) x@structure)),
                                                         unlist(unlist(lapply(unlist(slices[[n]]), function(x) x@slice)))))
     structure_slices <- structure_slices[!duplicated(structure_slices[,1:2]),]
     colnames(structure_slices) <- c("structure", "slice")
@@ -413,8 +413,8 @@ outline_draw <- function(M,
   )
   
   columns <- c(xc, yc)
-  df <- data.table::as.data.table(M[, columns, with = FALSE])
-  df <- data.table::as.data.table(df[!duplicated(df[, 1:2]), ])
+  df <- data.table(M[, columns, with = FALSE])
+  df <- data.table(df[!duplicated(df[, 1:2]), ])
   colnames(df) <- c("x", "y")
   outline <- poly_make(df)
   return(outline)
@@ -585,7 +585,9 @@ seg_plot <- function(segmentation,
     ggplot2::theme(
       legend.position = "none",
       panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank()
+      panel.grid.minor = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank()
     ) +
     ggplot2::facet_wrap(~axis, nrow = wrap_options)
   
@@ -765,7 +767,9 @@ seg_feature_plot <- function(segmentation,
                                   colours = cpal) +
     ggplot2::labs(fill = feature) +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank())
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank())
   
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
@@ -783,7 +787,7 @@ seg_feature_plot <- function(segmentation,
       inherit.aes = FALSE
     )}
   
-  return(p + ggplot2::coord_fixed())
+  return(p + ggplot2::coord_fixed() + ggplot2::ggtitle(paste0(assay, " in projection ", projection)))
 }
 
 #' Remove a projection from a segmentation
@@ -890,7 +894,9 @@ seg_projection_plot <- function(segmentation,
     ggplot2::scale_fill_manual(values = c(cols_1, "white")) +
     ggplot2::theme(legend.position = "none",
                    panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank())
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank())
   
   if(show_labels) {
     p <- p + ggrepel::geom_text_repel(
