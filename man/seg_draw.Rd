@@ -23,7 +23,7 @@ seg_draw(
   subset_axial = NULL,
   reference_space = NULL,
   citation = NULL,
-  parallel = TRUE
+  parallel = FALSE
 )
 }
 \arguments{

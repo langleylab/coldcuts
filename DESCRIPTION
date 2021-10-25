@@ -37,7 +37,8 @@ Imports:
     reshape2,
     rgdal,
     scales,
-    tidygraph
+    tidygraph,
+    smoothr
 Suggests:
     nat
 RoxygenNote: 7.1.2

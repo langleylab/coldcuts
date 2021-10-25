@@ -4,17 +4,15 @@
 \alias{slice_make}
 \title{Make slices}
 \usage{
-slice_make(M, plane = "sagittal", return = "structures")
+slice_make(M, plane = "sagittal")
 }
 \arguments{
 \item{M}{a data frame molten from a 3D array in long format, with x, y and z columns as \code{"Var1"}, \code{"Var2"}, \code{"Var3"} and the value column containing the voxel annotation}
 
 \item{plane}{character, one of \code{"sagittal"}, \code{"coronal"}, or \code{"axial"}. The plane along which to slice the array. Default is \code{"sagittal"}}
-
-\item{return}{character, one of \code{"planes"} or \code{"structures"}. Decides whether the returning object is a list of planes, or a nested list of structures (i.e. data frames divided by unique \code{value} values). Default is \code{"structures"}.}
 }
 \value{
-A list of planes, one per slice (if `return` is set to \code{"planes"}), or a list of lists of structures, one list per slice
+A list of lists of structures, one list per slice
 }
 \description{
 Divides a molten 3D array in slices along a selected plane
