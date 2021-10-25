@@ -96,7 +96,7 @@ seg_draw <- function(nifti_file = NULL,
     nifti <- oro.nifti::readNIfTI(nifti_file)
     if (verbose) cat("done.\n")
     n_image <- oro.nifti::img_data(nifti)
-    if(sum(pixdim(nifti)[2:5] > 0) > 3) warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
+    if(sum(oro.nifti::pixdim(nifti)[2:5] > 0) > 3) warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
     pixdims <- oro.nifti::pixdim(nifti)[2:4]
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
