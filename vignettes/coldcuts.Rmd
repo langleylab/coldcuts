@@ -1,8 +1,20 @@
 ---
 title: "Getting started"
+output: rmarkdown::html_vignette
 author: "Giuseppe D'Agostino"
 date: "10/26/2021"
+vignette: >
+  %\VignetteIndexEntry{coldcuts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ## Introduction
 

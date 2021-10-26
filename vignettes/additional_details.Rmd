@@ -1,8 +1,21 @@
 ---
-title: "Additional information"
+title: "Additional details"
 author: "Giuseppe D'Agostino"
 date: "10/26/2021"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{additional_details}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 
 
 ## The `segmentation` class and its components

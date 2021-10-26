@@ -38,7 +38,11 @@ Imports:
     rgdal,
     scales,
     tidygraph,
-    smoothr
+    smoothr,
+    gridExtra
 Suggests:
+    rmarkdown,
+    knitr,
     nat
 RoxygenNote: 7.1.2
+VignetteBuilder: knitr

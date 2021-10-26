@@ -4,4 +4,4 @@
 brainspan.R
 brainspan_rpkm/
 splinepoly.R.
-docs
+inst/doc
