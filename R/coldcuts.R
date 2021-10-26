@@ -847,7 +847,7 @@ seg_projection_plot <- function(segmentation,
   if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   
   proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], poly_build))
-  
+
   centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
     df <- proj_1[proj_1$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
@@ -855,11 +855,12 @@ seg_projection_plot <- function(segmentation,
   })))
   
   centers$structure <- unique(proj_1$structure)
-  centers$acronym <- ontology(segmentation)[centers$structure, "acronym"]
-  centers$col <- ontology(segmentation)[centers$structure, "col"]
+  centers$acronym <- ontology(segmentation)[as.character(centers$structure), "acronym"]
+  centers$col <- ontology(segmentation)[as.character(centers$structure), "col"]
   
   if(smooth) proj_1 <- poly_smooth(proj_1, by = "subid", smoothness = smoothness)
   proj_1$dir <- names(projections(segmentation, name)[[plane]])[1]
+  proj_1$acronym <- ontology(segmentation)[as.character(proj_1$structure), "acronym"]
   centers$dir <- unique(proj_1$dir)
   
   proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], poly_build))
@@ -871,16 +872,16 @@ seg_projection_plot <- function(segmentation,
   })))
   
   centers2$structure <- unique(proj_2$structure)
-  centers2$acronym <- ontology(segmentation)[centers2$structure, "acronym"]
-  centers2$col <- ontology(segmentation)[centers2$structure, "col"]
+  centers2$acronym <- ontology(segmentation)[as.character(centers2$structure), "acronym"]
+  centers2$col <- ontology(segmentation)[as.character(centers2$structure), "col"]
   
   if(smooth) proj_2 <- poly_smooth(proj_2, by = "subid", smoothness = smoothness)
   proj_2$dir <- names(projections(segmentation, name)[[plane]])[2]
+  proj_2$acronym <- ontology(segmentation)[as.character(proj_2$structure), "acronym"]
   centers2$dir <- unique(proj_2$dir)
   
   proj_all <- rbind(proj_1, proj_2)
-  proj_all$acronym <- ontology(segmentation)[as.character(proj_all$structure), "acronym"]
-  
+
   centers_all <- rbind(centers, centers2)
   
   cols_1 <- sapply(
@@ -891,13 +892,13 @@ seg_projection_plot <- function(segmentation,
   cols_1 <- as.character(cols_1[levels(factor(centers$acronym))])
   
   cols_2 <- sapply(
-    unique(centers$acronym),
-    function(x) unique(centers[centers2$acronym == x, "col"])
+    unique(centers2$acronym),
+    function(x) unique(centers2[centers2$acronym == x, "col"])
   )
   
   cols_2 <- as.character(cols_2[levels(factor(centers2$acronym))])
   
-  p <- ggplot2::ggplot(proj_all, ggplot2::aes_string(x = "x", y = "y", group = "id", fill = "acronym")) +
+  p1 <- ggplot2::ggplot(proj_1, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "acronym")) +
     ggplot2::geom_polygon(col = "black", size = 0.3) +
     ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
     ggplot2::theme_bw() +
@@ -906,11 +907,26 @@ seg_projection_plot <- function(segmentation,
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    axis.title.x = ggplot2::element_blank(),
-                   axis.title.y = ggplot2::element_blank())
+                   axis.title.y = ggplot2::element_blank()) +
+    ggplot2::ggtitle(unique(proj_1$dir)) + 
+    ggplot2::coord_fixed()
+  
+  p2 <- ggplot2::ggplot(proj_2, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "acronym")) +
+    ggplot2::geom_polygon(col = "black", size = 0.3) +
+    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
+    ggplot2::theme_bw() +
+    ggplot2::scale_fill_manual(values = c(cols_2, "white")) +
+    ggplot2::theme(legend.position = "none",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank()) +
+    ggplot2::ggtitle(unique(proj_2$dir)) + 
+    ggplot2::coord_fixed()
   
   if(show_labels) {
-    p <- p + ggrepel::geom_text_repel(
-      data = centers_all,
+    p1 <- p1 + ggrepel::geom_text_repel(
+      data = centers,
       ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
@@ -922,9 +938,25 @@ seg_projection_plot <- function(segmentation,
       size = 2,
       max.overlaps = Inf,
       inherit.aes = FALSE
-    )}
+    )
+    
+    p2 <- p2 + ggrepel::geom_text_repel(
+      data = centers2,
+      ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
+      color = "white",
+      segment.color = "black",
+      segment.size = 0.2,
+      bg.color = "black",
+      bg.r = 0.15,
+      alpha = 1,
+      box.padding = 0.6,
+      size = 2,
+      max.overlaps = Inf,
+      inherit.aes = FALSE
+    )
+    }
   
-  return(p + ggplot2::facet_wrap(~dir) + ggplot2::coord_fixed())
+  return(gridExtra::grid.arrange(p1, p2, ncol = 2))
 }
 
 #' Get a specific slice from a segmentation
