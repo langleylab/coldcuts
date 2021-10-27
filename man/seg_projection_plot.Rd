@@ -10,7 +10,8 @@ seg_projection_plot(
   name,
   smooth = TRUE,
   smoothness = 3,
-  show_labels = FALSE
+  show_labels = FALSE,
+  remove_axes = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ seg_projection_plot(
 \item{smoothness}{numeric, the kernel bandwidth for kernel smoothing. Default is 3.}
 
 \item{show_labels}{logical, should structure acronyms be shown as labels? Default is \code{FALSE}}
+
+\item{remove_axes}{logical, should axes be removed? Default is \code{TRUE}}
 }
 \value{
 a `ggplot` plot of the projection in both directions

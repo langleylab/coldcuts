@@ -280,8 +280,6 @@ seg_projection_add <- function(name,
 
     ib_df <- ib_df[!duplicated(ib_df[,1:2]),]
 
-
-
     fill_list_AB[[i]] <- lapply(unique(ib_df$id), function(s)
       new("segPointSet",
           coords = ib_df[ib_df$id == s, c("x", "y")],
@@ -325,11 +323,11 @@ seg_projection_add <- function(name,
                                     "dir1" = c("LR", "PA", "IS"),
                                     "dir2" = c("RL", "AP", "SI")),
                  "PIR" = data.frame(row.names  = c("sagittal", "coronal", "axial"),
-                                    "dir1" = c("LR", "AP", "SI"),
-                                    "dir2" = c("RL", "PA", "IS")),
+                                    "dir1" = c("RL", "AP", "SI"),
+                                    "dir2" = c("LR", "PA", "IS")),
                  "LPS" = data.frame(row.names  = c("sagittal", "coronal", "axial"),
-                                    "dir1" = c("RL", "AP", "IS"),
-                                    "dir2" = c("LR", "PA", "SI")))
+                                    "dir1" = c("LR", "AP", "IS"),
+                                    "dir2" = c("RL", "PA", "SI")))
 
 
     if(name %in% names(segmentation@projections)) warning(paste0("The name ", name, " for the projection is already present, so the slot will be overwritten."))

@@ -96,7 +96,10 @@ seg_draw <- function(nifti_file = NULL,
     nifti <- oro.nifti::readNIfTI(nifti_file)
     if (verbose) cat("done.\n")
     n_image <- oro.nifti::img_data(nifti)
-    if(sum(oro.nifti::pixdim(nifti)[2:5] > 0) > 3) warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
+    if(sum(oro.nifti::pixdim(nifti)[2:5] > 0) > 3) {
+      warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
+      n_image <- array(n_image, dim = dim(n_image)[1:3])
+      }
     pixdims <- oro.nifti::pixdim(nifti)[2:4]
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
@@ -284,8 +287,8 @@ dir_change <- function(array,
                        from = "PIR",
                        to = "RAS") {
   
-  if(!from %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument from: PIR, RAS, LPS")
-  if(!to %in% c("PIR", "RAS", "LPS")) stop("Must provide one of the following values to argument to: PIR, RAS, LPS")
+  if(!from %in% c("PIR", "RAS", "LPS", "LAS")) stop("Must provide one of the following values to argument from: PIR, RAS, LPS, LAS")
+  if(!to %in% c("PIR", "RAS", "LPS", "LAS")) stop("Must provide one of the following values to argument to: PIR, RAS, LPS, LAS")
   
   if (from == "PIR" & to == "RAS") {
     array_rot <- freesurferformats::rotate3D(freesurferformats::rotate3D(array, axis = 1, degrees = 90), axis = 3, degrees = 90)
@@ -304,6 +307,12 @@ dir_change <- function(array,
   }
   if (from == "PIR" & to == "LPS") {
     array_rot <- freesurferformats::rotate3D(freesurferformats::rotate3D(array, axis = 3, degrees = 90), axis = 1, degrees = 270)
+  }
+  if (from == "LAS" & to == "RAS") {
+    array_rot <- array[dim(array)[1]:1, , ]
+  }
+  if (from == "LAS" & to == "LPS") {
+    array_rot <- freesurferformats::rotate3D(array[dim(array)[1]:1, , ], axis = 3, degrees = 180)
   }
   return(array_rot)
 }
@@ -829,6 +838,7 @@ seg_projection_remove <- function(segmentation,
 #' @param smooth logical, should polygons be smoothed? Default is \code{TRUE}
 #' @param smoothness numeric, the kernel bandwidth for kernel smoothing. Default is 3.
 #' @param show_labels logical, should structure acronyms be shown as labels? Default is \code{FALSE}
+#' @param remove_axes logical, should axes be removed? Default is \code{TRUE}
 #'
 #' @return a `ggplot` plot of the projection in both directions
 #'
@@ -839,12 +849,13 @@ seg_projection_plot <- function(segmentation,
                                 name,
                                 smooth = TRUE,
                                 smoothness = 3,
-                                show_labels = FALSE
+                                show_labels = FALSE,
+                                remove_axes = TRUE
 ){
   
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
-  if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The projection named ", name, " was not found in this segmentation."))
+  if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The plane named ", plane, " was not found in this segmentation's projection named ", name, "."))
   
   proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], poly_build))
 
@@ -924,6 +935,26 @@ seg_projection_plot <- function(segmentation,
     ggplot2::ggtitle(unique(proj_2$dir)) + 
     ggplot2::coord_fixed()
   
+    if(remove_axes) {
+      p1 <- p1 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                              axis.text.x = ggplot2::element_blank(),
+                              axis.text.y = ggplot2::element_blank(),
+                              axis.ticks = ggplot2::element_blank())
+      p2 <- p2 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                                axis.text.x = ggplot2::element_blank(),
+                                axis.text.y = ggplot2::element_blank(),
+                                axis.ticks = ggplot2::element_blank())
+    }
+   
+  
+  if(plane == "sagittal") {
+    p1 <- p1 + ggplot2::scale_x_reverse()
+  } else if(plane == "coronal") {
+    p2 <- p2 +  ggplot2::scale_x_reverse()
+  } else if (plane == "axial") {
+    p1 <- p1 +  ggplot2::scale_x_reverse()
+  }
+  
   if(show_labels) {
     p1 <- p1 + ggrepel::geom_text_repel(
       data = centers,
@@ -953,7 +984,7 @@ seg_projection_plot <- function(segmentation,
       size = 2,
       max.overlaps = Inf,
       inherit.aes = FALSE
-    )
+    ) 
     }
   
   return(gridExtra::grid.arrange(p1, p2, ncol = 2))
