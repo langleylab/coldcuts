@@ -1,8 +1,8 @@
 ---
-title: "segmentations"
+title: "Processed segmentations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{segmentations}
+  %\VignetteIndexEntry{Processed_segmentations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

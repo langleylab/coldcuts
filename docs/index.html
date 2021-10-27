@@ -60,7 +60,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/additional_details.html">Additional information</a>
+      <a href="articles/additional_details.html">Additional details</a>
+    </li>
+    <li>
+      <a href="articles/segmentations.html">Processed segmentations</a>
     </li>
   </ul>
 </li>
@@ -114,109 +117,6 @@
 <a href="#installing-the-package" class="anchor"></a>Installing the package</h2>
 <p>You can install this package using <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github()</a></code>:</p>
 <pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("langleylab/coldcuts")</a></code></pre>
-</div>
-<div id="finding-additional-segmentations-wip" class="section level2">
-<h2 class="hasAnchor">
-<a href="#finding-additional-segmentations-wip" class="anchor"></a>Finding additional segmentations (WIP)</h2>
-<p>Many institutions have published their own segmentations as NIfTI, NRRD or RAW files. In this table we curate a few segmentations including their source(s).</p>
-<table class="table">
-<colgroup>
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-</colgroup>
-<thead><tr class="header">
-<th>Name</th>
-<th>Organism</th>
-<th>Source</th>
-<th>Format</th>
-<th>Voxel dimension</th>
-<th>Orientation</th>
-<th>Ontology</th>
-<th>RDS</th>
-<th>Citation</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>ABA Human Half</td>
-<td><em>H. sapiens</em></td>
-<td><a href="https://community.brain-map.org/t/allen-human-reference-atlas-3d-2020-new/405">source</a></td>
-<td>NIfTI</td>
-<td>500 μm</td>
-<td>RAS</td>
-<td><a href="http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph">ontology</a></td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="https://pubmed.ncbi.nlm.nih.gov/27418273/">Ding et al.</a> <em>J. Comp. Neurol.</em> 2016</td>
-</tr>
-<tr class="even">
-<td>ABA Human Full</td>
-<td><em>H. sapiens</em></td>
-<td><a href="https://community.brain-map.org/t/allen-human-reference-atlas-3d-2020-new/405">source</a></td>
-<td>NIfTI</td>
-<td>500 μm</td>
-<td>RAS</td>
-<td><a href="http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph">ontology</a></td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="https://pubmed.ncbi.nlm.nih.gov/27418273/">Ding et al.</a> <em>J. Comp. Neurol.</em> 2016</td>
-</tr>
-<tr class="odd">
-<td>Hammersmith Atlas</td>
-<td><em>H. sapiens</em></td>
-<td><a href="http://brain-development.org/brain-atlases/adult-brain-atlases/adult-brain-maximum-probability-map-hammers-mith-atlas-n30r83-in-mni-space/">source</a></td>
-<td>NIfTI</td>
-<td>1 mm</td>
-<td>RAS</td>
-<td>custom ontology</td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/12874777">Hammers et al.</a> <em>Human Brain Mapping</em> 2003, <a href="http://www.ncbi.nlm.nih.gov/pubmed/18234511">Gousias et al.</a> <em>NeuroImage</em> 2007, <a href="http://doi.org/10.1016/j.neuroimage.2017.01.073">Faillenot et al.</a> <em>NeuroImage</em> 2017, <a href="http://doi.org/10.1371/journal.pone.0180866">Wild et al.</a> PLoS ONE 2017,</td>
-</tr>
-<tr class="even">
-<td>ABA Mouse CCF2017</td>
-<td><em>M. musculus</em></td>
-<td><a href="http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2017/structure_masks/">source</a></td>
-<td>NRRD</td>
-<td>50 μm</td>
-<td>PIR</td>
-<td><a href="http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph">ontology</a></td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="https://www.nature.com/articles/nature05453">Lein et al.</a> <em>Nature</em> 2007</td>
-</tr>
-<tr class="odd">
-<td>Drosophila JRC2018</td>
-<td><em>D. melanogaster</em></td>
-<td><a href="https://www.janelia.org/open-science/jrc-2018-brain-templates">source</a></td>
-<td>NRRD</td>
-<td>38 μm</td>
-<td>RAS</td>
-<td>custom ontology</td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="https://journals.plos.ocoldcutsrg/plosone/article?id=10.1371/journal.pone.0236495">Bogovic et al.</a> <em>PlOS ONE</em> 2020, <a href="https://www.cell.com/neuron/fulltext/S0896-6273(13)01178-1">Ito et al.</a> <em>Neuron</em> 2014</td>
-</tr>
-<tr class="even">
-<td>Chimpanzee Davi130 Juna.Chimp</td>
-<td><em>P. troglodytes </em></td>
-<td><a href="https://www.chimpanzeebrain.org/node/2347">source</a></td>
-<td>NIfTI</td>
-<td>500 μm</td>
-<td>RAS</td>
-<td>custom ontology</td>
-<td><a href="">RDS</a></td>
-<td>
-<a href="https://pubmed.ncbi.nlm.nih.gov/33226338/">Vickery et al.</a> <em>eLife</em> 2020</td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 
