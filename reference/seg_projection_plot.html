@@ -140,9 +140,8 @@
 
     <pre class="usage"><span class='fu'>seg_projection_plot</span><span class='op'>(</span>
   <span class='va'>segmentation</span>,
-  <span class='va'>name</span>,
   <span class='va'>plane</span>,
-  minsize <span class='op'>=</span> <span class='fl'>10</span>,
+  <span class='va'>name</span>,
   smooth <span class='op'>=</span> <span class='cn'>TRUE</span>,
   smoothness <span class='op'>=</span> <span class='fl'>3</span>,
   show_labels <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -157,16 +156,12 @@
       <td><p>a <code>segmentation</code> class object.</p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>character, name of the projection to be plotted from the <code>segmentation</code> slot.</p></td>
-    </tr>
-    <tr>
       <th>plane</th>
       <td><p>character, name of the plane (one of `sagittal`, `coronal`, or `axial`)</p></td>
     </tr>
     <tr>
-      <th>minsize</th>
-      <td><p>numeric, minimum number of vertices to draw a polygon. Default is 10.</p></td>
+      <th>name</th>
+      <td><p>character, name of the projection to be plotted from the <code>segmentation</code> slot.</p></td>
     </tr>
     <tr>
       <th>smooth</th>
