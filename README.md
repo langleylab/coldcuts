@@ -11,7 +11,7 @@
 
 The name is inspired by one of Italy's best products.
 
-🎓 You can find the documentation and a tutorial to get started at the package's page: langleylab.github.io/coldcuts
+🎓 You can find the documentation and a tutorial to get started at the package's page: https://langleylab.github.io/coldcuts
 
 🗂 You can find additional segmentation files, ontologies and other information at https://langleylab.github.io/coldcuts/articles/segmentations.html
 
