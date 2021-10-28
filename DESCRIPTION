@@ -4,12 +4,13 @@ Title: Automated generation of segmentation polygons for plotting
 Version: 0.0.0.900
 Authors@R: c(person(given = "Giuseppe",
              family = "D'Agostino",
-             role = c("aut", "cre", "cph"),
+             role = c("aut", "cre"),
              email = "g.a.dagostino@gmail.com",
              comment = c(ORCID = "0000-0001-8315-7406")),
              person(given = "Sarah",
              family = "Langley",
-             role = c("aut")))
+             role = c("aut")),
+             person("Nanyang Technological University", role = "cph"))
 Maintainer: Giuseppe D'Agostino <g.a.dagostino@gmail.com>
 Description: coldcuts automatically generates polygons from 3D segmentations or
    parcellations along all anatomical axes, and provides plotting functions 
