@@ -11,6 +11,10 @@
 
 The name is inspired by one of Italy's best products.
 
+🎓 You can find the documentation and a tutorial to get started at the package's page: langleylab.github.io/coldcuts
+
+🗂 You can find additional segmentation files, ontologies and other information at https://langleylab.github.io/coldcuts/articles/segmentations.html
+
 ## Motivation
 
 When dealing with neuroimaging data, or any other type of numerical data derived from brain tissues, it is important to situate it in its anatomical and structural context. Various authors provide parcellations or segmentations of the brain, according to their best interpretation of which functional and anatomical boundaries make sense for our understanding of the brain. There are several stand-alone tools that allow to visualize and manipulate segmentations. However, neuroimaging data, together with other functional data such as transcriptomics, is often manipulated in a statistical programming
@@ -32,8 +36,15 @@ Thus, **`coldcuts`** is our attempt at bridging the gap between imaging/high thr
 
 ## Installing the package
 
-You can install this package using `devtools::install_github()`:
+⬇️ You can install this package using `devtools::install_github()`:
 
 ```{r}
 devtools::install_github("langleylab/coldcuts")
 ```
+
+## Getting started
+
+🏃🏽‍♀️ You can find a small example to get started [here](https://langleylab.github.io/coldcuts/articles/coldcuts.html)
+
+
+
