@@ -99,7 +99,7 @@ seg_draw <- function(nifti_file = NULL,
     if(sum(oro.nifti::pixdim(nifti)[2:5] > 0) > 3) {
       warning("This file has 4 recorded dimensions, but only the first 3 will be used.", immediate. = TRUE)
       n_image <- array(n_image, dim = dim(n_image)[1:3])
-      }
+    }
     pixdims <- oro.nifti::pixdim(nifti)[2:4]
     units <- oro.nifti::xyzt_units(nifti)
     filename = nifti_file
@@ -232,7 +232,7 @@ seg_draw <- function(nifti_file = NULL,
   if (verbose) cat("Compiling structure tables...")
   str_table_all <- lapply(planes_chosen, function(n) {
     structure_slices <- data.table(cbind(unlist(lapply(unlist(slices[[n]]), function(x) x@structure)),
-                                                        unlist(unlist(lapply(unlist(slices[[n]]), function(x) x@slice)))))
+                                         unlist(unlist(lapply(unlist(slices[[n]]), function(x) x@slice)))))
     structure_slices <- structure_slices[!duplicated(structure_slices[,1:2]),]
     colnames(structure_slices) <- c("structure", "slice")
     return(structure_slices)
@@ -363,6 +363,9 @@ poly_smooth <- function(polygon_set,
                         by = "subid",
                         smoothness = 3,
                         min_points = 5) {
+  
+  if(!"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
+  
   smoothing_list <- lapply(unique(polygon_set[, by]), function(x) {
     poly <- as.data.frame(polygon_set[polygon_set[, by] == x, ])
     
@@ -490,7 +493,7 @@ ontology_plot <- function(segmentation,
 #' @return a `ggplot` object with the graph
 #'
 #' @export
-#'
+
 seg_plot <- function(segmentation,
                      s_slice = NULL,
                      c_slice = NULL,
@@ -503,6 +506,8 @@ seg_plot <- function(segmentation,
                      label_size = 2,
                      minsize = 10,
                      wrap_options = 1) {
+  
+  if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
   
   planes = c("sagittal", "coronal", "axial")
   if(is.null(s_slice)) s_slice <- NULL
@@ -716,6 +721,8 @@ seg_feature_plot <- function(segmentation,
                              show_labels = TRUE,
                              remove_axes = TRUE){
   
+  if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
+  
   if(is.null(projection)) {
     if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
     projection = assay
@@ -772,9 +779,23 @@ seg_feature_plot <- function(segmentation,
   
   p <- ggplot2::ggplot(dmp_all, ggplot2::aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
     ggplot2::geom_polygon(col = "black", size = 0.3) +
-    ggplot2::facet_wrap(~dir) +
-    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
-    ggplot2::theme_bw() +
+    ggplot2::facet_wrap(~dir) 
+  
+  if(smooth) {
+    p <- p +  ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), 
+                                    ggplot2::aes_string(x = "x", y = "y", group = "cluster"), 
+                                    inherit.aes = FALSE, 
+                                    col = "black", 
+                                    fill = "NA") 
+  } else {
+    p <- p +  ggplot2::geom_polygon(data = segmentation@outlines[[plane]], 
+                                    ggplot2::aes_string(x = "x", y = "y", group = "cluster"), 
+                                    inherit.aes = FALSE, 
+                                    col = "black", 
+                                    fill = "NA") 
+  }
+  
+  ggplot2::theme_bw() +
     ggplot2::scale_fill_gradientn(na.value = "white",
                                   colours = cpal) +
     ggplot2::labs(fill = feature) +
@@ -805,7 +826,7 @@ seg_feature_plot <- function(segmentation,
                             axis.text.y = ggplot2::element_blank(),
                             axis.ticks = ggplot2::element_blank())
   }
-    
+  
   return(p + ggplot2::coord_fixed() + ggplot2::ggtitle(paste0(assay, " in projection ", projection)))
 }
 
@@ -833,8 +854,9 @@ seg_projection_remove <- function(segmentation,
 #' Plots a named projection from a segmentation using the ontology color scheme
 #'
 #' @param segmentation a \code{segmentation} class object.
-#' @param plane character, name of the plane (one of `sagittal`, `coronal`, or `axial`)
 #' @param name character, name of the projection to be plotted from the \code{segmentation} slot.
+#' @param plane character, name of the plane (one of `sagittal`, `coronal`, or `axial`)
+#' @param minsize numeric, minimum number of vertices to draw a polygon. Default is 10.
 #' @param smooth logical, should polygons be smoothed? Default is \code{TRUE}
 #' @param smoothness numeric, the kernel bandwidth for kernel smoothing. Default is 3.
 #' @param show_labels logical, should structure acronyms be shown as labels? Default is \code{FALSE}
@@ -845,20 +867,24 @@ seg_projection_remove <- function(segmentation,
 #' @export
 
 seg_projection_plot <- function(segmentation,
-                                plane,
                                 name,
+                                plane,
+                                minsize = 10,
                                 smooth = TRUE,
                                 smoothness = 3,
                                 show_labels = FALSE,
                                 remove_axes = TRUE
 ){
   
+  if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
   if(class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
   if(!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   if(!plane %in% names(segmentation@projections[[name]])) stop(paste0("The plane named ", plane, " was not found in this segmentation's projection named ", name, "."))
   
-  proj_1 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[1]], poly_build))
-
+  selected <- segmentation@projections[[name]][[plane]][[1]][which(lapply(segmentation@projections[[name]][[plane]][[1]], function(x) nrow(x@coords)) > minsize)]
+  
+  proj_1 <- do.call(rbind, lapply(selected, poly_build))
+  
   centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
     df <- proj_1[proj_1$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
@@ -874,7 +900,9 @@ seg_projection_plot <- function(segmentation,
   proj_1$acronym <- ontology(segmentation)[as.character(proj_1$structure), "acronym"]
   centers$dir <- unique(proj_1$dir)
   
-  proj_2 <- do.call(rbind, lapply(projections(segmentation, name)[[plane]][[2]], poly_build))
+  selected <- segmentation@projections[[name]][[plane]][[2]][which(lapply(segmentation@projections[[name]][[plane]][[2]], function(x) nrow(x@coords)) > minsize)]
+  
+  proj_2 <- do.call(rbind, lapply(selected, poly_build))
   
   centers2 <- as.data.frame(do.call(rbind, lapply(unique(proj_2$structure), function(x) {
     df <- proj_2[proj_2$structure == x,]
@@ -892,7 +920,7 @@ seg_projection_plot <- function(segmentation,
   centers2$dir <- unique(proj_2$dir)
   
   proj_all <- rbind(proj_1, proj_2)
-
+  
   centers_all <- rbind(centers, centers2)
   
   cols_1 <- sapply(
@@ -910,9 +938,15 @@ seg_projection_plot <- function(segmentation,
   cols_2 <- as.character(cols_2[levels(factor(centers2$acronym))])
   
   p1 <- ggplot2::ggplot(proj_1, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "acronym")) +
-    ggplot2::geom_polygon(col = "black", size = 0.3) +
-    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
-    ggplot2::theme_bw() +
+    ggplot2::geom_polygon(col = "black", size = 0.3) 
+  
+  if(smooth) {
+    p1 <- p1 + ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  } else {
+    p1 <- p1 + ggplot2::geom_polygon(data = segmentation@outlines[[plane]], ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  }
+  
+  p1 <- p1 + ggplot2::theme_bw() +
     ggplot2::scale_fill_manual(values = c(cols_1, "white")) +
     ggplot2::theme(legend.position = "none",
                    panel.grid.major = ggplot2::element_blank(),
@@ -923,9 +957,15 @@ seg_projection_plot <- function(segmentation,
     ggplot2::coord_fixed()
   
   p2 <- ggplot2::ggplot(proj_2, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "acronym")) +
-    ggplot2::geom_polygon(col = "black", size = 0.3) +
-    ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA") +
-    ggplot2::theme_bw() +
+    ggplot2::geom_polygon(col = "black", size = 0.3) 
+  
+  if(smooth) {
+    p2 <- p2 + ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  } else {
+    p2 <- p2 + ggplot2::geom_polygon(data = segmentation@outlines[[plane]], ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  }    
+  
+  p2 <- p2 + ggplot2::theme_bw() +
     ggplot2::scale_fill_manual(values = c(cols_2, "white")) +
     ggplot2::theme(legend.position = "none",
                    panel.grid.major = ggplot2::element_blank(),
@@ -935,17 +975,17 @@ seg_projection_plot <- function(segmentation,
     ggplot2::ggtitle(unique(proj_2$dir)) + 
     ggplot2::coord_fixed()
   
-    if(remove_axes) {
-      p1 <- p1 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+  if(remove_axes) {
+    p1 <- p1 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
                               axis.text.x = ggplot2::element_blank(),
                               axis.text.y = ggplot2::element_blank(),
                               axis.ticks = ggplot2::element_blank())
-      p2 <- p2 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
-                                axis.text.x = ggplot2::element_blank(),
-                                axis.text.y = ggplot2::element_blank(),
-                                axis.ticks = ggplot2::element_blank())
-    }
-   
+    p2 <- p2 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                              axis.text.x = ggplot2::element_blank(),
+                              axis.text.y = ggplot2::element_blank(),
+                              axis.ticks = ggplot2::element_blank())
+  }
+  
   
   if(plane == "sagittal") {
     p1 <- p1 + ggplot2::scale_x_reverse()
@@ -985,7 +1025,7 @@ seg_projection_plot <- function(segmentation,
       max.overlaps = Inf,
       inherit.aes = FALSE
     ) 
-    }
+  }
   
   return(gridExtra::grid.arrange(p1, p2, ncol = 2))
 }
