@@ -6,8 +6,9 @@
 \usage{
 seg_projection_plot(
   segmentation,
-  plane,
   name,
+  plane,
+  minsize = 10,
   smooth = TRUE,
   smoothness = 3,
   show_labels = FALSE,
@@ -17,9 +18,11 @@ seg_projection_plot(
 \arguments{
 \item{segmentation}{a \code{segmentation} class object.}
 
+\item{name}{character, name of the projection to be plotted from the \code{segmentation} slot.}
+
 \item{plane}{character, name of the plane (one of `sagittal`, `coronal`, or `axial`)}
 
-\item{name}{character, name of the projection to be plotted from the \code{segmentation} slot.}
+\item{minsize}{numeric, minimum number of vertices to draw a polygon. Default is 10.}
 
 \item{smooth}{logical, should polygons be smoothed? Default is \code{TRUE}}
 
