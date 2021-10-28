@@ -35,14 +35,13 @@ Imports:
     polylabelr,
     qualpalr,
     reshape2,
-    rgdal,
     scales,
     tidygraph,
-    smoothr,
     gridExtra
 Suggests:
     rmarkdown,
     knitr,
-    nat
+    nat,
+    smoothr
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
