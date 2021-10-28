@@ -1,4 +1,0 @@
-exportPattern("^[[:alpha:]]+")
-importFrom("methods", "new")
-importFrom("utils", "head", "installed.packages", "read.csv", "read.table")
-importFrom("data.table", "data.table", "as.data.table")
