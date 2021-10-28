@@ -14,7 +14,7 @@ Maintainer: Giuseppe D'Agostino <g.a.dagostino@gmail.com>
 Description: coldcuts automatically generates polygons from 3D segmentations or
    parcellations along all anatomical axes, and provides plotting functions 
    to visualize structures and colour them according to user-defined datasets.
-URL: https://github.com/langleylab/coldcuts
+URL: https://langleylab.github.io/coldcuts, https://github.com/langleylab/coldcuts
 BugReports: https://github.com/langleylab/coldcuts/issues
 License: MIT + file LICENSE
 Encoding: UTF-8

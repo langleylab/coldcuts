@@ -1,3 +1,5 @@
+url: https://langleylab.github.io/coldcuts
+
 home:
   title: coldcuts
   description: an R package to draw and plot automatically segmentations from 3D voxel arrays
