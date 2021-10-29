@@ -146,7 +146,7 @@
   plane <span class='op'>=</span> <span class='st'>"sagittal"</span>,
   smooth <span class='op'>=</span> <span class='cn'>TRUE</span>,
   smoothness <span class='op'>=</span> <span class='fl'>3</span>,
-  min_points <span class='op'>=</span> <span class='fl'>5</span>,
+  minsize <span class='op'>=</span> <span class='fl'>10</span>,
   color_pal <span class='op'>=</span> <span class='cn'>NULL</span>,
   show_labels <span class='op'>=</span> <span class='cn'>TRUE</span>,
   remove_axes <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -184,8 +184,8 @@
       <td><p>numeric, the smoothing to be used. Default is 3.</p></td>
     </tr>
     <tr>
-      <th>min_points</th>
-      <td><p>numeric, the minimum points to smooth polygons. Default is 5.</p></td>
+      <th>minsize</th>
+      <td><p>numeric, minimum number of vertices to draw a polygon. Default is 10.</p></td>
     </tr>
     <tr>
       <th>color_pal</th>
