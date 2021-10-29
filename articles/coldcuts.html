@@ -176,17 +176,17 @@
 <p>The basic functionality with no external datasets allows to plot all structures within specific slices. We pick 3 random slices with the <code>s_slice</code>, <code>c_slice</code> and <code>a_slice</code> arguments for sagittal, coronal and axial respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, c_slice <span class="op">=</span> <span class="fl">60</span>, a_slice <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
-<p><img width="1144" alt="slices_1" src="https://user-images.githubusercontent.com/21171362/131649114-0c9aeee4-4f54-46f9-b0ed-d440af18bbe3.png"></p>
+<p><img width="1144" alt="slices_1" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_allplanes_structures.png"></p>
 <p>We can also choose only one axis, and we can show structural labels (as acronyms from the ontology table):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img width="717" alt="slices_2" src="https://user-images.githubusercontent.com/21171362/131649611-c4a10103-d1fb-4eed-9eec-6e9320341a11.png"></p>
+<p><img width="717" alt="slices_2" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_sagittal_structures.png"></p>
 <p>Additionally, we can subset a <code>segmentation</code> object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_sub_str.html">seg_sub_str</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span>, structures <span class="op">=</span> <span class="st">"10557"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg_sub</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img width="716" alt="slices_3" src="https://user-images.githubusercontent.com/21171362/131650045-91b1d568-f49f-498e-b6fa-059e1c0ea49a.png"></p>
+<p><img width="716" alt="slices_3" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FWM_structuresubset.png"></p>
 </div>
 <div id="creating-a-segmentationassay" class="section level2">
 <h2 class="hasAnchor">
@@ -196,10 +196,10 @@
 <p>Depending on the segmentation, the assay may require a one-to-many mapping of samples to structures. For instance, the GTEx brain dataset contains “caudate basal ganglia”, which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation.</p>
 <p>This mapping has to be manually curated by the user, as there is no way to detect automatically this sort of correspondences.</p>
 <p>Here we will show how to create this mapping for the GTEx bulk RNA-seq data, using median gene-level TPM values.</p>
-<p>These values can be found <a href="https://www.gtexportal.org/home/datasets">here</a>, in particular the <em>GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz</em> file.</p>
+<p>These values can be found <a href="https://www.gtexportal.org/home/datasets">here</a>, in particular the <em>GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz</em> file, which we will need to unzip.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># read the table</span>
-<span class="va">gtex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"./data/gtex_tpm.gct"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, skip <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">gtex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"gtex_tpm.gct"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, skip <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 <span class="co"># subsetting and wrangling names</span>
 <span class="va">gtex</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"Brain"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
@@ -276,7 +276,7 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/seg_feature_plot.html">seg_feature_plot</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>,
              assay <span class="op">=</span> <span class="st">"gtex"</span>,
              feature <span class="op">=</span> <span class="st">"APP"</span><span class="op">)</span></code></pre></div>
-<p><img width="1033" alt="gtex_map" src="https://user-images.githubusercontent.com/21171362/131799896-cdede3a8-fb22-4558-906f-45db8eef2b13.png"></p>
+<p><img width="1033" alt="gtex_map" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_APP_featureplot.png"></p>
 </div>
   </div>
 
