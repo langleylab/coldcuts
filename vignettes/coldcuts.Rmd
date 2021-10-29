@@ -112,7 +112,7 @@ The basic functionality with no external datasets allows to plot all structures 
 seg_plot(seg, s_slice = 50, c_slice = 60, a_slice = 30)
 ```
 
-<img width="1144" alt="slices_1" src="https://user-images.githubusercontent.com/21171362/131649114-0c9aeee4-4f54-46f9-b0ed-d440af18bbe3.png">
+<img width="1144" alt="slices_1" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_allplanes_structures.png">
 
 We can also choose only one axis, and we can show structural labels (as acronyms from the ontology table):
 
@@ -121,7 +121,7 @@ seg_plot(seg, s_slice = 50, show_labels = TRUE)
 
 ```
 
-<img width="717" alt="slices_2" src="https://user-images.githubusercontent.com/21171362/131649611-c4a10103-d1fb-4eed-9eec-6e9320341a11.png">
+<img width="717" alt="slices_2" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_sagittal_structures.png">
 
 Additionally, we can subset a `segmentation` object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):
 
@@ -131,7 +131,7 @@ seg_sub <- seg_sub_str(segmentation = seg, planes_chosen = "sagittal", structure
 seg_plot(seg_sub, s_slice = 50, show_labels = TRUE)
 ```
 
-<img width="716" alt="slices_3" src="https://user-images.githubusercontent.com/21171362/131650045-91b1d568-f49f-498e-b6fa-059e1c0ea49a.png">
+<img width="716" alt="slices_3" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FWM_structuresubset.png">
 
 ## Creating a `segmentationAssay`
 
@@ -144,11 +144,11 @@ This mapping has to be manually curated by the user, as there is no way to detec
 
 Here we will show how to create this mapping for the GTEx bulk RNA-seq data, using median gene-level TPM values. 
 
-These values can be found [here](https://www.gtexportal.org/home/datasets), in particular the _GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz_ file.
+These values can be found [here](https://www.gtexportal.org/home/datasets), in particular the _GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz_ file, which we will need to unzip.
 
 ```{r, eval = FALSE}
 # read the table
-gtex <- read.table("./data/gtex_tpm.gct", header = TRUE, sep = "\t", skip = 2)
+gtex <- read.table("gtex_tpm.gct", header = TRUE, sep = "\t", skip = 2)
 
 # subsetting and wrangling names
 gtex <- gtex[,c(1, 2, grep("Brain", colnames(gtex)))]
@@ -230,6 +230,7 @@ seg <- seg_projection_add(name = "gtex",
                         structures = structures_chosen, 
                         planes_chosen = "sagittal")
 ```
+
 At this point we can plot data from one of our assays (GTEx) in the sagittal projection, using `seg_feature_plot()`, specifying the `assay` name and the gene (`feature` argument):
 
 ```{r, eval = FALSE}
@@ -238,4 +239,4 @@ seg_feature_plot(segmentation = seg,
              feature = "APP")
 ```
 
-<img width="1033" alt="gtex_map" src="https://user-images.githubusercontent.com/21171362/131799896-cdede3a8-fb22-4558-906f-45db8eef2b13.png">
+<img width="1033" alt="gtex_map" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_APP_featureplot.png">
