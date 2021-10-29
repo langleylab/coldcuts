@@ -483,7 +483,7 @@ seg_assay_add <- function(segmentation,
 
 #' Citation setter
 #'
-#' Function to set the \code{assays} slot in \code{segmentation} class objects
+#' Function to set the \code{citations} item in the metadata of \code{segmentation} class objects
 #' @param segmentation a \code{segmentation} class object
 #' @param name character, the name of the citation (e.g. "Lebowski2001")
 #' @param citation character, the citation 
@@ -491,7 +491,8 @@ seg_assay_add <- function(segmentation,
 #' @export
 
 seg_citation_add <- function(segmentation,
-                          name) {
+                          name,
+                          citation) {
   
   if(is.null(name)) stop("Must provide a name for the citation")
   if(is.null(citation)) stop("Must provide a citation string")

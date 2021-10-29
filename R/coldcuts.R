@@ -700,7 +700,7 @@ seg_plot <- function(segmentation,
 #' @param plane character, the plane for the maximum projection. Default is "sagittal".
 #' @param smooth logical, should shapes be smoothed? Default is \code{TRUE}.
 #' @param smoothness numeric, the smoothing to be used. Default is 3.
-#' @param min_points numeric, the minimum points to smooth polygons. Default is 5.
+#' @param minsize numeric, minimum number of vertices to draw a polygon. Default is 10.
 #' @param color_pal character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}
 #' @param show_labels logical, should segmentation labels be shown? Default is \code{TRUE}
 #' @param remove_axes logical, should axes be shown? Default is \code{FALSE}
@@ -716,7 +716,7 @@ seg_feature_plot <- function(segmentation,
                              plane = "sagittal",
                              smooth = TRUE,
                              smoothness = 3,
-                             min_points = 5,
+                             minsize = 10,
                              color_pal = NULL,
                              show_labels = TRUE,
                              remove_axes = TRUE){
@@ -735,37 +735,45 @@ seg_feature_plot <- function(segmentation,
   
   if(is.null(color_pal)) cpal = colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal = color_pal
   
-  dmp_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
-  dmp2_df <- do.call(rbind, lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) cbind(x@coords[,1:2], "slice" = x@slice, "structure" = x@structure, "id" = x@id, "subid" = x@subid)))
   
-  centers <- as.data.frame(do.call(rbind, lapply(unique(dmp_df$structure), function(x) {
-    df <- dmp_df[dmp_df$structure == x,]
+  selected <- segmentation@projections[[projection]][[plane]][[1]][which(lapply(segmentation@projections[[projection]][[plane]][[1]], function(x) nrow(x@coords)) > minsize)]
+  
+  proj_1 <- do.call(rbind, lapply(selected, poly_build))
+  
+  centers <- as.data.frame(do.call(rbind, lapply(unique(proj_1$structure), function(x) {
+    df <- proj_1[proj_1$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
   
-  centers$structure <- unique(dmp_df$structure)
-  centers$acronym <- segmentation@ontology[centers$structure, "acronym"]
+  centers$structure <- unique(proj_1$structure)
+  centers$acronym <- ontology(segmentation)[as.character(centers$structure), "acronym"]
+  centers$col <- ontology(segmentation)[as.character(centers$structure), "col"]
   
-  centers2 <- as.data.frame(do.call(rbind, lapply(unique(dmp2_df$structure), function(x) {
-    df <- dmp2_df[dmp2_df$structure == x,]
+  if(smooth) proj_1 <- poly_smooth(proj_1, by = "subid", smoothness = smoothness)
+  
+  proj_1$dir <- names(projections(segmentation, projection)[[plane]])[1]
+  proj_1$acronym <- ontology(segmentation)[as.character(proj_1$structure), "acronym"]
+  centers$dir <- unique(proj_1$dir)
+  
+  selected <- segmentation@projections[[projection]][[plane]][[2]][which(lapply(segmentation@projections[[projection]][[plane]][[2]], function(x) nrow(x@coords)) > minsize)]
+  
+  proj_2 <- do.call(rbind, lapply(selected, poly_build))
+  
+  centers2 <- as.data.frame(do.call(rbind, lapply(unique(proj_2$structure), function(x) {
+    df <- proj_2[proj_2$structure == x,]
     df <- df[df$id == df$id[which.max(table(df$id))],]
     return(unlist(polylabelr::poi(df[, 1:2], precision = 0.01))[1:2])
   })))
   
-  centers2$structure <- unique(dmp2_df$structure)
-  centers2$acronym <- segmentation@ontology[centers2$structure, "acronym"]
+  centers2$structure <- unique(proj_2$structure)
+  centers2$acronym <- ontology(segmentation)[as.character(centers2$structure), "acronym"]
+  centers2$col <- ontology(segmentation)[as.character(centers2$structure), "col"]
   
-  if(smooth) {
-    dmp_df <- poly_smooth(dmp_df, smoothness = smoothness, min_points = min_points)
-    dmp2_df <- poly_smooth(dmp2_df, smoothness = smoothness, min_points = min_points)
-  }
-  
-  dmp_df$dir <-  centers$dir <- names(segmentation@projections[[projection]][[plane]])[1]
-  dmp2_df$dir <- centers2$dir <-  names(segmentation@projections[[projection]][[plane]])[2]
-  
-  dmp_all <- rbind(dmp_df, dmp2_df)
-  centers_all <- rbind(centers, centers2)
+  if(smooth) proj_2 <- poly_smooth(proj_2, by = "subid", smoothness = smoothness)
+  proj_2$dir <- names(projections(segmentation, projection)[[plane]])[2]
+  proj_2$acronym <- ontology(segmentation)[as.character(proj_2$structure), "acronym"]
+  centers2$dir <- unique(proj_2$dir)
   
   struct_df <- data.frame("structures" = rep(names(segmentation@assays[[assay]]@mapping), lengths(segmentation@assays[[assay]]@mapping)),
                           "id" = unlist(segmentation@assays[[assay]]@mapping))
@@ -775,38 +783,74 @@ seg_feature_plot <- function(segmentation,
   struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,]
   rownames(struct_df) <- struct_df$id
   
-  dmp_all$gene_exp <- as.numeric(struct_df[dmp_all$structure, "gene_expression"])
+  proj_1$gene_exp <- as.numeric(struct_df[proj_1$structure, "gene_expression"])
+  proj_2$gene_exp <- as.numeric(struct_df[proj_2$structure, "gene_expression"])
   
-  p <- ggplot2::ggplot(dmp_all, ggplot2::aes_string(x = "x", y = "y", group = "id", fill = "gene_exp")) +
-    ggplot2::geom_polygon(col = "black", size = 0.3) +
-    ggplot2::facet_wrap(~dir) 
+  
+  p1 <- ggplot2::ggplot(proj_1, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "gene_exp")) +
+        ggplot2::geom_polygon(col = "black", size = 0.3) 
   
   if(smooth) {
-    p <- p +  ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), 
-                                    ggplot2::aes_string(x = "x", y = "y", group = "cluster"), 
-                                    inherit.aes = FALSE, 
-                                    col = "black", 
-                                    fill = "NA") 
+    p1 <- p1 + ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
   } else {
-    p <- p +  ggplot2::geom_polygon(data = segmentation@outlines[[plane]], 
-                                    ggplot2::aes_string(x = "x", y = "y", group = "cluster"), 
-                                    inherit.aes = FALSE, 
-                                    col = "black", 
-                                    fill = "NA") 
+    p1 <- p1 + ggplot2::geom_polygon(data = segmentation@outlines[[plane]], ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
   }
   
-  ggplot2::theme_bw() +
+  p2 <- ggplot2::ggplot(proj_2, ggplot2::aes_string(x = "x", y = "y", group = "subid", fill = "gene_exp")) +
+    ggplot2::geom_polygon(col = "black", size = 0.3) 
+  
+  if(smooth) {
+    p2 <- p2 + ggplot2::geom_polygon(data = poly_smooth(segmentation@outlines[[plane]], by = 'cluster'), ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  } else {
+    p2 <- p2 + ggplot2::geom_polygon(data = segmentation@outlines[[plane]], ggplot2::aes_string(x = "x", y = "y", group = "cluster"), inherit.aes = FALSE, col = "black", fill = "NA")
+  }    
+  
+  p1 <- p1 +
+    ggplot2::theme_bw() + 
+    ggplot2::scale_fill_gradientn(na.value = "white",
+                                           colours = cpal) +
+    ggplot2::labs(fill = feature) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank()) +
+    ggplot2::ggtitle(unique(proj_1$dir)) + 
+    ggplot2::coord_fixed()
+  
+  p2 <- p2  +
+    ggplot2::theme_bw() + 
     ggplot2::scale_fill_gradientn(na.value = "white",
                                   colours = cpal) +
     ggplot2::labs(fill = feature) +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    axis.title.x = ggplot2::element_blank(),
-                   axis.title.y = ggplot2::element_blank())
+                   axis.title.y = ggplot2::element_blank()) +
+    ggplot2::ggtitle(unique(proj_1$dir)) + 
+    ggplot2::coord_fixed()
+  
+  if(remove_axes) {
+    p1 <- p1 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                              axis.text.x = ggplot2::element_blank(),
+                              axis.text.y = ggplot2::element_blank(),
+                              axis.ticks = ggplot2::element_blank())
+    p2 <- p2 + ggplot2::theme(axis.line = ggplot2::element_blank(), 
+                              axis.text.x = ggplot2::element_blank(),
+                              axis.text.y = ggplot2::element_blank(),
+                              axis.ticks = ggplot2::element_blank())
+  }
+  
+  if(plane == "sagittal") {
+    p1 <- p1 + ggplot2::scale_x_reverse()
+  } else if(plane == "coronal") {
+    p2 <- p2 +  ggplot2::scale_x_reverse()
+  } else if (plane == "axial") {
+    p1 <- p1 +  ggplot2::scale_x_reverse()
+  }
   
   if(show_labels) {
-    p <- p + ggrepel::geom_text_repel(
-      data = centers_all,
+    p1 <- p1 + ggrepel::geom_text_repel(
+      data = centers,
       ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
       color = "white",
       segment.color = "black",
@@ -818,16 +862,25 @@ seg_feature_plot <- function(segmentation,
       size = 2,
       max.overlaps = Inf,
       inherit.aes = FALSE
-    )}
-  
-  if(remove_axes) {
-    p <- p + ggplot2::theme(axis.line = ggplot2::element_blank(), 
-                            axis.text.x = ggplot2::element_blank(),
-                            axis.text.y = ggplot2::element_blank(),
-                            axis.ticks = ggplot2::element_blank())
+    )
+    
+    p2 <- p2 + ggrepel::geom_text_repel(
+      data = centers2,
+      ggplot2::aes_string(x = "x", y = "y", label = "acronym"),
+      color = "white",
+      segment.color = "black",
+      segment.size = 0.2,
+      bg.color = "black",
+      bg.r = 0.15,
+      alpha = 1,
+      box.padding = 0.6,
+      size = 2,
+      max.overlaps = Inf,
+      inherit.aes = FALSE
+    ) 
   }
   
-  return(p + ggplot2::coord_fixed() + ggplot2::ggtitle(paste0(assay, " in projection ", projection)))
+  return(gridExtra::grid.arrange(p1, p2, ncol = 2))
 }
 
 #' Remove a projection from a segmentation

@@ -4,7 +4,7 @@
 \alias{seg_citation_add}
 \title{Citation setter}
 \usage{
-seg_citation_add(segmentation, name)
+seg_citation_add(segmentation, name, citation)
 }
 \arguments{
 \item{segmentation}{a \code{segmentation} class object}
@@ -14,5 +14,5 @@ seg_citation_add(segmentation, name)
 \item{citation}{character, the citation}
 }
 \description{
-Function to set the \code{assays} slot in \code{segmentation} class objects
+Function to set the \code{citations} item in the metadata of \code{segmentation} class objects
 }

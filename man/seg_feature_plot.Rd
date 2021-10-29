@@ -12,7 +12,7 @@ seg_feature_plot(
   plane = "sagittal",
   smooth = TRUE,
   smoothness = 3,
-  min_points = 5,
+  minsize = 10,
   color_pal = NULL,
   show_labels = TRUE,
   remove_axes = TRUE
@@ -33,7 +33,7 @@ seg_feature_plot(
 
 \item{smoothness}{numeric, the smoothing to be used. Default is 3.}
 
-\item{min_points}{numeric, the minimum points to smooth polygons. Default is 5.}
+\item{minsize}{numeric, minimum number of vertices to draw a polygon. Default is 10.}
 
 \item{color_pal}{character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}}
 
