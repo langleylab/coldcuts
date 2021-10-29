@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • coldcuts</title>
+<title>Show citation (method) — citation,segmentation-method • coldcuts</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Show citation (method) — citation,segmentation-method" />
+<meta property="og:description" content="S4 method to show the citation slot of a segmentation class objects" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content="@gdagstn" />
 <meta name="twitter:site" content="@gdagstn" />
@@ -61,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -126,169 +127,31 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Show citation (method)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/langleylab/coldcuts/blob/master/R/classes.R'><code>R/classes.R</code></a></small>
+    <div class="hidden name"><code>citation-segmentation-method.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>S4 method to show the <code>citation</code> slot of a <code>segmentation</code> class objects</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='co'># S4 method for segmentation</span>
+<span class='fu'><a href='citation.html'>citation</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-creation-and-manipulation-of-segmentations" class="hasAnchor"><a href="#section-creation-and-manipulation-of-segmentations" class="anchor"></a>Creation and manipulation of segmentations</h2>
-          <p class="section-desc"><p>Functions to draw segmentations, access and manipulate their content</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="seg_draw.html">seg_draw()</a></code> </p>
-        </td>
-        <td><p>Draw segmentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_metadata.html">seg_metadata()</a></code> </p>
-        </td>
-        <td><p>Metadata getter (generic)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_plot.html">seg_plot()</a></code> </p>
-        </td>
-        <td><p>Plot slices from a segmentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_feature_plot.html">seg_feature_plot()</a></code> </p>
-        </td>
-        <td><p>Plot numeric data on a segmentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_projection_add.html">seg_projection_add()</a></code> </p>
-        </td>
-        <td><p>Create a maximum projection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_projection_plot.html">seg_projection_plot()</a></code> </p>
-        </td>
-        <td><p>Plot a projection from a segmentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_slice_check.html">seg_slice_check()</a></code> </p>
-        </td>
-        <td><p>Check slices</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_sub_str.html">seg_sub_str()</a></code> </p>
-        </td>
-        <td><p>Subset by structures</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_get_slice.html">seg_get_slice()</a></code> </p>
-        </td>
-        <td><p>Get a specific slice from a segmentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="seg_assay_add.html">seg_assay_add()</a></code> </p>
-        </td>
-        <td><p>Assay setter</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="assays.html">assays()</a></code> </p>
-        </td>
-        <td><p>Assay getter (generic)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ontology.html">ontology()</a></code> </p>
-        </td>
-        <td><p>Ontology getter (generic)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ontology_plot.html">ontology_plot()</a></code> </p>
-        </td>
-        <td><p>Plot the ontology graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="projections.html">projections()</a></code> </p>
-        </td>
-        <td><p>Projection getter (generic)</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-manipulation-of-polygons" class="hasAnchor"><a href="#section-manipulation-of-polygons" class="anchor"></a>Manipulation of polygons</h2>
-          <p class="section-desc"><p>Functions to create and manipulate polygons in the segmentation, mostly for internal use</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="slice_make.html">slice_make()</a></code> </p>
-        </td>
-        <td><p>Make slices</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poly_make.html">poly_make()</a></code> </p>
-        </td>
-        <td><p>Make polygon</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poly_set_make.html">poly_set_make()</a></code> </p>
-        </td>
-        <td><p>Make polygon sets</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poly_build.html">poly_build()</a></code> </p>
-        </td>
-        <td><p>Build a polygon</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poly_fill.html">poly_fill()</a></code> </p>
-        </td>
-        <td><p>Fill a polygon with points</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="poly_smooth.html">poly_smooth()</a></code> </p>
-        </td>
-        <td><p>Smooth polygon sets</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>a <code>segmentation</code> class object</p></td>
+    </tr>
     </table>
-  </div>
 
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

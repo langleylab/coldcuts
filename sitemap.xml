@@ -13,10 +13,10 @@
     <loc>https://langleylab.github.io/coldcuts/reference/box_make.html</loc>
   </url>
   <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/citation_show-segmentation-method.html</loc>
+    <loc>https://langleylab.github.io/coldcuts/reference/citation-segmentation-method.html</loc>
   </url>
   <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/citation_show.html</loc>
+    <loc>https://langleylab.github.io/coldcuts/reference/citation.html</loc>
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/dir_change.html</loc>
@@ -65,6 +65,9 @@
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_assay_add.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/reference/seg_citation_add.html</loc>
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_draw.html</loc>
