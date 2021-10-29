@@ -480,3 +480,25 @@ seg_assay_add <- function(segmentation,
   }
   return(segmentation)
 }
+
+#' Citation setter
+#'
+#' Function to set the \code{assays} slot in \code{segmentation} class objects
+#' @param segmentation a \code{segmentation} class object
+#' @param name character, the name of the citation (e.g. "Lebowski2001")
+#' @param citation character, the citation 
+#' 
+#' @export
+
+seg_citation_add <- function(segmentation,
+                          name) {
+  
+  if(is.null(name)) stop("Must provide a name for the citation")
+  if(is.null(citation)) stop("Must provide a citation string")
+  if(class(citation) != "character" | class(name) != "character") stop("Must provide a `character` type object for name and citation")
+  if(class(segmentation) != "segmentation") stop("Must provide a `segmentation` type object")
+  
+  segmentation@assays[[name]] <- citation
+  
+  return(segmentation)
+}

@@ -59,7 +59,7 @@ Segmentation from file:  ABA_Human_half.nii.gz
               Structures (n):  141 
              Structures (ID):  10368, 12805, 10557, 12369, 10460, 10602 and 135 more. 
        Structures (acronyms):  BL, 4V, FWM, Aq, Pin, 3V and 135 more. 
-Type showCitation("name_of_segmentation") to display the citation(s) for this segmentation.
+Type citations("name_of_segmentation") to display the citation(s) for this segmentation.
 ```
 
 ## Inspecting a segmentation ontology
