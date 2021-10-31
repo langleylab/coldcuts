@@ -128,6 +128,7 @@ box_make <- function(point_set,
 
 poly_fill <- function(point_set,
                         step_size = 1) {
+
   point_set <- point_set[!duplicated(point_set[, 1:2]), ]
 
   box <- c(range(point_set[, 1]), range(point_set[, 2]))

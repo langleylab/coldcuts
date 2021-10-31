@@ -467,7 +467,17 @@ ontology_plot <- function(segmentation,
     ggraph::geom_node_point(ggplot2::aes_string(fill = "name"), shape = 21, color = "black", size = 8) +
     ggraph::geom_node_text(ggplot2::aes_string(label = "name"), color = "black", size = 2) +
     ggplot2::scale_fill_manual(values = cols) +
-    ggplot2::theme(legend.position = "none")
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "none", 
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.line = ggplot2::element_blank(), 
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.ticks = ggplot2::element_blank(),
+                   panel.border = ggplot2::element_blank()) 
   
   return(p)
 }
