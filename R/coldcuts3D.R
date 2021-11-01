@@ -88,7 +88,7 @@ seg_build_meshes <- function(segmentation,
     
     if(verbose) cat("done.\n")
     
-    if(verbose) cat(paste0("Reducing mesh at ", pct_reduce, "%..."))
+    if(verbose) cat(paste0("Reducing mesh at ", pct_reduce * 100, "%..."))
     
     reduced.mesh <- Rvcg::vcgQEdecim(mesh = seg_mesh, percent = pct_reduce, silent = !verbose)
     
@@ -106,7 +106,6 @@ seg_build_meshes <- function(segmentation,
 #'
 #' Renders a list of mesh3d objects using ontology-defined colors
 #'
-#' @param meshlist a list of `mesh3d` objects
 #' @param segmentation a `segmentation` class object
 #' @param subset_str a character vector indicating the structure(s) to be rendered. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
 #' @param iterations numeric, iterations for HC smoothing of the meshes
@@ -116,17 +115,16 @@ seg_build_meshes <- function(segmentation,
 #'
 #' @export
 
-seg_render_meshlist <- function(meshlist, 
-                            segmentation, 
+seg_render_meshes <- function(segmentation, 
                             subset_str = NULL,
                             iterations = 4,
                             style = "matte") {
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
-  if(!is.null(subset_str) & any(!subset_str %in% names(meshlist))) stop("Some structures were not found in the mesh list.")
+  if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
   
   if(is.null(subset_str)) {
-    indices = names(meshlist)
+      indices = names(segmentation@meshes)
     } else {
       indices = subset_str 
     }
@@ -135,11 +133,11 @@ seg_render_meshlist <- function(meshlist,
   
   for(i in indices) {
     
-    mesh_to_plot <-meshlist[[i]]
+    mesh_to_plot <- segmentation@meshes[[i]]
     
     if(style == "matte") {
       mesh_to_plot$material <- list()
-      x$material$specular <- "black"
+      mesh_to_plot$material$specular <- "black"
     } 
            rgl::shade3d(rgl::rotate3d(
                  Rvcg::vcgSmooth(mesh_to_plot, 
