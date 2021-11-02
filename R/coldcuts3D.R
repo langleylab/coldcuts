@@ -3,7 +3,7 @@
 #' Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh.
 #'
 #' @param segmentation a `segmentation` class object
-#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
+#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}.
 #' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
 #' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
