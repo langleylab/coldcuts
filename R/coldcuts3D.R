@@ -1,12 +1,12 @@
-#' Build segmentation meshes in 3D
+#' Build a structure mesh
 #'
-#' Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions
+#' Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh.
 #'
 #' @param segmentation a `segmentation` class object
-#' @param subset_str a character vector indicating the structure(s) to be rendered. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
+#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
 #' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
-#' @return a smoothed 3d mesh (as `mesh3d` object) from one or more structures
+#' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
 #'
 #' @export
 
@@ -102,7 +102,7 @@ seg_build_meshes <- function(segmentation,
       
 }
 
-#' Renders mesh list
+#' Render meshes from a segmentation
 #'
 #' Renders a list of mesh3d objects using ontology-defined colors
 #'
@@ -111,7 +111,7 @@ seg_build_meshes <- function(segmentation,
 #' @param iterations numeric, iterations for HC smoothing of the meshes
 #' @param style character, one of "matte" or "shiny" as a rendering style
 #' 
-#' @return a plot of all meshes selected from the meshlist in an \code{rgl} window.
+#' @return a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a \code{rgl} window.
 #'
 #' @export
 
@@ -150,5 +150,37 @@ seg_render_meshes <- function(segmentation,
 }
 
 
+#' Add mesh list to a segmentation
+#'
+#' Builds a list of structure meshes and stores it in the meshes slot.
+#'
+#' @param segmentation a `segmentation` class object
+#' @param structures a character vector of structure acronyms, indicating the structure(s) to be rendered. Default is \code{NULL}, meaning all structures will be rendered.
+#' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
+#' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
+#' @return a `segmentation` class object with a list of triangular meshes in the `meshes` slot.
+#'
+#' @export
+#' 
+seg_meshlist_add <- function(segmentation, 
+                             structures = NULL,
+                             pct_reduce = 0.1,
+                             verbose = FALSE){
+  
+  if(is.null(structures)) {
+    subset_str = ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"]
+    } else {
+      if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])) stop("Some structures were not found in this segmentation.")
+      subset_str <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% structures)]
+    }
+  meshlist <- list()
+  for(i in subset_str) {
+    if(verbose) cat("Rendering structure", i, ",", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
+    meshlist[[i]] <- seg_build_meshes(segmentation = segmentation, subset_str = i, pct_reduce = pct_reduce, verbose = verbose)
+  }
+  segmentation@meshes <- meshlist
+  if(verbose) cat("All meshes rendered!\n")
+  return(segmentation)
+}
 
 

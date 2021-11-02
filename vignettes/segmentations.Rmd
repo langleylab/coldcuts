@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 ## Finding additional segmentations (WIP)
 
+
 Many institutions have published their own segmentations as NIfTI, NRRD or RAW files.
 
 In this table we curate a few segmentations including their source(s), and link (in the **files** field of the table) to their folders in this repository.
@@ -118,7 +119,7 @@ The RDS file contains the `segmentation` class object, with maximum projections 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_sagittal_mp.png" width="600" />
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_coronal_mp.png" width="600" /> 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_axial_mp.png" width="600" />
-  <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_ontology.png" width="900" />
+  <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/JRC2010_Drosophila_ontology.png" width="900" />
 </p>
 
 ## Chimpanzee Davi130 Juna.Chimp
@@ -133,5 +134,7 @@ The RDS file contains the `segmentation` class object, with maximum projections 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Chimp_Davi130/Chimp_Davi130_axial_mp.png" width="600" />
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Chimp_Davi130/Chimp_Davi130_ontology.png" width="900" />
 </p>
+
+
 
 

@@ -240,3 +240,4 @@ seg_feature_plot(segmentation = seg,
 ```
 
 <img width="1033" alt="gtex_map" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_APP_featureplot.png">
+

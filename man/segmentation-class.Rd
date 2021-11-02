@@ -10,7 +10,7 @@ S4 class holding all the data necessary for plotting specific slices, maximum pr
 \section{Slots}{
 
 \describe{
-\item{\code{slices}}{A list containing `segPointSet` instances for the 3 axes ("sagittal", "coronal", "axial")}
+\item{\code{slices}}{A nested list containing `segPointSet` items for the 3 axes ("sagittal", "coronal", "axial")}
 
 \item{\code{ontology}}{A `data.frame` containing the structural ontology}
 
@@ -23,5 +23,7 @@ S4 class holding all the data necessary for plotting specific slices, maximum pr
 \item{\code{assays}}{A list of objects of class \code{segmentationAssay} containing assay data}
 
 \item{\code{projections}}{A list of maximum projections}
+
+\item{\code{meshes}}{A list of \code{mesh3d} objects, named according to structure acronyms}
 }}
 
