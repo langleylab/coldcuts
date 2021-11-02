@@ -82,6 +82,9 @@
     <loc>https://langleylab.github.io/coldcuts/reference/seg_get_slice.html</loc>
   </url>
   <url>
+    <loc>https://langleylab.github.io/coldcuts/reference/seg_meshlist_add.html</loc>
+  </url>
+  <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_metadata-segmentation-method.html</loc>
   </url>
   <url>
@@ -106,7 +109,7 @@
     <loc>https://langleylab.github.io/coldcuts/reference/seg_projection_remove.html</loc>
   </url>
   <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_render_meshlist.html</loc>
+    <loc>https://langleylab.github.io/coldcuts/reference/seg_render_meshes.html</loc>
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_slice_check.html</loc>

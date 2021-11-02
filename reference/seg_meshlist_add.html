@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Build a structure mesh — seg_build_meshes • coldcuts</title>
+<title>Add mesh list to a segmentation — seg_meshlist_add • coldcuts</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Build a structure mesh — seg_build_meshes" />
-<meta property="og:description" content="Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh." />
+<meta property="og:title" content="Add mesh list to a segmentation — seg_meshlist_add" />
+<meta property="og:description" content="Builds a list of structure meshes and stores it in the meshes slot." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content="@gdagstn" />
 <meta name="twitter:site" content="@gdagstn" />
@@ -129,18 +129,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Build a structure mesh</h1>
+    <h1>Add mesh list to a segmentation</h1>
     <small class="dont-index">Source: <a href='https://github.com/langleylab/coldcuts/blob/master/R/coldcuts3D.R'><code>R/coldcuts3D.R</code></a></small>
-    <div class="hidden name"><code>seg_build_meshes.Rd</code></div>
+    <div class="hidden name"><code>seg_meshlist_add.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh.</p>
+    <p>Builds a list of structure meshes and stores it in the meshes slot.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seg_build_meshes</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>seg_meshlist_add</span><span class='op'>(</span>
   <span class='va'>segmentation</span>,
-  subset_str <span class='op'>=</span> <span class='cn'>NULL</span>,
+  structures <span class='op'>=</span> <span class='cn'>NULL</span>,
   pct_reduce <span class='op'>=</span> <span class='fl'>0.1</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
@@ -153,8 +153,8 @@
       <td><p>a `segmentation` class object</p></td>
     </tr>
     <tr>
-      <th>subset_str</th>
-      <td><p>a character vector indicating the structure(s) to be rendered, by acronym. Default is <code>NULL</code>, meaning the whole segmentation will be rendered as a single mesh.</p></td>
+      <th>structures</th>
+      <td><p>a character vector of structure acronyms, indicating the structure(s) to be rendered. Default is <code>NULL</code>, meaning all structures will be rendered.</p></td>
     </tr>
     <tr>
       <th>pct_reduce</th>
@@ -168,7 +168,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a reduced 3d mesh (as `mesh3d` object) from one or more structures</p>
+    <p>a `segmentation` class object with a list of triangular meshes in the `meshes` slot.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
