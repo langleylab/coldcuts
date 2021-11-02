@@ -104,8 +104,17 @@
 <h2 class="hasAnchor">
 <a href="#the-segmentation-class-and-its-components" class="anchor"></a>The <code>segmentation</code> class and its components</h2>
 <p>The main workhorse of this package is its own S4 class, <code>segmentation</code>, which hosts many components necessary for plotting and integrating with external datasets.</p>
-<p><img width="844" alt="segmentation_class" src="https://user-images.githubusercontent.com/21171362/131645071-e3942aeb-fca8-426a-be9f-45a771904796.png"></p>
-<p><code>segmentation</code> class objects hold the following slots: - <strong>slices</strong> is a list with 3 nested lists, named <strong>sagittal</strong>, <strong>coronal</strong> and <strong>axial</strong> for the three anatomical planes. Every anatomical plane is a list of slices along the plane spaced by 1 voxel (SL1…SLN in the figure), every slice is a list of structures (ST1…STN in the figure), with every structure being a list of <code>segPointSet</code> objects, another S4 class that holds polygon information in a lightweight format (P1…PN). - <strong>ontology</strong> is a data frame containing all relevant information for structures: their IDs, names, acronyms, hierarchical relationship if present, colour codes etc. - <strong>projections</strong> contains maximum projections for a series of structures in each plane. More than one maximum projection can be hosted in each <code>segmentation</code> object to accommodate for more assays. Every projection can be differentiated by the subset of structures that are being projected, which is usually done to match between an assay (external dataset) and a segmentation. - <strong>assays</strong> is a list of <code>segmentationAssay</code> objects, another S4 class that holds numerical <code>values</code> - such as gene counts - sample metadata (<code>sampledata</code>) and most importantly a one-to-many <code>mapping</code> of structures to the relevant samples. - <strong>metadata</strong> is a list of various types of information regarding the segmentation, such as the file name, orientation, pixel/voxel dimension, original citation, reference space, etc. Most of these are manually compiled by the user, although an attempt is made at extracting some of them from a file containing this information in its header (e.g. NiFTi). - <strong>structure_tables</strong> is a list of data.tables, one per anatomical axis, which is used by some internal functions to check which slices contain which structures.</p>
+<p><img width="844" alt="segmentation_class" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/segmentation_class.png"></p>
+<p><code>segmentation</code> class objects hold the following slots:</p>
+<ul>
+<li><p><strong>slices</strong> is a list with 3 nested lists, named <strong>sagittal</strong>, <strong>coronal</strong> and <strong>axial</strong> for the three anatomical planes. Every anatomical plane is a list of slices along the plane spaced by 1 voxel (SL1…SLN in the figure), every slice is a list of structures (ST1…STN in the figure), with every structure being a list of <code>segPointSet</code> objects, another S4 class that holds polygon information in a lightweight format (P1…PN).</p></li>
+<li><p><strong>ontology</strong> is a data frame containing all relevant information for structures: their IDs, names, acronyms, hierarchical relationship if present, colour codes etc.</p></li>
+<li><p><strong>projections</strong> contains maximum projections for a series of structures in each plane. More than one maximum projection can be hosted in each <code>segmentation</code> object to accommodate for more assays. Every projection can be differentiated by the subset of structures that are being projected, which is usually done to match between an assay (external dataset) and a segmentation.</p></li>
+<li><p><strong>assays</strong> is a list of <code>segmentationAssay</code> objects, another S4 class that holds numerical <code>values</code> - such as gene counts - sample metadata (<code>sampledata</code>) and most importantly a one-to-many <code>mapping</code> of structures to the relevant samples.</p></li>
+<li><p><strong>metadata</strong> is a list of various types of information regarding the segmentation, such as the file name, orientation, pixel/voxel dimension, original citation, reference space, etc. Most of these are manually compiled by the user, although an attempt is made at extracting some of them from a file containing this information in its header (e.g. NiFTi).</p></li>
+<li><p><strong>meshes</strong> is a list of <code>mesh3d</code> objects, one per structure, named after structure acronyms.</p></li>
+<li><p><strong>structure_tables</strong> is a list of data.tables, one per anatomical axis, which is used by some internal functions to check which slices contain which structures.</p></li>
+</ul>
 </div>
 <div id="some-coldcuts-grammar" class="section level2">
 <h2 class="hasAnchor">
@@ -132,6 +141,11 @@
 <code><a href="../reference/seg_sub_str.html">seg_sub_str()</a></code>: subset a <code>segmentation</code> class object retaining only specific structure IDs</li>
 <li>
 <code><a href="../reference/seg_assay_add.html">seg_assay_add()</a></code>: add a <code>segmentationAssay</code> class object to a <code>segmentation</code> class object</li>
+<li>
+<code><a href="../reference/seg_meshlist_add.html">seg_meshlist_add()</a></code>: add a list of meshes (as <code>mesh3d</code> objects) to a <code>segmentation</code> class object</li>
+<li>
+<code><a href="../reference/seg_meshlist_render.html">seg_meshlist_render()</a></code>: render structure meshes (subsetting is allowed) in <code>rgl</code>
+</li>
 </ul>
 <p>For more low-level operations on polygons, we have:</p>
 <ul>
