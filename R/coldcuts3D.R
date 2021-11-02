@@ -10,7 +10,7 @@
 #'
 #' @export
 
-seg_build_meshes <- function(segmentation, 
+seg_mesh_build <- function(segmentation, 
                           subset_str = NULL,
                           pct_reduce = 0.1,
                           verbose = FALSE) {
@@ -107,7 +107,7 @@ seg_build_meshes <- function(segmentation,
 #' Renders a list of mesh3d objects using ontology-defined colors
 #'
 #' @param segmentation a `segmentation` class object
-#' @param subset_str a character vector indicating the structure(s) to be rendered. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
+#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
 #' @param iterations numeric, iterations for HC smoothing of the meshes
 #' @param style character, one of "matte" or "shiny" as a rendering style
 #' 
@@ -115,20 +115,27 @@ seg_build_meshes <- function(segmentation,
 #'
 #' @export
 
-seg_render_meshes <- function(segmentation, 
+seg_meshlist_render <- function(segmentation, 
                             subset_str = NULL,
                             iterations = 4,
                             style = "matte") {
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
-  if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
+  #if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
   
   if(is.null(subset_str)) {
       indices = names(segmentation@meshes)
+      
     } else {
-      indices = subset_str 
+      
+      if(any(!subset_str %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])) {
+        ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
+      str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
+      str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
+      indices <- c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+                                               !ontology(segmentation)$has_children, "acronym"], str_without_children)
+      }
     }
-  
   style <- match.arg(style, choices = c("shiny","matte"))
   
   for(i in indices) {
@@ -161,7 +168,7 @@ seg_render_meshes <- function(segmentation,
 #' @return a `segmentation` class object with a list of triangular meshes in the `meshes` slot.
 #'
 #' @export
-#' 
+
 seg_meshlist_add <- function(segmentation, 
                              structures = NULL,
                              pct_reduce = 0.1,
@@ -170,16 +177,26 @@ seg_meshlist_add <- function(segmentation,
   if(is.null(structures)) {
     subset_str = ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"]
     } else {
-      if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])) stop("Some structures were not found in this segmentation.")
-      subset_str <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% structures)]
+      if(any(!structures %in% ontology(segmentation)$acronym)) stop("Some structures were not found in this segmentation.")
+      if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])){
+        ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
+        str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & ontology(segmentation)$has_children)]
+        str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% structures & !ontology(segmentation)$has_children)]
+        subset_str <- c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+                                             !ontology(segmentation)$has_children, "acronym"], str_without_children)
+        }
     }
+  
   meshlist <- list()
   for(i in subset_str) {
     if(verbose) cat("Rendering structure", i, ",", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
-    meshlist[[i]] <- seg_build_meshes(segmentation = segmentation, subset_str = i, pct_reduce = pct_reduce, verbose = verbose)
+    meshlist[[i]] <- seg_mesh_build(segmentation = segmentation, subset_str = i, pct_reduce = pct_reduce, verbose = verbose)
   }
+  
   segmentation@meshes <- meshlist
+  
   if(verbose) cat("All meshes rendered!\n")
+  
   return(segmentation)
 }
 

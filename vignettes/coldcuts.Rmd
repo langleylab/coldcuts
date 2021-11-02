@@ -241,3 +241,28 @@ seg_feature_plot(segmentation = seg,
 
 <img width="1033" alt="gtex_map" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_APP_featureplot.png">
 
+## Building and rendering 3D meshes
+
+`coldcuts` can reuse polygons to rebuild the original volume array and, using a marching cubes algorithm together with quadric edge decimation (both as implemented in `Rvcg`) it can quickly render simplified triangular meshes that can be visualized in an interactive `rgl` session. 
+
+In order to render and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:
+
+```{r, eval = FALSE}
+
+seg <- seg_meshlist_add(seg, verbose = FALSE)
+
+seg_meshlist_render(seg)
+```
+
+<img width="1033" alt="ABA human half 3D render" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_render.png">
+
+We can visualize only a subset of structures, e.g. all the structures of the frontal lobe (FroL in the ontology):
+
+
+```{r, eval = FALSE}
+seg_meshlist_render(seg, subset_str = "FroL")
+```
+
+<img width="1033" alt="ABA human half 3D render" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FroL_render.png">
+
+
