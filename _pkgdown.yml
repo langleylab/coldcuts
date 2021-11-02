@@ -30,6 +30,8 @@ reference:
   - seg_sub_str
   - seg_get_slice
   - seg_assay_add
+  - seg_meshlist_add
+  - seg_meshlist_render
   - assays
   - ontology
   - ontology_plot

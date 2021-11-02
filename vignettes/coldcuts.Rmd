@@ -37,12 +37,12 @@ In this package we refer to 2 different types of operations: **drawing** is the 
 Therefore the creation of a `segmentation` object is achieved by calling `seg_draw()`. 
 
 To use this function we need to have access to 2 files: the voxel array and the ontology table. We then have to instruct the function on whether array rotations are required, and add other types of metadata on the fly.
-In this example, we use the a NiFTi (`ABA_Human_half.nii.gz`) file from the Allen Institute for Brain Sciences which we can find [here](https://github.com/langleylab/coldcuts_segmentations/tree/main/ABA_Human_half) together with its ontology, containing a 500&mu;-spaced voxel array with 141 annotated structures. We add the ontology file `ABA_Human_half.ontology.csv` as well, both of which can be found in the `data` folder of this repository.
+In this example, we use the a NiFTi (`ABA_Human_half.nii.gz`) file from the Allen Institute for Brain Sciences which we can find [here](https://github.com/langleylab/coldcuts_segmentations/tree/main/ABA_Human_half) together with its ontology, containing a 500&mu;-spaced voxel array with 141 annotated structures. We add the ontology file `ABA_Human_half_ontology.csv` as well.
 We add the MNI152 reference space to the metadata. Since this NIfTI file has already some relevant information in its header, the function will add it for us.
 
 ```{r, eval = FALSE}
 seg <- seg_draw(nifti_file = "ABA_Human_half.nii.gz", 
-                        ontology_file = "ABA_Human_half.ontology.csv",
+                        ontology_file = "ABA_Human_half_ontology.csv",
                         reference_space = "MNI152",
                         verbose = FALSE)
                         
