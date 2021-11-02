@@ -120,7 +120,7 @@ The RDS file contains the `segmentation` class object, with maximum projections 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_coronal_mp.png" width="600" /> 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/Drosophila_JRC2010_axial_mp.png" width="600" />
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Drosophila_JRC2010/JRC2010_Drosophila_ontology.png" width="900" />
-</p>
+/p>
 
 ## Chimpanzee Davi130 Juna.Chimp
 
