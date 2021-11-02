@@ -17,7 +17,7 @@ seg_mesh_build <- function(segmentation,
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
   if(is.null(subset_str)) stop("You must specify a structure acronym")
-  if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation."))
+  if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation.\n"))
   
   subset_str_id <- ontology(segmentation)$id[ontology(segmentation)$acronym == subset_str]
   segmentation <- seg_sub_str(segmentation, structures = subset_str_id)
