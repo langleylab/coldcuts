@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 ## Finding additional segmentations (WIP)
 
-
 Many institutions have published their own segmentations as NIfTI, NRRD or RAW files.
 
 In this table we curate a few segmentations including their source(s), and link (in the **files** field of the table) to their folders in this repository.
@@ -27,7 +26,7 @@ In this table we curate a few segmentations including their source(s), and link 
 | Hammersmith Atlas | _H. sapiens_ | [source](http://brain-development.org/brain-atlases/adult-brain-atlases/adult-brain-maximum-probability-map-hammers-mith-atlas-n30r83-in-mni-space/) | NIfTI | MNI152 | 1 mm | LAS | custom ontology | [files](https://github.com/langleylab/coldcuts_segmentations/tree/main/Hammersmith) | [Hammers et al.](http://www.ncbi.nlm.nih.gov/pubmed/12874777) _Human Brain Mapping_ 2003, [Gousias et al.](http://www.ncbi.nlm.nih.gov/pubmed/18234511) _NeuroImage_ 2007, [Faillenot et al.](http://doi.org/10.1016/j.neuroimage.2017.01.073) _NeuroImage_ 2017, [Wild et al.](http://doi.org/10.1371/journal.pone.0180866) PLoS ONE 2017, | 
 | HCP MMP 1.0 | _H. sapiens_ | [source](https://neurovault.org/collections/1549/) | NRRD | MNI152 | 500 &mu;m | RAS | custom ontology | [files](https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/tree/main/HCP_MMP) | [Glasser et al.](http://doi.org/10.1038/nature18933) _Nature_ 2016 |
 | ABA Mouse CCF2017 | _M. musculus_ | [source](http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2017/structure_masks/) | NRRD | CCFv3 | 50 &mu;m | PIR | [ontology](http://help.brain-map.org/display/api/Downloading+an+Ontology%27s+Structure+Graph) | [files](https://github.com/langleylab/coldcuts_segmentations/tree/main/ABA_Mouse_CCFv3) | [Lein et al.](https://www.nature.com/articles/nature05453) _Nature_ 2007 |
-| Drosophila JRC2010 | _D. melanogaster_ | [source](https://www.janelia.org/open-science/jrc-2018-brain-templates) | NRRD | JRC2010 | 38 &mu;m | RAS | custom ontology | [files](https://github.com/langleylab/coldcuts_segmentations/tree/main/Drosophila_JRC2010) |  [Bogovic et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0236495) _PlOS ONE_ 2020, [Ito et al.](https://www.cell.com/neuron/fulltext/S0896-6273(13)01178-1) _Neuron_ 2014 |
+| Drosophila JRC2010 | _D. melanogaster_ | [source](https://github.com/VirtualFlyBrain/DrosAdultBRAINdomains) | NRRD | JRC2010 | 0.62 &mu;m | RAS | custom ontology | [files](https://github.com/langleylab/coldcuts_segmentations/tree/main/Drosophila_JRC2010) |  [Bogovic et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0236495) _PlOS ONE_ 2020, [Ito et al.](https://www.cell.com/neuron/fulltext/S0896-6273(13)01178-1) _Neuron_ 2014 |
 | Chimpanzee Davi130 Juna.Chimp | _P. troglodytes_ | [source](https://www.chimpanzeebrain.org/node/2347) | NIfTI | Juna.Chimp | 500 &mu;m | LAS | custom ontology | [files](https://github.com/langleylab/coldcuts_segmentations/tree/main/Chimp_Davi130) | [Vickery et al.](https://pubmed.ncbi.nlm.nih.gov/33226338/) _eLife_ 2020 |
 
  
@@ -134,7 +133,6 @@ The RDS file contains the `segmentation` class object, with maximum projections 
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Chimp_Davi130/Chimp_Davi130_axial_mp.png" width="600" />
   <img src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/Chimp_Davi130/Chimp_Davi130_ontology.png" width="900" />
 </p>
-
 
 
 
