@@ -100,7 +100,7 @@ Ontologies may contain additional IDs, which are part of how the authors of the 
 ontology_plot(seg)
 ```
 
-<img width="1010" alt="ontology_graph" src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/HCP_MMP/HCPMMP1_Human_ontology.png">
+<img width="1010" alt="ontology_graph" src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/ABA_Human_full/ABA_Human_ontology.png">
 
 Acronyms can be compared to their names looking at the ontology.
 
