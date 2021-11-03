@@ -214,24 +214,36 @@ seg_sub_str <- function(segmentation,
                                planes_chosen = NULL){
 
   if(is.null(planes_chosen)) planes_chosen = seg_metadata(segmentation)$planes
-
-  structures <- as.character(structures)
-
-  which_slice_ok <- seg_slice_check(structures = structures,
+  
+  if(any(!structures %in% ontology(segmentation)$acronym)) stop("Some structures were not found in this segmentation.")
+  
+  if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])){
+    
+      ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
+      
+      str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & ontology(segmentation)$has_children)]
+      
+      str_without_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & !ontology(segmentation)$has_children)]
+      
+      subset_str <- intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+                                               !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures))
+    }
+  
+  which_slice_ok <- seg_slice_check(structures = subset_str,
                                segmentation = segmentation,
                                planes = planes_chosen)
 
   segmentation@slices <- lapply(planes_chosen, function(x) {
     segmentation@slices[[x]] <- segmentation@slices[[x]][as.character(which_slice_ok[[x]]$slice)]
-    segmentation@slices[[x]] <- lapply(segmentation@slices[[x]], function(y) y[structures])
+    segmentation@slices[[x]] <- lapply(segmentation@slices[[x]], function(y) y[intersect(names(y), subset_str)])
   })
 
   names(segmentation@slices) <- planes_chosen
 
   segmentation@metadata$dims_effective <- lengths(segmentation@slices)
   segmentation@metadata$dims_effective <- lengths(segmentation@slices)
-  segmentation@metadata$structures <- structures
-
+  segmentation@metadata$structures <- subset_str
+  
   return(segmentation)
 }
 

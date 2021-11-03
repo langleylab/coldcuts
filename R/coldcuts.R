@@ -1121,5 +1121,6 @@ seg_get_slice <- function(segmentation,
   } else {
     df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) poly_build(y)))))
   }
-  return(df)
+  return(df[!duplicated(df[,1:3]),])
 }
+

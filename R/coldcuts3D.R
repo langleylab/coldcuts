@@ -17,7 +17,7 @@ seg_mesh_build <- function(segmentation,
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
   if(is.null(subset_str)) stop("You must specify a structure acronym")
-  if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation.\n"))
+  if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation."))
   
   subset_str_id <- ontology(segmentation)$id[ontology(segmentation)$acronym == subset_str]
   segmentation <- seg_sub_str(segmentation, structures = subset_str_id)
@@ -130,10 +130,10 @@ seg_meshlist_render <- function(segmentation,
       
       if(any(!subset_str %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])) {
         ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
-      str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
-      str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
-      indices <- c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
-                                               !ontology(segmentation)$has_children, "acronym"], str_without_children)
+        str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
+        str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
+        indices <- intersect(c(ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+                                               !ontology(segmentation)$has_children), "acronym"], str_without_children), names(segmentation@meshes))
       }
     }
   style <- match.arg(style, choices = c("shiny","matte"))
@@ -143,7 +143,6 @@ seg_meshlist_render <- function(segmentation,
     mesh_to_plot <- segmentation@meshes[[i]]
     
     if(style == "matte") {
-      mesh_to_plot$material <- list()
       mesh_to_plot$material$specular <- "black"
     } 
            rgl::shade3d(rgl::rotate3d(
@@ -152,7 +151,7 @@ seg_meshlist_render <- function(segmentation,
                                  iteration = iterations), 
                  angle = pi, x = 0, y = 1, z = 0), 
                  material = segmentation@ontology[segmentation@ontology$acronym == i, "col"], 
-                 meshColor = "faces")
+                 meshColor = "vertices")
     } 
 }
 
