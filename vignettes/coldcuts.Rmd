@@ -126,7 +126,7 @@ seg_plot(seg, s_slice = 50, show_labels = TRUE)
 Additionally, we can subset a `segmentation` object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):
 
 ```{r, eval = FALSE}
-seg_sub <- seg_sub_str(segmentation = seg, planes_chosen = "sagittal", structures = "10557")
+seg_sub <- seg_sub_str(segmentation = seg, planes_chosen = "sagittal", structures = "FWM")
 
 seg_plot(seg_sub, s_slice = 50, show_labels = TRUE)
 ```

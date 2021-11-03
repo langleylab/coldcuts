@@ -226,7 +226,9 @@ seg_sub_str <- function(segmentation,
       str_without_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & !ontology(segmentation)$has_children)]
       
       subset_str <- intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
-                                               !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures))
+                                               !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures)
+  } else {
+      subset_str = ontology(segmentation)[ontology(segmentation)$acronym %in% structures,"id"]
     }
   
   which_slice_ok <- seg_slice_check(structures = subset_str,
