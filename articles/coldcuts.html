@@ -183,7 +183,7 @@
 <p><img width="717" alt="slices_2" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_sagittal_structures.png"></p>
 <p>Additionally, we can subset a <code>segmentation</code> object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_sub_str.html">seg_sub_str</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span>, structures <span class="op">=</span> <span class="st">"10557"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_sub_str.html">seg_sub_str</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span>, structures <span class="op">=</span> <span class="st">"FWM"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg_sub</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img width="716" alt="slices_3" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FWM_structuresubset.png"></p>
