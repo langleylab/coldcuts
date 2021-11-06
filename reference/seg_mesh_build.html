@@ -138,12 +138,7 @@
     <p>Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seg_mesh_build</span><span class='op'>(</span>
-  <span class='va'>segmentation</span>,
-  subset_str <span class='op'>=</span> <span class='cn'>NULL</span>,
-  pct_reduce <span class='op'>=</span> <span class='fl'>0.1</span>,
-  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>seg_mesh_build</span><span class='op'>(</span><span class='va'>segmentation</span>, <span class='va'>subset_str</span>, pct_reduce <span class='op'>=</span> <span class='fl'>0.1</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,7 +149,7 @@
     </tr>
     <tr>
       <th>subset_str</th>
-      <td><p>a character vector indicating the structure(s) to be rendered, by acronym. Default is <code>NULL</code>, meaning the whole segmentation will be rendered as a single mesh.</p></td>
+      <td><p>a character vector indicating the structure(s) to be rendered, by acronym.</p></td>
     </tr>
     <tr>
       <th>pct_reduce</th>
