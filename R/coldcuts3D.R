@@ -16,8 +16,10 @@ seg_mesh_build <- function(segmentation,
                           verbose = FALSE) {
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
+  if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
   if(is.null(subset_str)) stop("You must specify a structure acronym")
   if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation."))
+  if(pct_reduce <= 0 | pct_reduce > 1) stop("pct_reduce must be between 0 (excluded) and 1 (included).")
   
   segmentation <- seg_sub_str(segmentation, structures = subset_str)
   
@@ -120,7 +122,14 @@ seg_meshlist_render <- function(segmentation,
                             style = "matte") {
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
+  
+  if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  
+  if(class(iterations) != "numeric" | class(iterations) != "integer") stop("Iterations must be an integer")
+  if(iterations %% 1 != 0) stop("Iterations must be an integer or coercible to an integer")
+  
   #if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
+  iterations <- as.integer(iterations)
   
   if(is.null(subset_str)) {
       indices = names(segmentation@meshes)
@@ -172,6 +181,11 @@ seg_meshlist_add <- function(segmentation,
                              pct_reduce = 0.1,
                              verbose = FALSE){
   
+  if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
+  if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if(class(pct.reduce) != "numeric") stop("pct_reduce must be a numeric.")
+  if(pct_reduce <= 0 | pct_reduce > 1) stop("pct_reduce must be between 0 (excluded) and 1 (included).")
+  
   if(is.null(structures)) {
     
     subset_str = ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"]
@@ -190,7 +204,7 @@ seg_meshlist_add <- function(segmentation,
   
   meshlist <- list()
   for(i in subset_str) {
-    if(verbose) cat("Rendering structure", i, ",", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
+    if(verbose) cat("Rendering structure ", i, ",", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
     meshlist[[i]] <- seg_mesh_build(segmentation = segmentation, subset_str = i, pct_reduce = pct_reduce, verbose = verbose)
   }
   
