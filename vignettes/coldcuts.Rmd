@@ -224,7 +224,7 @@ Structures can be subset for maximum projections, since using all structures may
 
 structures_chosen <- unlist(assays(seg)$gtex@mapping)
 structures_chosen <- intersect(structures_chosen, seg_metadata(seg)$structures)
-structures_chosen <- ontology(seg)[structures_chosen, "acronym"]
+structures_chosen <- ontology(seg)[as.character(structures_chosen), "acronym"]
   
 seg <- seg_projection_add(name = "gtex", 
                         segmentation = seg, 
