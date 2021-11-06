@@ -518,6 +518,7 @@ seg_plot <- function(segmentation,
                      wrap_options = 1) {
   
   if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
+  if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
   
   planes = c("sagittal", "coronal", "axial")
   if(is.null(s_slice)) s_slice <- NULL
@@ -732,6 +733,7 @@ seg_feature_plot <- function(segmentation,
                              remove_axes = TRUE){
   
   if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
+  if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
   
   if(is.null(projection)) {
     if(length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")

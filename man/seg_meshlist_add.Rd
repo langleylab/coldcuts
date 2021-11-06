@@ -21,7 +21,7 @@ seg_meshlist_add(
 \item{verbose}{logical, show progress of the meshing? Default is \code{FALSE}.}
 }
 \value{
-a `segmentation` class object with a list of triangular meshes in the `meshes` slot.
+a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.
 }
 \description{
 Builds a list of structure meshes and stores it in the meshes slot.

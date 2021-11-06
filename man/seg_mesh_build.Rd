@@ -4,17 +4,12 @@
 \alias{seg_mesh_build}
 \title{Build a structure mesh}
 \usage{
-seg_mesh_build(
-  segmentation,
-  subset_str = NULL,
-  pct_reduce = 0.1,
-  verbose = FALSE
-)
+seg_mesh_build(segmentation, subset_str, pct_reduce = 0.1, verbose = FALSE)
 }
 \arguments{
 \item{segmentation}{a `segmentation` class object}
 
-\item{subset_str}{a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.}
+\item{subset_str}{a character vector indicating the structure(s) to be rendered, by acronym.}
 
 \item{pct_reduce}{numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.}
 
