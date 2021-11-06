@@ -3,7 +3,7 @@
 #' Uses marching cubes and mesh reduction to render the segmentation in 3 dimensions in a single mesh.
 #'
 #' @param segmentation a `segmentation` class object
-#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}.
+#' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. 
 #' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
 #' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
@@ -11,7 +11,7 @@
 #' @export
 
 seg_mesh_build <- function(segmentation, 
-                          subset_str = NULL,
+                          subset_str,
                           pct_reduce = 0.1,
                           verbose = FALSE) {
   
@@ -19,8 +19,7 @@ seg_mesh_build <- function(segmentation,
   if(is.null(subset_str)) stop("You must specify a structure acronym")
   if(!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation."))
   
-  subset_str_id <- ontology(segmentation)$id[ontology(segmentation)$acronym == subset_str]
-  segmentation <- seg_sub_str(segmentation, structures = subset_str_id)
+  segmentation <- seg_sub_str(segmentation, structures = subset_str)
   
   if(verbose) cat("Calculating holes...")
   
@@ -164,7 +163,7 @@ seg_meshlist_render <- function(segmentation,
 #' @param structures a character vector of structure acronyms, indicating the structure(s) to be rendered. Default is \code{NULL}, meaning all structures will be rendered.
 #' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
-#' @return a `segmentation` class object with a list of triangular meshes in the `meshes` slot.
+#' @return a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.
 #'
 #' @export
 
@@ -174,8 +173,11 @@ seg_meshlist_add <- function(segmentation,
                              verbose = FALSE){
   
   if(is.null(structures)) {
+    
     subset_str = ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"]
+    
     } else {
+      
       if(any(!structures %in% ontology(segmentation)$acronym)) stop("Some structures were not found in this segmentation.")
       if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])){
         ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
