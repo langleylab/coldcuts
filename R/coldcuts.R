@@ -247,6 +247,11 @@ seg_draw <- function(nifti_file = NULL,
   if (verbose) cat("done.\n")
   
   if (verbose) cat("Compiling metadata...")
+  
+ if(!is.null(molten_array)) {
+    ndims <- c(max(M$Var1), max(M$Var2), max(M$Var3))
+  }
+  
   metadata <- list(
     "filename" = filename,
     "dirs" = dirs,
