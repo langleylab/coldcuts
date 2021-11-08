@@ -125,7 +125,7 @@ seg_meshlist_render <- function(segmentation,
   
   if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
   
-  if(class(iterations) != "numeric" | class(iterations) != "integer") stop("Iterations must be an integer")
+  if(class(iterations) != "numeric") stop("Iterations must be an integer")
   if(iterations %% 1 != 0) stop("Iterations must be an integer or coercible to an integer")
   
   #if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
@@ -159,7 +159,8 @@ seg_meshlist_render <- function(segmentation,
                                  iteration = iterations), 
                  angle = pi, x = 0, y = 1, z = 0), 
                  material = segmentation@ontology[segmentation@ontology$acronym == i, "col"], 
-                 meshColor = "vertices")
+                 meshColor = "vertices",
+                 depth_mask = TRUE)
     } 
 }
 
@@ -210,7 +211,7 @@ seg_meshlist_add <- function(segmentation,
   
   segmentation@meshes <- meshlist
   
-  if(verbose) cat("All meshes rendered!\n")
+  if(verbose) cat("All meshes built!\n")
   
   return(segmentation)
 }

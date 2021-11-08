@@ -130,8 +130,9 @@ seg_draw <- function(nifti_file = NULL,
     dirs = directions_from
   }
   
-  if (!is.null(outliers)) n_image[t(outliers)] <- 0
-  ndims <- dim(n_image)
+ if(is.null(molten_array)) {
+   if (!is.null(outliers)) n_image[t(outliers)] <- 0
+    ndims <- dim(n_image) } 
   
   if (planes == "all") planes_chosen <- c("sagittal", "coronal", "axial") else planes_chosen <- planes
   slices <- outlines <- list("sagittal" = NULL, "coronal" = NULL, "axial" = NULL)
@@ -142,8 +143,8 @@ seg_draw <- function(nifti_file = NULL,
     M <- M[M$value > 0, ]
     if (verbose) cat("done.\n")
   } else if (is.null(array) & !is.null(molten_array)) {
-    if (any(M$value == 0)) M <- M[M$value > 0, ]
     M <- molten_array
+    if (any(M$value == 0)) M <- M[M$value > 0, ]
   } else if (is.null(array) & is.null(molten_array) & (!is.null(nifti_file) | !is.null(nrrd_file))) {
     if (verbose) cat("Melting array...")
     M <- as.data.table(n_image)
