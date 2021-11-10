@@ -225,10 +225,10 @@ seg_sub_str <- function(segmentation,
       
       str_without_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & !ontology(segmentation)$has_children)]
       
-      subset_str <- intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
-                                               !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures)
+      subset_str <- as.character(intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+                                               !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures))
   } else {
-      subset_str = ontology(segmentation)[ontology(segmentation)$acronym %in% structures, "id"]
+      subset_str = as.character(intersect(ontology(segmentation)[ontology(segmentation)$acronym %in% structures, "id"], seg_metadata(segmentation)$structures))
     }
   
   which_slice_ok <- seg_slice_check(structures = subset_str,
@@ -238,11 +238,11 @@ seg_sub_str <- function(segmentation,
   segmentation@slices <- lapply(planes_chosen, function(x) {
     segmentation@slices[[x]] <- segmentation@slices[[x]][as.character(which_slice_ok[[x]]$slice)]
     segmentation@slices[[x]] <- lapply(segmentation@slices[[x]], function(y) y[intersect(names(y), subset_str)])
+    return(segmentation@slices[[x]])
   })
 
   names(segmentation@slices) <- planes_chosen
 
-  segmentation@metadata$dims_effective <- lengths(segmentation@slices)
   segmentation@metadata$dims_effective <- lengths(segmentation@slices)
   segmentation@metadata$structures <- subset_str
   
