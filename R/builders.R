@@ -228,7 +228,7 @@ seg_sub_str <- function(segmentation,
       subset_str <- intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
                                                !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures)
   } else {
-      subset_str = ontology(segmentation)[ontology(segmentation)$acronym %in% structures,"id"]
+      subset_str = ontology(segmentation)[ontology(segmentation)$acronym %in% structures, "id"]
     }
   
   which_slice_ok <- seg_slice_check(structures = subset_str,
@@ -246,7 +246,9 @@ seg_sub_str <- function(segmentation,
   segmentation@metadata$dims_effective <- lengths(segmentation@slices)
   segmentation@metadata$structures <- subset_str
   
-  return(segmentation)
+  if(length(segmentation@meshes) > 0) segmentation@meshes <- segmentation@meshes[intersect(names(segmentation@meshes), ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"])]
+  
+    return(segmentation)
 }
 
 

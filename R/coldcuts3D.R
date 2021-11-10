@@ -142,7 +142,8 @@ seg_meshlist_render <- function(segmentation,
         str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
         indices <- intersect(c(ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
                                                !ontology(segmentation)$has_children), "acronym"], str_without_children), names(segmentation@meshes))
-      }
+      } else { 
+        indices = subset_str}
     }
   style <- match.arg(style, choices = c("shiny","matte"))
   
@@ -184,7 +185,7 @@ seg_meshlist_add <- function(segmentation,
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
   if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
-  if(class(pct.reduce) != "numeric") stop("pct_reduce must be a numeric.")
+  if(class(pct_reduce) != "numeric") stop("pct_reduce must be a numeric.")
   if(pct_reduce <= 0 | pct_reduce > 1) stop("pct_reduce must be between 0 (excluded) and 1 (included).")
   
   if(is.null(structures)) {
@@ -205,7 +206,7 @@ seg_meshlist_add <- function(segmentation,
   
   meshlist <- list()
   for(i in subset_str) {
-    if(verbose) cat("Rendering structure ", i, ",", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
+    if(verbose) cat("Rendering structure ", i, ", ", which(subset_str == i), " of ", length(subset_str), "...\n", sep = "")
     meshlist[[i]] <- seg_mesh_build(segmentation = segmentation, subset_str = i, pct_reduce = pct_reduce, verbose = verbose)
   }
   

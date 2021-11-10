@@ -246,7 +246,7 @@ seg_feature_plot(segmentation = seg,
 
 `coldcuts` can reuse polygons to rebuild the original volume array and, using a marching cubes algorithm together with quadric edge decimation (both as implemented in `Rvcg`) it can quickly render simplified triangular meshes that can be visualized in an interactive `rgl` session. 
 
-In order to render and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:
+In order to create and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:
 
 ```{r, eval = FALSE}
 
