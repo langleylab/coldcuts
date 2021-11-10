@@ -283,7 +283,7 @@
 <h2 class="hasAnchor">
 <a href="#building-and-rendering-3d-meshes" class="anchor"></a>Building and rendering 3D meshes</h2>
 <p><code>coldcuts</code> can reuse polygons to rebuild the original volume array and, using a marching cubes algorithm together with quadric edge decimation (both as implemented in <code>Rvcg</code>) it can quickly render simplified triangular meshes that can be visualized in an interactive <code>rgl</code> session.</p>
-<p>In order to render and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:</p>
+<p>In order to create and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_meshlist_add.html">seg_meshlist_add</a></span><span class="op">(</span><span class="va">seg</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
