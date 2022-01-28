@@ -33,7 +33,7 @@ reference:
   - assays
   - ontology
   - ontology_plot
-  - citation_show
+  - citation
   - projections
  
 - title: "Manipulation of polygons"
