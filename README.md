@@ -51,7 +51,7 @@ Thus, **`coldcuts`** is our attempt at bridging the gap between imaging/high thr
 devtools::install_github("langleylab/coldcuts")
 ```
 
-Nota bene: **`coldcuts`** uses **`smoothr`** to smooth 2D polygons. This package requires the installation of **`terra`** which has some system dependencies for spatial data, such as GDAL, GEOS and PROJ that can sometimes be difficult to install, especially in machines on which you do not have admin rights. 
+Note: **`coldcuts`** uses **`smoothr`** to smooth 2D polygons. This package requires the installation of **`terra`** which has some system dependencies for spatial data, such as GDAL, GEOS and PROJ that can sometimes be difficult to install, especially in machines on which you do not have admin rights. 
 
 One possible workaround when you do not have admin rights is to use **conda** [virtual environments](https://docs.conda.io/en/latest/) to install GDAL and other libraries using the conda-forge channel: [link](https://anaconda.org/conda-forge/libgdal)
 
