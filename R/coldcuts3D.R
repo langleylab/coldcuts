@@ -110,6 +110,7 @@ seg_mesh_build <- function(segmentation,
 #' @param segmentation a `segmentation` class object
 #' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym. Default is \code{NULL}, meaning the whole segmentation will be rendered as a single mesh.
 #' @param iterations numeric, iterations for HC smoothing of the meshes
+#' @param group_first logical, in the case of ambiguous acronyms, should the rendering privilege plotting the group or the single structure? Default is \code{TRUE}, meaning the group will be given priority.
 #' @param style character, one of "matte" or "shiny" as a rendering style
 #' 
 #' @return a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a \code{rgl} window.
@@ -119,6 +120,7 @@ seg_mesh_build <- function(segmentation,
 seg_meshlist_render <- function(segmentation, 
                             subset_str = NULL,
                             iterations = 4,
+                            group_first = TRUE,
                             style = "matte") {
   
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
@@ -132,19 +134,43 @@ seg_meshlist_render <- function(segmentation,
   iterations <- as.integer(iterations)
   
   if(is.null(subset_str)) {
+    
       indices = names(segmentation@meshes)
       
     } else {
       
-      if(any(!subset_str %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])) {
-        ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
+      ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
+      ambiguous_id <- as.character(seg_metadata(segmentation)$structures)[ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "has_children"]]
+      ambiguous <- ontology(segmentation)[as.character(ambiguous_id), "acronym"]
+      
+      if(any(subset_str %in% ambiguous) & group_first == TRUE) {
+        
         str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
         str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
-        indices <- intersect(c(ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
-                                               !ontology(segmentation)$has_children), "acronym"], str_without_children), names(segmentation@meshes))
-      } else { 
-        indices = subset_str}
+        preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
+        preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
+        
+        selection <- union(preselection$acronym, subset_str[subset_str %in% ambiguous])
+          
+        indices <- intersect(selection, names(segmentation@meshes))
+        
+      } else if(any(!subset_str %in% ambiguous)) { 
+        
+        str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
+        str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
+        preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
+        preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
+        
+        selection <- preselection$acronym
+        
+        indices <- intersect(selection, names(segmentation@meshes))
+        
+      } else if(any(subset_str %in% ambiguous) & group_first == FALSE)  {
+        
+        indices = subset_str
+       }
     }
+  
   style <- match.arg(style, choices = c("shiny","matte"))
   
   for(i in indices) {
