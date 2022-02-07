@@ -15,6 +15,15 @@ The name is inspired by one of Italy's best products.
 
 🗂 You can find additional segmentation files, ontologies and other information at https://langleylab.github.io/coldcuts/articles/segmentations.html
 
+📄 You can read the preprint on arXiv at https://arxiv.org/abs/2201.10116 
+
+## Citation
+
+If you use **`coldcuts`** in your research, cite the preprint:
+
+Giuseppe D'Agostino and Sarah Langley, *Automated brain parcellation rendering and visualization in R with coldcuts*, arXiv 2022, [arXiv:2201.10116](	arXiv:2201.10116) 
+
+
 ## Motivation
 
 When dealing with neuroimaging data, or any other type of numerical data derived from brain tissues, it is important to situate it in its anatomical and structural context. Various authors provide parcellations or segmentations of the brain, according to their best interpretation of which functional and anatomical boundaries make sense for our understanding of the brain. There are several stand-alone tools that allow to visualize and manipulate segmentations. However, neuroimaging data, together with other functional data such as transcriptomics, is often manipulated in a statistical programming
@@ -41,6 +50,10 @@ Thus, **`coldcuts`** is our attempt at bridging the gap between imaging/high thr
 ```{r}
 devtools::install_github("langleylab/coldcuts")
 ```
+
+Note: **`coldcuts`** uses **`smoothr`** to smooth 2D polygons. This package requires the installation of **`terra`** which has some system dependencies for spatial data, such as GDAL, GEOS and PROJ that can sometimes be difficult to install, especially in machines on which you do not have admin rights. 
+
+One possible workaround when you do not have admin rights is to use **conda** [virtual environments](https://docs.conda.io/en/latest/) to install GDAL and other libraries using the conda-forge channel: [link](https://anaconda.org/conda-forge/libgdal)
 
 ## Getting started
 
