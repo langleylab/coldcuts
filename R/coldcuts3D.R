@@ -142,34 +142,40 @@ seg_meshlist_render <- function(segmentation,
       ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
       ambiguous_id <- as.character(seg_metadata(segmentation)$structures)[ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "has_children"]]
       ambiguous <- ontology(segmentation)[as.character(ambiguous_id), "acronym"]
+      indices <- list()
       
       if(any(subset_str %in% ambiguous) & group_first == TRUE) {
         
-        str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
-        str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
-        preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
-        preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
+        for(i in subset_str) {
+            str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% i & ontology(segmentation)$has_children)]
+            str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% i & !ontology(segmentation)$has_children)]
+            preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
+            preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
         
-        selection <- union(preselection$acronym, subset_str[subset_str %in% ambiguous])
+            selection <- union(preselection$acronym, i[i %in% ambiguous])
           
-        indices <- intersect(selection, names(segmentation@meshes))
+            indices[[i]] <- intersect(selection, names(segmentation@meshes))
+            }
+          } else if(any(!subset_str %in% ambiguous)) { 
+            for(i in subset_str) {
+            str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% i & ontology(segmentation)$has_children)]
+            str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% i & !ontology(segmentation)$has_children)]
+            preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
+            preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
         
-      } else if(any(!subset_str %in% ambiguous)) { 
+            selection <- preselection$acronym
         
-        str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% subset_str & ontology(segmentation)$has_children)]
-        str_without_children <- ontology(segmentation)$acronym[which(ontology(segmentation)$acronym %in% subset_str & !ontology(segmentation)$has_children)]
-        preselection <- ontology(segmentation)[which(unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path)))),]
-        preselection <- preselection[preselection$id %in% seg_metadata(segmentation)$structures,]
+            indices[[i]] <- intersect(selection, names(segmentation@meshes))
         
-        selection <- preselection$acronym
-        
-        indices <- intersect(selection, names(segmentation@meshes))
-        
-      } else if(any(subset_str %in% ambiguous) & group_first == FALSE)  {
-        
-        indices = subset_str
-       }
-    }
+          } 
+            } else if(any(subset_str %in% ambiguous) & group_first == FALSE)  {
+              for(i in subset_str) {
+            indices[[i]] = subset_str
+              }
+            }
+        }
+    
+  indices <- unlist(indices)
   
   style <- match.arg(style, choices = c("shiny","matte"))
   
