@@ -5,7 +5,7 @@
 \alias{segPointSet-class}
 \title{Segmentation point set class}
 \description{
-S4 class holding all the data necessary to build a set of polygons via `buildPolygon` in order to be plotted.
+S4 class holding all the data necessary to build a set of polygons via `poly_build()` in order to be plotted.
 }
 \section{Slots}{
 

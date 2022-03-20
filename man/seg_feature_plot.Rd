@@ -10,10 +10,14 @@ seg_feature_plot(
   assay,
   projection = NULL,
   plane = "sagittal",
+  by = NULL,
+  aggr_fun = NULL,
+  rng = NULL,
   smooth = TRUE,
   smoothness = 3,
   minsize = 10,
   color_pal = NULL,
+  show_side = "both",
   show_labels = TRUE,
   remove_axes = TRUE
 )
@@ -29,6 +33,12 @@ seg_feature_plot(
 
 \item{plane}{character, the plane for the maximum projection. Default is "sagittal".}
 
+\item{by}{character with two elements, [1] the name of the column in the \code{sampledata} of the \code{assay} to be used for subsetting and aggregating and [2] the value to which the column in [1] should be equal to}
+
+\item{aggr_fun}{function, the function to be used to aggregate samples across rows when using \code{by}}
+
+\item{rng}{numeric with two elements with lower and upper bound for the color scale. Default is \code{NULL}}
+
 \item{smooth}{logical, should shapes be smoothed? Default is \code{TRUE}.}
 
 \item{smoothness}{numeric, the smoothing to be used. Default is 3.}
@@ -36,6 +46,8 @@ seg_feature_plot(
 \item{minsize}{numeric, minimum number of vertices to draw a polygon. Default is 10.}
 
 \item{color_pal}{character, the color palette to be used. The default is the `Sunset` palette from \code{colorspace}}
+
+\item{show_side}{character, the side of the projection to be plotted. one of "first" ,"second", or "both". Default is "both".}
 
 \item{show_labels}{logical, should segmentation labels be shown? Default is \code{TRUE}}
 

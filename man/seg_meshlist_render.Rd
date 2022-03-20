@@ -9,7 +9,8 @@ seg_meshlist_render(
   subset_str = NULL,
   iterations = 4,
   group_first = TRUE,
-  style = "matte"
+  style = "matte",
+  mono_color = "gray"
 )
 }
 \arguments{
@@ -21,7 +22,9 @@ seg_meshlist_render(
 
 \item{group_first}{logical, in the case of ambiguous acronyms, should the rendering privilege plotting the group or the single structure? Default is \code{TRUE}, meaning the group will be given priority.}
 
-\item{style}{character, one of "matte" or "shiny" as a rendering style}
+\item{style}{character, one of "matte", "shiny" or "monochrome" as a rendering style}
+
+\item{mono_color}{character, the color of meshes when character = "monochrome"}
 }
 \value{
 a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a \code{rgl} window.
