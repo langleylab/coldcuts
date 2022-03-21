@@ -22,6 +22,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     colorspace,
+    ComplexHeatmap,
     data.table,
     freesurferformats,
     future.apply,
@@ -37,6 +38,7 @@ Imports:
     qualpalr,
     reshape2,
     scales,
+    stringr,
     tidygraph,
     gridExtra
 Suggests:

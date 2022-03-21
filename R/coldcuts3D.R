@@ -8,6 +8,8 @@
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
 #' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
 #'
+#' @importFrom utils installed.packages
+#' 
 #' @export
 
 seg_mesh_build <- function(segmentation,
@@ -116,6 +118,8 @@ seg_mesh_build <- function(segmentation,
 #'
 #' @return a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a \code{rgl} window.
 #'
+#' @importFrom utils installed.packages
+#' 
 #' @export
 
 seg_meshlist_render <- function(segmentation,
@@ -159,7 +163,7 @@ seg_meshlist_render <- function(segmentation,
     } else {
       mesh_material = segmentation@ontology[segmentation@ontology$acronym == i, "col"]
     }
-           rgl::shade3d(rgl::rotate3d(
+          rgl::shade3d(rgl::rotate3d(
                  Rvcg::vcgSmooth(mesh_to_plot,
                                  "HC",
                                  iteration = iterations),
@@ -181,6 +185,8 @@ seg_meshlist_render <- function(segmentation,
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
 #' @return a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.
 #'
+#' @importFrom utils installed.packages
+#' 
 #' @export
 
 seg_meshlist_add <- function(segmentation,

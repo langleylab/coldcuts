@@ -124,6 +124,8 @@ box_make <- function(point_set,
 #'
 #' @return A data frame containing coordinates for points within the polygon, including polygon vertices, inheriting all the other columns from the input polygon point set.
 #'
+#' @importFrom splancs inout
+#' 
 #' @export
 
 poly_fill <- function(point_set,
@@ -142,7 +144,7 @@ poly_fill <- function(point_set,
   )
 
   colnames(box) <- c("x", "y")
-  box <- box[which(splancs::inout(box, point_set, bound = NULL)), ]
+  box <- box[which(inout(box, point_set, bound = NULL)), ]
   box <- rbind(box, point_set[, 1:2])
   box <- box[!duplicated(box), ]
 
@@ -169,6 +171,8 @@ poly_fill <- function(point_set,
 #'
 #' @return A data frame containing coordinates for polygon vertices and the slice it originated from (if present in the original point set).
 #'
+#' @importFrom isoband isobands
+#' 
 #' @export
 
 
@@ -178,7 +182,7 @@ poly_make <- function(point_set,
 
   m <- t(reshape2::acast(box_make(point_set, step_size = step_size), formula = x ~ y))
 
-  ib <- isoband::isobands(seq_len(ncol(m)), seq_len(nrow(m)), m, levels_low = 0, levels_high = 1)
+  ib <- isobands(seq_len(ncol(m)), seq_len(nrow(m)), m, levels_low = 0, levels_high = 1)
 
   ib_df <- data.frame(
     "x" = ib[[1]]$x,
@@ -368,6 +372,10 @@ seg_projection_add <- function(name,
 #'
 #' @return A nested list containing ordered coordinates of points for every polygon for every structure in every slice, each point with an identifier for its grouping and hole status.
 #'
+#' @importFrom splancs inout
+#' @importFrom utils installed.packages
+#' @importFrom methods new
+#' 
 #' @export
 
 poly_set_make <- function(structure_list,
@@ -375,7 +383,11 @@ poly_set_make <- function(structure_list,
                             verbose = FALSE) {
 
   # Make a polygon for every structure in every slice
-  if (parallel) applyfun <- future.apply::future_lapply else applyfun <- lapply
+  if (parallel) {
+    if(!"future.apply" %in% rownames(installed.packages())) stop("You must install the `future.apply` package if you want to use parallelization")
+    applyfun <- future.apply::future_lapply } else { 
+      applyfun <- lapply
+    }
 
   polygon_list <- lapply(names(structure_list), function(n) {
     applyfun(names(structure_list[[n]]), function(y) {
@@ -394,7 +406,7 @@ poly_set_make <- function(structure_list,
           hole_list[[as.character(i)]] <- lapply(
             unique(ib_df$cluster)[unique(ib_df$cluster) != i],
             function(x) {
-              any(splancs::inout(
+              any(inout(
                 pts = ib_df[ib_df$cluster == x, 1:2],
                 poly = ib_df[ib_df$cluster == i, 1:2]
               ))
