@@ -32,7 +32,7 @@ poly_build <- function(seg_point_set) {
 
 slice_make <- function(M,
                        plane = "sagittal") {
-  
+
   if(plane == "sagittal"){
     uc <- 1
     xc <- 2
@@ -46,24 +46,24 @@ slice_make <- function(M,
     xc <- 1
     yc <- 2
   } else stop("Must select a `plane` out of \"sagittal\", \"coronal\", \"axial\"")
-  
+
   if(ncol(M) > 4) M <- M[, c(paste0("V",1:3), "value"), with = FALSE] #Remove 4th dimension
-    
+
   axis_plane <- data.table(split(M, by = colnames(M)[uc]))[[1]]
-  
+
   columns <- c(xc, yc, uc, 4)
-  
+
   for (i in seq_len(length(axis_plane))) {
     axis_plane[[i]] <- data.table(axis_plane[[i]][, columns, with = FALSE])
     colnames(axis_plane[[i]]) <- c("x", "y", "slice", "structure")
   }
-  
+
   names(axis_plane) <- unique(M[, uc, with = FALSE])[[1]]
   axis_plane <- axis_plane[order(as.numeric(names(axis_plane)))]
-  
-  
+
+
   axis_strlist <- lapply(axis_plane, function(x) split(x, by = "structure"))
-  
+
   # Naming structures using their codes
   for (i in seq_len(length(axis_strlist))) {
     names(axis_strlist[[i]]) <- unlist(lapply(
@@ -72,9 +72,9 @@ slice_make <- function(M,
     ))
   }
   names(axis_strlist) <- names(axis_plane)
-  
+
   return(axis_strlist)
-  
+
 }
 
 #' Create a bounding box
@@ -125,7 +125,7 @@ box_make <- function(point_set,
 #' @return A data frame containing coordinates for points within the polygon, including polygon vertices, inheriting all the other columns from the input polygon point set.
 #'
 #' @importFrom splancs inout
-#' 
+#'
 #' @export
 
 poly_fill <- function(point_set,
@@ -172,7 +172,7 @@ poly_fill <- function(point_set,
 #' @return A data frame containing coordinates for polygon vertices and the slice it originated from (if present in the original point set).
 #'
 #' @importFrom isoband isobands
-#' 
+#'
 #' @export
 
 
@@ -218,23 +218,23 @@ seg_sub_str <- function(segmentation,
                                planes_chosen = NULL){
 
   if(is.null(planes_chosen)) planes_chosen = seg_metadata(segmentation)$planes
-  
+
   if(any(!structures %in% ontology(segmentation)$acronym)) stop("Some structures were not found in this segmentation.")
-  
+
   if(any(!structures %in% ontology(segmentation)[as.character(seg_metadata(segmentation)$structures), "acronym"])){
-    
+
       ontology(segmentation)$has_children <- sapply(ontology(segmentation)$id, function(x) x %in% ontology(segmentation)$parent_structure_id)
-      
+
       str_with_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & ontology(segmentation)$has_children)]
-      
+
       str_without_children <- ontology(segmentation)$id[which(ontology(segmentation)$acronym %in% structures & !ontology(segmentation)$has_children)]
-      
-      subset_str <- as.character(intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) & 
+
+      subset_str <- as.character(intersect(c(ontology(segmentation)[unlist(sapply(str_with_children, function(x) grepl(x, ontology(segmentation)$structure_id_path))) &
                                                !ontology(segmentation)$has_children, "id"], str_without_children), seg_metadata(segmentation)$structures))
   } else {
       subset_str = as.character(intersect(ontology(segmentation)[ontology(segmentation)$acronym %in% structures, "id"], seg_metadata(segmentation)$structures))
     }
-  
+
   which_slice_ok <- seg_slice_check(structures = subset_str,
                                segmentation = segmentation,
                                planes = planes_chosen)
@@ -249,9 +249,9 @@ seg_sub_str <- function(segmentation,
 
   segmentation@metadata$dims_effective <- lengths(segmentation@slices)
   segmentation@metadata$structures <- subset_str
-  
+
   if(length(segmentation@meshes) > 0) segmentation@meshes <- segmentation@meshes[intersect(names(segmentation@meshes), ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"])]
-  
+
     return(segmentation)
 }
 
@@ -375,7 +375,7 @@ seg_projection_add <- function(name,
 #' @importFrom splancs inout
 #' @importFrom utils installed.packages
 #' @importFrom methods new
-#' 
+#'
 #' @export
 
 poly_set_make <- function(structure_list,
@@ -385,7 +385,7 @@ poly_set_make <- function(structure_list,
   # Make a polygon for every structure in every slice
   if (parallel) {
     if(!"future.apply" %in% rownames(installed.packages())) stop("You must install the `future.apply` package if you want to use parallelization")
-    applyfun <- future.apply::future_lapply } else { 
+    applyfun <- future.apply::future_lapply } else {
       applyfun <- lapply
     }
 
@@ -397,70 +397,7 @@ poly_set_make <- function(structure_list,
       ib_df <- poly_make(structure_list[[n]][[y]])
       ib_df$structure <- unique(structure_list[[n]][[y]]$structure)
 
-      # If there is more than one cluster there could be a hole in the polygon set
-      if (length(unique(ib_df$cluster)) > 1) {
-        hole_list <- list()
-
-        # For every cluster, we see whether it is contained in any other clusters
-        for (i in unique(ib_df$cluster)) {
-          hole_list[[as.character(i)]] <- lapply(
-            unique(ib_df$cluster)[unique(ib_df$cluster) != i],
-            function(x) {
-              any(inout(
-                pts = ib_df[ib_df$cluster == x, 1:2],
-                poly = ib_df[ib_df$cluster == i, 1:2]
-              ))
-            }
-          )
-        }
-        # Name the list according to the cluster that is being tested
-        for (i in seq_len(length(hole_list))) {
-          names(hole_list[[i]]) <- unique(ib_df$cluster)[unique(ib_df$cluster) != names(hole_list)[i]]
-        }
-
-        # Convert to a matrix for easier identification of clusters with holes
-        hmat <- do.call(rbind, hole_list)
-        hole_per_cluster <- apply(hmat, 1, function(x) colnames(hmat)[x == TRUE])
-        hole_per_cluster <- hole_per_cluster[which(lengths(hole_per_cluster) > 0)]
-        hole_per_cluster <- data.frame(
-          "cluster_outer" = rep(names(hole_per_cluster), lengths(hole_per_cluster)),
-          "cluster_inner" = unlist(hole_per_cluster)
-        )
-
-        # Cluster sizes are calculated to avoid multiple holes (we always take the bigger cluster to be the outer one)
-        hole_per_cluster$outer_size <- table(ib_df$cluster)[hole_per_cluster$cluster_outer]
-        hole_per_cluster$inner_size <- table(ib_df$cluster)[hole_per_cluster$cluster_inner]
-        hole_per_cluster <- hole_per_cluster[which(hole_per_cluster$inner_size < hole_per_cluster$outer_size), ]
-
-        # Handle duplicates (polygons that appear to be holes for more than one polygon)
-        if(any(duplicated(hole_per_cluster$cluster_inner))) {
-          dups <- unique(hole_per_cluster$cluster_inner[which(duplicated(hole_per_cluster$cluster_inner))])
-          discard_list <- list()
-          for(i in seq_len(length(dups))) {
-            check_size <- hole_per_cluster[hole_per_cluster$cluster_inner == dups[[i]],]
-            discard_list[[i]] <- rownames(check_size)[-which.max(check_size$outer_size)]
-          }
-          hole_per_cluster <- hole_per_cluster[setdiff(rownames(hole_per_cluster), unlist(discard_list)),]
-        }
-        # Initialize every point as being outer
-        ib_df$hole <- "outer"
-
-        # Clusters are now going to change (if cluster A is within cluster B, its points become B as well)
-        ib_df$cluster_hole <- ib_df$cluster
-
-        for (i in unique(hole_per_cluster$cluster_inner)) {
-          ib_df$hole[ib_df$cluster == i] <- "inner"
-          ib_df$cluster_hole[ib_df$cluster == i] <- hole_per_cluster[hole_per_cluster$cluster_inner == i, 1]
-        }
-
-        ib_df$id_hole <- paste0(ib_df$structure, "_", ib_df$cluster_hole, "_", ib_df$cluster)
-      } else {
-
-        # No need to do this if there is only one polygon in this structure
-        ib_df$hole <- "outer"
-        ib_df$cluster_hole <- ib_df$cluster
-        ib_df$id_hole <- paste0(ib_df$structure, "_", ib_df$cluster_hole, "_", ib_df$cluster)
-      }
+      ib_df = find_holes(ib_df, which_fun = any)
 
       # Columns necessary for aesthetics drawing
       # group aesthetic
@@ -515,20 +452,20 @@ seg_assay_add <- function(segmentation,
 #' Function to set the \code{citations} item in the metadata of \code{segmentation} class objects
 #' @param segmentation a \code{segmentation} class object
 #' @param name character, the name of the citation (e.g. "Lebowski2001")
-#' @param citation character, the citation 
-#' 
+#' @param citation character, the citation
+#'
 #' @export
 
 seg_citation_add <- function(segmentation,
                           name,
                           citation) {
-  
+
   if(is.null(name)) stop("Must provide a name for the citation")
   if(is.null(citation)) stop("Must provide a citation string")
   if(class(citation) != "character" | class(name) != "character") stop("Must provide a `character` type object for name and citation")
   if(class(segmentation) != "segmentation") stop("Must provide a `segmentation` type object")
-  
+
   segmentation@assays[[name]] <- citation
-  
+
   return(segmentation)
 }

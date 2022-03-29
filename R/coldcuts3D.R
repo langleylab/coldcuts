@@ -9,7 +9,7 @@
 #' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
 #'
 #' @importFrom utils installed.packages
-#' 
+#'
 #' @export
 
 seg_mesh_build <- function(segmentation,
@@ -119,7 +119,7 @@ seg_mesh_build <- function(segmentation,
 #' @return a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a \code{rgl} window.
 #'
 #' @importFrom utils installed.packages
-#' 
+#'
 #' @export
 
 seg_meshlist_render <- function(segmentation,
@@ -127,7 +127,8 @@ seg_meshlist_render <- function(segmentation,
                             iterations = 4,
                             group_first = TRUE,
                             style = "matte",
-                            mono_color = "gray") {
+                            mono_color = "gray")
+                            {
 
   if(!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
 
@@ -159,21 +160,24 @@ seg_meshlist_render <- function(segmentation,
     }
     if(style == "monochrome") {
       mesh_to_plot$material$specular <- "black"
-      mesh_material = mono_color
+      mesh_to_plot$material$color = mono_color
     } else {
-      mesh_material = segmentation@ontology[segmentation@ontology$acronym == i, "col"]
+      mesh_to_plot$material$color = segmentation@ontology[segmentation@ontology$acronym == i, "col"]
     }
-          rgl::shade3d(rgl::rotate3d(
+          mesh_to_plot <- rgl::rotate3d(
                  Rvcg::vcgSmooth(mesh_to_plot,
                                  "HC",
                                  iteration = iterations),
-                 angle = pi, x = 0, y = 1, z = 0),
-                 material = mesh_material,
-                 meshColor = "vertices",
-                 depth_mask = TRUE)
-    }
-}
+                 angle = pi, x = 0, y = 1, z = 0)
 
+             shade3d(mesh_to_plot, 
+                     meshColor = "vertices",
+                     depth_mask = TRUE,
+                     back = "filled",
+                     lit = TRUE)
+
+             }
+}
 
 #' Add mesh list to a segmentation
 #'
@@ -186,7 +190,7 @@ seg_meshlist_render <- function(segmentation,
 #' @return a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.
 #'
 #' @importFrom utils installed.packages
-#' 
+#'
 #' @export
 
 seg_meshlist_add <- function(segmentation,

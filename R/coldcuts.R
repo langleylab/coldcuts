@@ -874,6 +874,7 @@ seg_feature_plot <- function(segmentation,
   struct_df$gene_expression <- values_plot[feature, struct_df$structures]
 
   struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,]
+  
   rownames(struct_df) <- struct_df$id
 
   proj_1$gene_exp <- as.numeric(struct_df[proj_1$structure, "gene_expression"])
@@ -1026,19 +1027,18 @@ seg_feature_plot <- function(segmentation,
 #' 
 #' @export
 
-seg_feature_complex_plot <- function(
-  segmentation,
-  feature,
-  assay,
-  projection = NULL,
-  plane = "sagittal",
-  by = NULL,
-  aggr_fun = mean,
-  smooth = TRUE,
-  smoothness = 3,
-  minsize = 10,
-  color_pal = NULL,
-  show_labels = TRUE){
+seg_feature_complex_plot <- function(segmentation, 
+                                     feature,
+                                     assay,
+                                     projection = NULL,
+                                     plane = "sagittal",
+                                     by = NULL,
+                                     aggr_fun = mean,
+                                     smooth = TRUE,
+                                     smoothness = 3,
+                                     minsize = 10,
+                                     color_pal = NULL,
+                                     show_labels = TRUE){
   
   if(smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
   if(class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
@@ -1411,7 +1411,7 @@ seg_get_slice <- function(segmentation,
 seg_select_str <- function(segmentation, structures, group_first = TRUE){
 
   if(length(setdiff(structures, ontology(segmentation)$acronym)) > 0) stop("Some structures were not found in the ontology. Check spelling and/or case.")
-
+  
   subset_str <- data.frame("str" = structures)
   indices <- list()
 
