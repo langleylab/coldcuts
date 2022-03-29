@@ -201,12 +201,22 @@ brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][2:length(brain_
 brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][brain_regions[["Hippocampus"]] != "10377"]
 ```
 
+Then we make a very simple `sampledata` table since we don't have many variables:
+
+```{r, eval = FALSE}
+
+coldata_gtex = data.frame(sample_id = colnames(gtex)[3:ncol(gtex)], structure_acronym = colnames(gtex)[3:ncol(gtex)])
+rownames(coldata_gtex) = coldata_gtex$sample_id
+
+```
+
 We now have everything we need to create a `segmentationAssay` object and add it to our segmentation:
 
 ```{r, eval = FALSE}
 gtexAssay <- new("segmentationAssay",
                  values = as.matrix(gtex[,3:ncol(gtex)]),
-                 mapping = brain_regions)
+                 mapping = brain_regions,
+                 sampledata = coldata_gtex)
 
 seg <- seg_assay_add(segmentation = seg, 
                         assay = gtexAssay, 
@@ -223,8 +233,8 @@ Structures can be subset for maximum projections, since using all structures may
 ```{r, eval = FALSE}
 
 structures_chosen <- unlist(assays(seg)$gtex@mapping)
-structures_chosen <- intersect(structures_chosen, seg_metadata(seg)$structures)
-structures_chosen <- ontology(seg)[as.character(structures_chosen), "acronym"]
+structures_chosen <- intersect(structures_chosen, ontology(seg)$acronym)
+
   
 seg <- seg_projection_add(name = "gtex", 
                         segmentation = seg, 
