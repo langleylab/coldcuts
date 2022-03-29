@@ -791,7 +791,7 @@ seg_feature_plot <- function(segmentation,
   if(class(feature) != "character") stop("feature must be a character.")
   if(!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
 
-  if(length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
+  if(!is.null(by) & length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
   if(!is.null(by) & is.null(aggr_fun)) stop("If `by` is not NULL you must specify an aggregation function for `aggr_fun`.")
 
   if(is.null(color_pal)) cpal = colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal = color_pal
@@ -840,7 +840,7 @@ seg_feature_plot <- function(segmentation,
     column_by = by[1]
     value_by = by[2]
 
-    cdata = segmentation@assays[[assay]]@sampledata
+   cdata = segmentation@assays[[assay]]@sampledata
     samples_keep = rownames(cdata)[cdata[,column_by] == value_by]
     cdata_keep = cdata[samples_keep,]
 
@@ -864,7 +864,7 @@ seg_feature_plot <- function(segmentation,
 
     values_plot = values_agg_by
   } else {
-    values_plot = segmentation@assays[[assay]]@values[feature,]
+    values_plot = segmentation@assays[[assay]]@values[feature,,drop=FALSE]
   }
 
   struct_available = intersect(names(segmentation@assays[[assay]]@mapping),  colnames(values_plot))
@@ -874,7 +874,7 @@ seg_feature_plot <- function(segmentation,
 
   struct_df$gene_expression <- values_plot[feature, struct_df$structures]
 
-  struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,]
+  struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures,,drop=FALSE]
   
   rownames(struct_df) <- struct_df$id
 
