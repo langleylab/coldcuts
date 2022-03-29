@@ -840,30 +840,32 @@ seg_feature_plot <- function(segmentation,
     column_by = by[1]
     value_by = by[2]
 
-    coldata = segmentation@assays[[assay]]@sampledata
-    samples_keep = rownames(coldata)[coldata[,column_by] == value_by]
-    coldata_keep = coldata[samples_keep,]
+    cdata = segmentation@assays[[assay]]@sampledata
+    samples_keep = rownames(cdata)[cdata[,column_by] == value_by]
+    cdata_keep = cdata[samples_keep,]
 
-    values_keep = segmentation@assays[[assay]]@values[,samples_keep, drop = FALSE]
+    values_keep = segmentation@assays[[assay]]@values[feature,samples_keep, drop = FALSE]
 
     if(length(samples_keep) > 1) {
 
-      values_agg_by = do.call(cbind, lapply(unique(coldata_keep$structure_acronym), function(y) {
-        samples_aggregate = rownames(coldata_keep)[coldata_keep$structure_acronym == y]
-        if(length(samples_aggregate) > 1) 
-          values_aggregate = apply(values_keep[,samples_aggregate], 1, aggr_fun) else 
+      values_agg_by = do.call(cbind, lapply(unique(cdata_keep$structure_acronym), function(y) {
+        samples_aggregate = rownames(cdata_keep)[cdata_keep$structure_acronym == y]
+        if(length(samples_aggregate) > 1) {
+          values_aggregate = apply(values_keep[,samples_aggregate], 1, aggr_fun) 
+          } else {
             values_aggregate = values_keep[, samples_aggregate, drop=FALSE]
+          }
         return(values_aggregate)
       }))
     } else {
       values_agg_by = values_keep
     }
 
-    colnames(values_agg_by) = unique(coldata_keep$structure_acronym)
+    colnames(values_agg_by) = unique(cdata_keep$structure_acronym)
 
     values_plot = values_agg_by
   } else {
-    values_plot = segmentation@assays[[assay]]@values
+    values_plot = segmentation@assays[[assay]]@values[feature,]
   }
 
   struct_available = intersect(names(segmentation@assays[[assay]]@mapping),  colnames(values_plot))
@@ -1060,36 +1062,41 @@ seg_feature_complex_plot <- function(segmentation,
   
   if(is.null(plane)) plane = names(segmentation@projections[[projection]])[1]
     
-  coldata = segmentation@assays[[assay]]@sampledata
-  values = segmentation@assays[[assay]]@values
+  cdata = segmentation@assays[[assay]]@sampledata
+  values = segmentation@assays[[assay]]@values[feature,,drop=FALSE]
   
-  exp_list = lapply(unique(coldata[,by[1]]), function(x) values[feature,coldata$sample_id[coldata[,by[1]] == x], drop = FALSE])
+  exp_list = lapply(unique(cdata[,by[1]]), function(x) values[,cdata$sample_id[cdata[,by[1]] == x], drop = FALSE])
   
-  for(i in 1:length(exp_list)) {
-    colnames_data <- table(coldata[coldata[,by[1]] == unique(coldata[,by[1]])[i], "structure_acronym"])
+  for(i in seq_len(length(exp_list))) {
+    cdata_current = cdata[cdata[,by[1]] == unique(cdata[,by[1]])[i], ,drop=FALSE]
+    exp_list[[i]] = exp_list[[i]][,order(cdata_current[,"structure_acronym"]), drop=FALSE]
+    colnames_data <- table(cdata_current[cdata_current[,by[1]] == unique(cdata_current[,by[1]]), "structure_acronym"])
     colnames_data <- paste0(rep(names(colnames_data), colnames_data), "_", unlist(lapply(colnames_data, seq_len)))
     colnames(exp_list[[i]]) <- colnames_data
   }
   
-  n_by = apply(table(coldata[,by[1]], coldata$structure_acronym), 2, max)
+  
+  n_by = apply(table(cdata[,by[1]], cdata$structure_acronym), 2, max)
   colnames_by = paste0(rep(names(n_by), n_by), "_", unlist(lapply(n_by, seq_len)))
   
-  exp_mat = matrix(NA, ncol = length(colnames_by), nrow = length(unique(coldata[,by[1]])))
-  rownames(exp_mat) = unique(coldata[,by[1]])
+  exp_mat = matrix(NA, ncol = length(colnames_by), nrow = length(unique(cdata[,by[1]])))
+  rownames(exp_mat) = unique(cdata[,by[1]])
   colnames(exp_mat) = colnames_by
   
   for(i in 1:nrow(exp_mat)) {
-    exp_mat[i, colnames(exp_list[[i]])] <- as.matrix(exp_list[[i]][1,], nrow = 1)
+    exp_mat[i, colnames(exp_list[[i]])] <- as.numeric(exp_list[[i]][1,], nrow = 1)
   }
   
   exp_agg_mat = do.call(cbind, lapply(names(n_by), function(x) {
     rowMeans(exp_mat[,paste0(x,"_",seq_len(n_by[x]))], na.rm = TRUE)
   }))
   
+  exp_agg_mat[is.nan(exp_agg_mat)] = NA
   colnames(exp_agg_mat) = names(n_by)
   
   label_list = lapply(segmentation@assays[[assay]]@mapping[colnames(exp_agg_mat)], function(x) 
     paste0(strwrap(paste0(x, collapse = ", "), width = 12), collapse = "\n"))
+  
   line_pad = max(unlist(lapply(label_list, function(x) str_count(x, "\n"))))/2
   
   ha = rowAnnotation(foo = anno_mark(side = "left",
@@ -1099,7 +1106,7 @@ seg_feature_complex_plot <- function(segmentation,
                                      padding = unit(line_pad, "lines"),
                                      link_width = unit(12, "mm"),
                                      labels = label_list))
-  
+
   hm = Heatmap(t(exp_agg_mat), row_title = "Structure acronym", 
                column_title = by[1],
                heatmap_legend_param = list(title = feature),
@@ -1122,12 +1129,12 @@ seg_feature_complex_plot <- function(segmentation,
                         show_labels = show_labels,
                         aggr_fun = aggr_fun, 
                         show_side = "first", 
-                        rng = range(exp_agg_mat)) + 
+                        rng = range(exp_agg_mat, na.rm = TRUE)) + 
     theme_void() + 
     theme(legend.position = "none")  +
     theme(plot.margin = unit(c(2,2,2,0), "mm"))
   
-  sp =   fp = seg_feature_plot(segmentation, 
+  sp = seg_feature_plot(segmentation, 
                                feature = feature, 
                                projection = projection, 
                                by = by, 
@@ -1139,7 +1146,7 @@ seg_feature_complex_plot <- function(segmentation,
                                show_labels = show_labels,
                                aggr_fun = aggr_fun, 
                                show_side = "second", 
-                               rng = range(exp_agg_mat)) +
+                               rng = range(exp_agg_mat, na.rm = TRUE)) +
     theme_void() + 
     theme(legend.position = "none") + 
     theme(plot.margin = unit(c(2,0,2,2), "mm"))
