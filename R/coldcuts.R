@@ -847,14 +847,13 @@ seg_feature_plot <- function(segmentation,
     values_keep = segmentation@assays[[assay]]@values[feature,samples_keep, drop = FALSE]
 
     if(length(samples_keep) > 1) {
-
       values_agg_by = do.call(cbind, lapply(unique(cdata_keep$structure_acronym), function(y) {
         samples_aggregate = rownames(cdata_keep)[cdata_keep$structure_acronym == y]
         if(length(samples_aggregate) > 1) {
-          values_aggregate = apply(values_keep[,samples_aggregate], 1, aggr_fun) 
-          } else {
-            values_aggregate = values_keep[, samples_aggregate, drop=FALSE]
-          }
+          values_aggregate = apply(values_keep[,samples_aggregate,drop=FALSE], 1, aggr_fun) 
+        } else {
+          values_aggregate = values_keep[, samples_aggregate, drop=FALSE]
+        }
         return(values_aggregate)
       }))
     } else {
