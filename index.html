@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">coldcuts</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.900</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/coldcuts.html">Get started</a>
 </li>
@@ -53,7 +49,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -70,7 +66,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/langleylab/coldcuts/">
+  <a href="https://github.com/langleylab/coldcuts/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -90,39 +86,48 @@
 
 
 <p><img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200"></p>
-<div id="coldcuts" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#coldcuts" class="anchor"></a>coldcuts</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="coldcuts">coldcuts<a class="anchor" aria-label="anchor" href="#coldcuts"></a>
+</h1></div>
 <p><strong><code>coldcuts</code></strong> is an R package that allows you to <strong>draw and plot automatically</strong> segmentations from 3D voxel arrays.</p>
 <p>The name is inspired by one of Italy’s best products.</p>
 <p>🎓 You can find the documentation and a tutorial to get started at the package’s page: <a href="https://langleylab.github.io/coldcuts" class="uri">https://langleylab.github.io/coldcuts</a></p>
 <p>🗂 You can find additional segmentation files, ontologies and other information at <a href="https://langleylab.github.io/coldcuts/articles/segmentations.html" class="uri">https://langleylab.github.io/coldcuts/articles/segmentations.html</a></p>
-<div id="motivation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#motivation" class="anchor"></a>Motivation</h2>
+<p>📄 You can read the preprint on arXiv at <a href="https://arxiv.org/abs/2201.10116" class="external-link uri">https://arxiv.org/abs/2201.10116</a></p>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>If you use <strong><code>coldcuts</code></strong> in your research, cite the preprint:</p>
+<p>Giuseppe D’Agostino and Sarah Langley, <em>Automated brain parcellation rendering and visualization in R with coldcuts</em>, arXiv 2022, <a href="arXiv:2201.10116">arXiv:2201.10116</a></p>
+</div>
+<div class="section level2">
+<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
+</h2>
 <p>When dealing with neuroimaging data, or any other type of numerical data derived from brain tissues, it is important to situate it in its anatomical and structural context. Various authors provide parcellations or segmentations of the brain, according to their best interpretation of which functional and anatomical boundaries make sense for our understanding of the brain. There are several stand-alone tools that allow to visualize and manipulate segmentations. However, neuroimaging data, together with other functional data such as transcriptomics, is often manipulated in a statistical programming language such as R which does not have trivial implementations for the visualization of segmentations.</p>
 <p>To bridge this gap, some R packages have been recently published:</p>
 <ul>
 <li>
-<a href="https://github.com/ggseg/ggseg">ggseg</a> by Athanasia Mo Mowinckel and Didac Vidal-Piñeiro</li>
+<a href="https://github.com/ggseg/ggseg" class="external-link">ggseg</a> by Athanasia Mo Mowinckel and Didac Vidal-Piñeiro</li>
 <li>
-<a href="https://github.com/ethanbahl/cerebroViz">cerebroViz</a> by Ethan Bahl, Tanner Koomar, and Jacob J Michaelson</li>
+<a href="https://github.com/ethanbahl/cerebroViz" class="external-link">cerebroViz</a> by Ethan Bahl, Tanner Koomar, and Jacob J Michaelson</li>
 <li>
-<a href="https://github.com/dfsp-spirit/fsbrain">fsbrain</a> by Tim Schäfer and Christine Ecker</li>
+<a href="https://github.com/dfsp-spirit/fsbrain" class="external-link">fsbrain</a> by Tim Schäfer and Christine Ecker</li>
 </ul>
 <p><strong><code>ggseg</code></strong> and <strong><code>cerebroviz</code></strong> offer 2D (and 3D in the case of <strong><code>ggseg3d</code></strong>) visualizations of human brain segmentations, with the possibility of integration with external datasets. These segmentations are manually curated, which means that new datasets must be manually inserted, and they are limited to the human brain in scope. <strong><code>ggseg</code></strong> in particular has made available several segmentations of human cortical surface atlases. <strong><code>fsbrain</code></strong> focuses on 3D visualization of human MRI data with external data integration and visualization in both native space and transformed spaces. It does not depend on manually curated datastes (beyond segmentations).</p>
 <p>While these tools provide a wealth of beautiful visualization interfaces, we felt the need to implement a tool to systematically create 2D (and potentially 3D) objects that are easily shared and manipulated in R, with the addition of labels, external datasets and simple operations such as subsetting and projecting, with minimal need for manual curation and without limiting ourselves to a particular species.</p>
 <p>Thus, <strong><code>coldcuts</code></strong> is our attempt at bridging the gap between imaging/high throughput brain data and R through data visualization.</p>
 </div>
-<div id="installing-the-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installing-the-package" class="anchor"></a>Installing the package</h2>
+<div class="section level2">
+<h2 id="installing-the-package">Installing the package<a class="anchor" aria-label="anchor" href="#installing-the-package"></a>
+</h2>
 <p>⬇️ You can install this package using <code>devtools::install_github()</code>:</p>
-<pre class="{r}"><code>devtools::install_github("langleylab/coldcuts")</code></pre>
+<pre class="{r}"><code><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"langleylab/coldcuts"</span><span class="op">)</span></code></pre>
+<p>Note: <strong><code>coldcuts</code></strong> uses <strong><code>smoothr</code></strong> to smooth 2D polygons. This package requires the installation of <strong><code>terra</code></strong> which has some system dependencies for spatial data, such as GDAL, GEOS and PROJ that can sometimes be difficult to install, especially in machines on which you do not have admin rights.</p>
+<p>One possible workaround when you do not have admin rights is to use <strong>conda</strong> <a href="https://docs.conda.io/en/latest/" class="external-link">virtual environments</a> to install GDAL and other libraries using the conda-forge channel: <a href="https://anaconda.org/conda-forge/libgdal" class="external-link">link</a></p>
 </div>
-<div id="getting-started" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting started</h2>
+<div class="section level2">
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
 <p>🏃🏽‍♀️ You can find a small example to get started <a href="https://langleylab.github.io/coldcuts/articles/coldcuts.html">here</a></p>
 </div>
 </div>
@@ -131,48 +136,59 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/langleylab/coldcuts/">https://​github.com/​langleylab/​coldcuts/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/langleylab/coldcuts/issues">https://​github.com/​langleylab/​coldcuts/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Giuseppe D'Agostino <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8315-7406" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Sarah Langley <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://github.com/langleylab/coldcuts/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/langleylab/coldcuts/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/langleylab/coldcuts"><img src="https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg"></a></li>
-<li><a href="https://github.com/langleylab/coldcuts/actions"><img src="https://github.com/langleylab/coldcuts/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing coldcuts</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Giuseppe D'Agostino <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8315-7406" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Sarah Langley <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/langleylab/coldcuts" class="external-link"><img src="https://img.shields.io/badge/devel%20version-0.0.0.900-orange.svg"></a></li>
+<li><a href="https://github.com/langleylab/coldcuts/actions" class="external-link"><img src="https://github.com/langleylab/coldcuts/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Giuseppe D'Agostino, Sarah Langley.</p>
+  <p></p>
+<p>Developed by Giuseppe D’Agostino, Sarah Langley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -180,6 +196,8 @@
 
   
 
+
+  
 
   </body>
 </html>

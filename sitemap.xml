@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://langleylab.github.io/coldcuts/404.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/articles/additional_details.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/articles/coldcuts.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/articles/segmentations.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/authors.html</loc>
+  </url>
+  <url>
     <loc>https://langleylab.github.io/coldcuts/index.html</loc>
   </url>
   <url>
@@ -20,6 +41,9 @@
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/dir_change.html</loc>
+  </url>
+  <url>
+    <loc>https://langleylab.github.io/coldcuts/reference/index.html</loc>
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/ontology-segmentation-method.html</loc>
@@ -73,6 +97,9 @@
     <loc>https://langleylab.github.io/coldcuts/reference/seg_draw.html</loc>
   </url>
   <url>
+    <loc>https://langleylab.github.io/coldcuts/reference/seg_feature_complex_plot.html</loc>
+  </url>
+  <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_feature_plot.html</loc>
   </url>
   <url>
@@ -112,6 +139,9 @@
     <loc>https://langleylab.github.io/coldcuts/reference/seg_projection_remove.html</loc>
   </url>
   <url>
+    <loc>https://langleylab.github.io/coldcuts/reference/seg_select_str.html</loc>
+  </url>
+  <url>
     <loc>https://langleylab.github.io/coldcuts/reference/seg_slice_check.html</loc>
   </url>
   <url>
@@ -128,14 +158,5 @@
   </url>
   <url>
     <loc>https://langleylab.github.io/coldcuts/reference/slice_make.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/additional_details.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/coldcuts.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/segmentations.html</loc>
   </url>
 </urlset>
