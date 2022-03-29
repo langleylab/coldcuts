@@ -11,6 +11,7 @@
 #' @slot assays A list of objects of class \code{segmentationAssay} containing assay data
 #' @slot projections A list of maximum projections
 #' @slot meshes A list of \code{mesh3d} objects, named according to structure acronyms
+#' @noRd
 
 setClass("segmentation", representation(
   slices = "list",
@@ -32,6 +33,7 @@ setClass("segmentation", representation(
 #' @slot structure A `character` containing the structure ID
 #' @slot id A `character` containing the polygon ID (group level aesthetic for plotting)
 #' @slot subid A `character` containing the polygon sub-ID (subgroup level aesthetic for plotting)
+#' @noRd
 
 setClass("segPointSet", representation(
   coords = "data.frame",
@@ -48,6 +50,7 @@ setClass("segPointSet", representation(
 #' @slot values A `matrix` containing features (rows) in each sample (columns)
 #' @slot mapping A `list` in which each sample (list item name) contains the segmentation structural IDs to which samples are mapped
 #' @slot sampledata A `data.frame` containing other information on samples (e.g. description, sample metadata)
+#' @noRd
 
 setClass("segmentationAssay", representation(
   values = "matrix",
@@ -60,6 +63,7 @@ setClass("segmentationAssay", representation(
 #'
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setGeneric("seg_metadata", function(x) {
   standardGeneric("seg_metadata")
@@ -69,6 +73,7 @@ setGeneric("seg_metadata", function(x) {
 #'
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setMethod("seg_metadata", c(x = "segmentation"), function(x) {
   return(x@metadata)
@@ -79,6 +84,7 @@ setMethod("seg_metadata", c(x = "segmentation"), function(x) {
 #' S4 method to set the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
+#' @noRd
 
 setGeneric("seg_metadata<-", function(x, value) {
   standardGeneric("seg_metadata<-")
@@ -89,6 +95,7 @@ setGeneric("seg_metadata<-", function(x, value) {
 #' S4 method to set the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
+#' @noRd
 
 setMethod("seg_metadata<-", c(x = "segmentation"), function(x, value) {
   x@metadata <- value
@@ -99,6 +106,7 @@ setMethod("seg_metadata<-", c(x = "segmentation"), function(x, value) {
 #'
 #' S4 method to get the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setGeneric("ontology", function(x) {
   standardGeneric("ontology")
@@ -109,6 +117,7 @@ setGeneric("ontology", function(x) {
 #' S4 method to set the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a table containing the ontology tree
+#' @noRd
 
 setGeneric("ontology<-", function(x, value) {
   standardGeneric("ontology<-")
@@ -118,6 +127,7 @@ setGeneric("ontology<-", function(x, value) {
 #'
 #' S4 method to get the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setMethod("ontology", c(x = "segmentation"), function(x) {
   return(x@ontology)
@@ -128,6 +138,7 @@ setMethod("ontology", c(x = "segmentation"), function(x) {
 #' S4 method to set the \code{ontology} slot in \code{segmentation} class objects, with sanity checks.
 #' @param x a \code{segmentation} class object
 #' @param value a table containing the ontology tree
+#' @noRd
 
 setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
   if(is.null(value)) stop("Segmentation objects must have an ontology")
@@ -142,6 +153,7 @@ setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
 #'
 #' S4 method to get the \code{assays} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setGeneric("assays", function(x) {
   standardGeneric("assays")
@@ -151,6 +163,7 @@ setGeneric("assays", function(x) {
 #'
 #' S4 method to get the \code{assays} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setMethod("assays", c(x = "segmentation"), function(x) {
   return(x@assays)
@@ -161,6 +174,7 @@ setMethod("assays", c(x = "segmentation"), function(x) {
 #' S4 method to get the \code{projections} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param name character, the name of the projection
+#' @noRd
 
 setGeneric("projections", function(x, name) {
   standardGeneric("projections")
@@ -171,6 +185,7 @@ setGeneric("projections", function(x, name) {
 #' S4 method to get the \code{projections} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param name character, the name of the projection
+#' @noRd
 
 setMethod("projections", c(x = "segmentation"), function(x, name) {
   return(x@projections[[name]])
@@ -180,6 +195,7 @@ setMethod("projections", c(x = "segmentation"), function(x, name) {
 #'
 #' S4 method to show the preview of a \code{segmentation} class objects
 #' @param object a \code{segmentation} class object
+#' @noRd
 
 setMethod("show", "segmentation", function(object) {
   if(seg_metadata(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[seg_metadata(object)$units + 1]
@@ -202,6 +218,7 @@ setMethod("show", "segmentation", function(object) {
 #'
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setGeneric("citation", function(x) {
   standardGeneric("citation")
@@ -211,6 +228,7 @@ setGeneric("citation", function(x) {
 #'
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @noRd
 
 setMethod("citation", "segmentation", function(x) {
   for(n in names(seg_metadata(x)$citation)) {

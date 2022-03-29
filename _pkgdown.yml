@@ -11,39 +11,4 @@ template:
     twitter:
       creator: "@gdagstn"
       card: summary_large_image
-      
-reference:
-- title: "Creation and manipulation of segmentations"
-  desc: >
-    Functions to draw segmentations, access and manipulate their content
-    
-- contents: 
-  - seg_draw
-  - seg_metadata
-  - seg_plot
-  - seg_feature_plot
-  - seg_projection_add
-  - seg_projection_plot
-  - seg_slice_check
-  - seg_sub_str
-  - seg_get_slice
-  - seg_assay_add
-  - seg_meshlist_add
-  - seg_meshlist_render
-  - assays
-  - ontology
-  - ontology_plot
-  - projections
- 
-- title: "Manipulation of polygons"
-  desc: >
-        Functions to create and manipulate polygons in the segmentation, 
-        mostly for internal use
-- contents:
-  - slice_make
-  - poly_make
-  - poly_set_make
-  - poly_build
-  - poly_fill
-  - poly_smooth
   
