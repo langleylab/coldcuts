@@ -4,7 +4,13 @@
 \alias{seg_mesh_build}
 \title{Build a structure mesh}
 \usage{
-seg_mesh_build(segmentation, subset_str, pct_reduce = 0.1, verbose = FALSE)
+seg_mesh_build(
+  segmentation,
+  subset_str,
+  pct_reduce = 0.1,
+  puffiness = 1,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{segmentation}{a `segmentation` class object}
@@ -12,6 +18,8 @@ seg_mesh_build(segmentation, subset_str, pct_reduce = 0.1, verbose = FALSE)
 \item{subset_str}{a character vector indicating the structure(s) to be rendered, by acronym.}
 
 \item{pct_reduce}{numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.}
+
+\item{puffiness}{numeric, determines a slight inflation of the mesh. Default is 1.}
 
 \item{verbose}{logical, show progress of the meshing? Default is \code{FALSE}.}
 }

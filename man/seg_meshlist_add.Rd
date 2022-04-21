@@ -8,6 +8,7 @@ seg_meshlist_add(
   segmentation,
   structures = NULL,
   pct_reduce = 0.1,
+  puffiness = 1,
   verbose = FALSE
 )
 }
@@ -17,6 +18,8 @@ seg_meshlist_add(
 \item{structures}{a character vector of structure acronyms, indicating the structure(s) to be rendered. Default is \code{NULL}, meaning all structures will be rendered.}
 
 \item{pct_reduce}{numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.}
+
+\item{puffiness}{numeric, determines a slight inflation of the mesh. Default is 1.}
 
 \item{verbose}{logical, show progress of the meshing? Default is \code{FALSE}.}
 }

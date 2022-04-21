@@ -51,7 +51,7 @@ seg_draw(
 
 \item{subset_structures}{character vector, structures to be subset for the segmentation. Default is \code{NULL}}
 
-\item{draw_outline}{logical, should the outline of the whole array be drawn? Default is `TRUE`}
+\item{draw_outline}{logical, should the outline of the whole array be drawn? Default is \code{TRUE}}
 
 \item{subset_sagittal}{numeric vector, indicates a subset of slices along the sagittal plane that will be drawn. Default is \code{NULL}}
 
@@ -66,8 +66,59 @@ seg_draw(
 \item{parallel}{logical, should the polygons be drawn using parallel processing? Uses \code{future.apply::future_lapply()}, so the proper setup must be done beforehand. Default is \code{FALSE}.}
 }
 \value{
-a `segmentation` S4 object.
+a \code{segmentation} S4 object.
 }
 \description{
 Creates a `segmentation` object from an array or a `NIfTI` file
+}
+\details{
+This function takes a volume file such as a NIfTI, NRRD or 3D array
+   and performs all the slicing and contour drawing operations, loading metadata,
+   subsetting structures, etc.
+
+   The output of this function is a \code{segmentation}
+   object that can be passed to plotting functions and can be accessed with
+   several auxiliary methods.
+
+   Ideally, the user only needs to run this function
+   once, and save the resulting object (as a RDS file, for example) for distribution
+   and future usage. All the operations performed by this function assume the
+   orientation of the volume is RAS.
+
+   Additional arguments such as
+   \code{directions_from} and \code{directions_to} can be supplied to rotate
+   the volume if its native orientation is different from RAS. Outlier points
+   can be removed by specifying the index in the volume array in the \code{outliers}
+   argument.
+
+   The user can choose to limit the final \code{segmentation} object
+   to a subset of either structures, planes, or specific slices (indexed by plane).
+}
+\examples{
+array_cubes <- dummy_cubes(10)
+ontology <- dummy_ontology()
+
+seg <- seg_draw(
+  array = array_cubes,
+  ontology = ontology,
+  verbose = FALSE
+)
+
+# Keeping only the sagittal plane
+ seg_sagittal <- seg_draw(
+  array = array_cubes,
+  ontology = ontology,
+  planes = "sagittal",
+  verbose = FALSE
+)
+
+# Keeping only a subset of structures
+ seg_sub <- seg_draw(
+  array = array_cubes,
+  ontology = ontology,
+  subset_structures = c("A", "B"),
+  verbose = FALSE
+)
+
+
 }

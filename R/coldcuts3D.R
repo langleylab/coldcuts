@@ -5,6 +5,7 @@
 #' @param segmentation a `segmentation` class object
 #' @param subset_str a character vector indicating the structure(s) to be rendered, by acronym.
 #' @param pct_reduce numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.
+#' @param puffiness numeric, determines a slight inflation of the mesh. Default is 1.
 #' @param verbose logical, show progress of the meshing? Default is \code{FALSE}.
 #' @return a reduced 3d mesh (as `mesh3d` object) from one or more structures
 #'
@@ -175,7 +176,7 @@ seg_meshlist_render <- function(segmentation,
       angle = pi, x = 0, y = 1, z = 0
     )
 
-    shade3d(mesh_smoothed,
+    rgl::shade3d(mesh_smoothed,
       meshColor = "vertices",
       depth_mask = TRUE,
       back = "filled",
