@@ -57,7 +57,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot numeric data on a segmentation</h1>
-    <small class="dont-index">Source: <a href="https://github.com/langleylab/coldcuts/blob/HEAD/R/coldcuts.R" class="external-link"><code>R/coldcuts.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/langleylab/coldcuts/blob/HEAD/R/plotting.R" class="external-link"><code>R/plotting.R</code></a></small>
     <div class="hidden name"><code>seg_feature_plot.Rd</code></div>
     </div>
 
@@ -81,6 +81,7 @@
   color_pal <span class="op">=</span> <span class="cn">NULL</span>,
   show_side <span class="op">=</span> <span class="st">"both"</span>,
   show_labels <span class="op">=</span> <span class="cn">TRUE</span>,
+  labelsize <span class="op">=</span> <span class="fl">2</span>,
   remove_axes <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -115,6 +116,8 @@
 <dd><p>character, the side of the projection to be plotted. one of "first" ,"second", or "both". Default is "both".</p></dd>
 <dt>show_labels</dt>
 <dd><p>logical, should segmentation labels be shown? Default is <code>TRUE</code></p></dd>
+<dt>labelsize</dt>
+<dd><p>numeric, the size of the labels. Default is 2.</p></dd>
 <dt>remove_axes</dt>
 <dd><p>logical, should axes be shown? Default is <code>FALSE</code></p></dd>
 </dl></div>

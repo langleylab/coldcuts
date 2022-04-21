@@ -116,7 +116,7 @@
 <dt>subset_structures</dt>
 <dd><p>character vector, structures to be subset for the segmentation. Default is <code>NULL</code></p></dd>
 <dt>draw_outline</dt>
-<dd><p>logical, should the outline of the whole array be drawn? Default is `TRUE`</p></dd>
+<dd><p>logical, should the outline of the whole array be drawn? Default is <code>TRUE</code></p></dd>
 <dt>subset_sagittal</dt>
 <dd><p>numeric vector, indicates a subset of slices along the sagittal plane that will be drawn. Default is <code>NULL</code></p></dd>
 <dt>subset_coronal</dt>
@@ -132,9 +132,59 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a `segmentation` S4 object.</p>
+    <p>a <code>segmentation</code> S4 object.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>This function takes a volume file such as a NIfTI, NRRD or 3D array
+   and performs all the slicing and contour drawing operations, loading metadata,
+   subsetting structures, etc.</p>
+<p>The output of this function is a <code>segmentation</code>
+   object that can be passed to plotting functions and can be accessed with
+   several auxiliary methods.</p>
+<p>Ideally, the user only needs to run this function
+   once, and save the resulting object (as a RDS file, for example) for distribution
+   and future usage. All the operations performed by this function assume the
+   orientation of the volume is RAS.</p>
+<p>Additional arguments such as
+   <code>directions_from</code> and <code>directions_to</code> can be supplied to rotate
+   the volume if its native orientation is different from RAS. Outlier points
+   can be removed by specifying the index in the volume array in the <code>outliers</code>
+   argument.</p>
+<p>The user can choose to limit the final <code>segmentation</code> object
+   to a subset of either structures, planes, or specific slices (indexed by plane).</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">array_cubes</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_cubes.html">dummy_cubes</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">ontology</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_ontology.html">dummy_ontology</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
+<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
+<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
+<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Keeping only the sagittal plane</span></span>
+<span class="r-in"> <span class="va">seg_sagittal</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
+<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
+<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
+<span class="r-in">  planes <span class="op">=</span> <span class="st">"sagittal"</span>,</span>
+<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Keeping only a subset of structures</span></span>
+<span class="r-in"> <span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
+<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
+<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
+<span class="r-in">  subset_structures <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
+<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

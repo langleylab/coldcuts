@@ -66,7 +66,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_mesh_build</span><span class="op">(</span><span class="va">segmentation</span>, <span class="va">subset_str</span>, pct_reduce <span class="op">=</span> <span class="fl">0.1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_mesh_build</span><span class="op">(</span>
+  <span class="va">segmentation</span>,
+  <span class="va">subset_str</span>,
+  pct_reduce <span class="op">=</span> <span class="fl">0.1</span>,
+  puffiness <span class="op">=</span> <span class="fl">1</span>,
+  verbose <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,6 +83,8 @@
 <dd><p>a character vector indicating the structure(s) to be rendered, by acronym.</p></dd>
 <dt>pct_reduce</dt>
 <dd><p>numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.</p></dd>
+<dt>puffiness</dt>
+<dd><p>numeric, determines a slight inflation of the mesh. Default is 1.</p></dd>
 <dt>verbose</dt>
 <dd><p>logical, show progress of the meshing? Default is <code>FALSE</code>.</p></dd>
 </dl></div>
