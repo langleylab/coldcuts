@@ -141,10 +141,10 @@ setMethod("ontology", c(x = "segmentation"), function(x) {
 #' @noRd
 
 setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
-  if(is.null(value)) stop("Segmentation objects must have an ontology")
-  if(class(value) != "data.frame") stop("The ontology must be of class `data.frame`")
+  if (is.null(value)) stop("Segmentation objects must have an ontology")
+  if (class(value) != "data.frame") stop("The ontology must be of class `data.frame`")
   missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(value))
-  if(length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
+  if (length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
   x@ontology <- value
   x
 })
@@ -198,7 +198,7 @@ setMethod("projections", c(x = "segmentation"), function(x, name) {
 #' @noRd
 
 setMethod("show", "segmentation", function(object) {
-  if(seg_metadata(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[seg_metadata(object)$units + 1]
+  if (seg_metadata(object)$units == "Unknown") units <- "Unknown" else units <- c("Unknown", "m", "mm", "micron")[seg_metadata(object)$units + 1]
   cat("      Segmentation from file: ", seg_metadata(object)$filename, "\n")
   cat("                    Plane(s): ", paste(seg_metadata(object)$planes, collapse = ", "), "\n")
   cat("                  Directions: ", paste(seg_metadata(object)$dirs, collapse = " to "), "\n")
@@ -211,7 +211,7 @@ setMethod("show", "segmentation", function(object) {
   cat("             Structures (ID): ", paste(head(seg_metadata(object)$structures), collapse = ", "), "and", (length(seg_metadata(object)$structures) - length(head(seg_metadata(object)$structures))), "more. \n")
   cat("       Structures (acronyms): ", paste(head(ontology(object)[as.character(seg_metadata(object)$structures), "acronym"]), collapse = ", "), "and", (length(ontology(object)[seg_metadata(object)$structures, "acronym"]) - length(head(ontology(object)[seg_metadata(object)$structures, "acronym"]))), "more. \n")
   cat("Type citation(\"name_of_segmentation\") to display the citation(s) for this segmentation.", sep = "")
-  })
+})
 
 
 #' Show citation (generic)
@@ -231,10 +231,8 @@ setGeneric("citation", function(x) {
 #' @noRd
 
 setMethod("citation", "segmentation", function(x) {
-  for(n in names(seg_metadata(x)$citation)) {
+  for (n in names(seg_metadata(x)$citation)) {
     cat("Citation (", n, "):\n", sep = "")
     cat(seg_metadata(x)$citation[[n]], "\n\n")
-    }
+  }
 })
-
-
