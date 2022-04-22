@@ -80,6 +80,26 @@ ontology_plot <- function(segmentation, circular = TRUE) {
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ggrepel geom_text_repel
 #'
+#' @examples
+#' array_cubes <- dummy_cubes(10)
+#' ontology <- dummy_ontology()
+#' 
+#' seg <- seg_draw(
+#'   array = array_cubes,
+#'   ontology = ontology,
+#'   verbose = FALSE
+#' )
+#' 
+#' seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE)
+#' 
+#' # With labels
+#' seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE, 
+#'          show_labels = TRUE)
+#'          
+#' # Different wrap options:
+#' seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE,
+#' wrap_options = 2)         
+#'  
 #' @export
 
 seg_plot <- function(segmentation, s_slice = NULL, c_slice = NULL,

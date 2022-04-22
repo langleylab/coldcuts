@@ -50,3 +50,24 @@ a `ggplot` object with the graph
 \description{
 Creates a `ggplot` plot of up to 3 different slices (one per anatomical plane) of the segmentation
 }
+\examples{
+array_cubes <- dummy_cubes(10)
+ontology <- dummy_ontology()
+
+seg <- seg_draw(
+  array = array_cubes,
+  ontology = ontology,
+  verbose = FALSE
+)
+
+seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE)
+
+# With labels
+seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE, 
+         show_labels = TRUE)
+         
+# Different wrap options:
+seg_plot(seg, s_slice = 10, a_slice = 4, c_slice = 2, smooth = FALSE,
+wrap_options = 2)         
+ 
+}
