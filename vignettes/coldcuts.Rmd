@@ -101,7 +101,7 @@ Ontologies may contain additional IDs, which are part of how the authors of the 
 ontology_plot(seg)
 ```
 
-<img width="1010" alt="ontology_graph" src="https://raw.githubusercontent.com/langleylab/coldcuts_segmentations/main/ABA_Human_full/ABA_Human_ontology.png">
+![ABA_Human_ontology_small](https://user-images.githubusercontent.com/21171362/172796707-7843b270-ebf0-4ee6-ad25-6e6167627be8.png)
 
 Acronyms can be compared to their names looking at the ontology.
 
@@ -113,7 +113,7 @@ The basic functionality with no external datasets allows to plot all structures 
 seg_plot(seg, s_slice = 50, c_slice = 60, a_slice = 30)
 ```
 
-<img width="1144" alt="slices_1" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_allplanes_structures.png">
+![ABA_Human_half_allplanes_structures](https://user-images.githubusercontent.com/21171362/172796630-88a728a9-dcc7-4b39-82b0-1c956dd56983.png)
 
 We can also choose only one axis, and we can show structural labels (as acronyms from the ontology table):
 
@@ -121,8 +121,7 @@ We can also choose only one axis, and we can show structural labels (as acronyms
 seg_plot(seg, s_slice = 50, show_labels = TRUE)
 
 ```
-
-<img width="717" alt="slices_2" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_sagittal_structures.png">
+![ABA_Human_half_sagittal_structures](https://user-images.githubusercontent.com/21171362/172796576-f8d86e58-5da4-4ced-b65b-826e97f31dbe.png)
 
 Additionally, we can subset a `segmentation` object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):
 
@@ -132,7 +131,8 @@ seg_sub <- seg_sub_str(segmentation = seg, planes_chosen = "sagittal", structure
 seg_plot(seg_sub, s_slice = 50, show_labels = TRUE)
 ```
 
-<img width="716" alt="slices_3" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FWM_structuresubset.png">
+![ABA_Human_half_FWM_structuresubset](https://user-images.githubusercontent.com/21171362/172796431-ee2fd86f-44a0-4317-975e-aae8361d282f.png)
+
 
 ## Creating a `segmentationAssay`
 
@@ -251,7 +251,8 @@ seg_feature_plot(segmentation = seg,
              feature = "APP")
 ```
 
-<img width="1033" alt="gtex_map" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_APP_featureplot.png">
+![ABA_Human_half_APP_featureplot](https://user-images.githubusercontent.com/21171362/172796337-38879ad0-9887-4331-bfde-28124a20c1d3.png)
+
 
 ## Building and rendering 3D meshes
 
@@ -265,8 +266,8 @@ seg <- seg_meshlist_add(seg, verbose = FALSE)
 
 seg_meshlist_render(seg)
 ```
+<img width="780" alt="ABA_Human_half_render" src="https://user-images.githubusercontent.com/21171362/172796257-34719f94-fd94-46cc-ad80-b2f4f7d5ba7e.png">
 
-<img width="1033" alt="ABA human half 3D render" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_render.png">
 
 We can visualize only a subset of structures, e.g. all the structures of the frontal lobe (FroL in the ontology):
 
@@ -275,6 +276,6 @@ We can visualize only a subset of structures, e.g. all the structures of the fro
 seg_meshlist_render(seg, subset_str = "FroL")
 ```
 
-<img width="1033" alt="ABA human half 3D render" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/ABA_Human_half_FroL_render.png">
+<img width="933" alt="ABA_Human_half_FroL_render" src="https://user-images.githubusercontent.com/21171362/172796201-7c003a94-43fb-45a4-9bcc-88fc4b077af5.png">
 
 
