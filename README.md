@@ -26,7 +26,7 @@ Giuseppe D'Agostino and Sarah Langley, *Automated brain parcellation rendering a
 
 ## Motivation
 
-<img width="1200" alt="mouse_ccfv3" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/mouse.png">
+<img width="1200" alt="mouse_ccfv3" src = "https://user-images.githubusercontent.com/21171362/172792313-dfad0c5c-185b-497d-b05e-cc799d454cf5.png">
 
 When dealing with neuroimaging data, or any other type of numerical data derived from brain tissues, it is important to situate it in its anatomical and structural context. Various authors provide parcellations or segmentations of the brain, according to their best interpretation of which functional and anatomical boundaries make sense for our understanding of the brain. There are several stand-alone tools that allow to visualize and manipulate segmentations. However, neuroimaging data, together with other functional data such as transcriptomics, is often manipulated in a statistical programming
 language such as R which does not have trivial implementations for the visualization of segmentations.
@@ -44,7 +44,7 @@ While these tools provide a wealth of beautiful visualization interfaces, we fel
 
 Thus, **`coldcuts`** is our attempt at bridging the gap between imaging/high throughput brain data and R through data visualization.
 
-<img width="1000" alt="brainspan_heatmap" align="center" src="https://raw.githubusercontent.com/langleylab/coldcuts/gh-pages/img/Figure_4.png">
+<img width="1000" alt="brainspan_heatmap" align="center" src="https://user-images.githubusercontent.com/21171362/172792469-2580c347-a7e4-4953-975b-0cde6b22abe6.png">
 
 
 ## Installing the package
