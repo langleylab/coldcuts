@@ -66,23 +66,32 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_get_slice</span><span class="op">(</span><span class="va">segmentation</span>, <span class="va">plane</span>, <span class="va">slice</span>, fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_get_slice</span><span class="op">(</span><span class="va">segmentation</span>, <span class="va">plane</span>, <span class="va">slice</span>, fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>segmentation</dt>
 <dd><p>a <code>segmentation</code> class object.</p></dd>
+
+
 <dt>plane</dt>
 <dd><p>character, name of the plane (one of `sagittal`, `coronal`, or `axial`)</p></dd>
+
+
 <dt>slice</dt>
 <dd><p>numeric or character, the slice number. If numeric, it will be used as index of the slice. If character, it will be the slice as named in the segmentation.</p></dd>
+
+
 <dt>fill</dt>
 <dd><p>logical, should the function return just the polygon vertices or all voxels? Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a `data.frame` containing the x y coordinates for all points within the slice (filled polygons)</p>
+    
+
+<p>a `data.frame` containing the x y coordinates for all points within the slice (filled polygons)</p>
     </div>
 
   </div>
@@ -97,7 +106,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

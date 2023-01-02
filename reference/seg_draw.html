@@ -66,73 +66,112 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_draw</span><span class="op">(</span>
-  nifti_file <span class="op">=</span> <span class="cn">NULL</span>,
-  nrrd_file <span class="op">=</span> <span class="cn">NULL</span>,
-  array <span class="op">=</span> <span class="cn">NULL</span>,
-  molten_array <span class="op">=</span> <span class="cn">NULL</span>,
-  ontology <span class="op">=</span> <span class="cn">NULL</span>,
-  ontology_file <span class="op">=</span> <span class="cn">NULL</span>,
-  outliers <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  directions_from <span class="op">=</span> <span class="st">"RAS"</span>,
-  directions_to <span class="op">=</span> <span class="st">"RAS"</span>,
-  planes <span class="op">=</span> <span class="st">"all"</span>,
-  subset_structures <span class="op">=</span> <span class="cn">NULL</span>,
-  draw_outline <span class="op">=</span> <span class="cn">TRUE</span>,
-  subset_sagittal <span class="op">=</span> <span class="cn">NULL</span>,
-  subset_coronal <span class="op">=</span> <span class="cn">NULL</span>,
-  subset_axial <span class="op">=</span> <span class="cn">NULL</span>,
-  reference_space <span class="op">=</span> <span class="cn">NULL</span>,
-  citation <span class="op">=</span> <span class="cn">NULL</span>,
-  parallel <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_draw</span><span class="op">(</span></span>
+<span>  nifti_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nrrd_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  array <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  molten_array <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ontology <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ontology_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outliers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  directions_from <span class="op">=</span> <span class="st">"RAS"</span>,</span>
+<span>  directions_to <span class="op">=</span> <span class="st">"RAS"</span>,</span>
+<span>  planes <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  subset_structures <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  draw_outline <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  subset_sagittal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subset_coronal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subset_axial <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reference_space <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  citation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>nifti_file</dt>
 <dd><p>a character string pointing to the NIfTI file address. Default is <code>NULL</code></p></dd>
+
+
 <dt>nrrd_file</dt>
 <dd><p>a character string pointing to the NRRD file address. Default is <code>NULL</code></p></dd>
+
+
 <dt>array</dt>
 <dd><p>a 3D array containing structure annotations (optional if <code>nifti_file</code> and <code>molten_array</code> are not specified). Default is <code>NULL</code></p></dd>
+
+
 <dt>molten_array</dt>
 <dd><p>an array in molten form, such as the result of <code><a href="https://rdrr.io/pkg/reshape2/man/melt.html" class="external-link">reshape2::melt()</a></code> (optional if <code>nifti_file</code> and <code>array</code> are not specified). Default is <code>NULL</code></p></dd>
+
+
 <dt>ontology</dt>
 <dd><p>an object containing the segmentation ontology (e.g. from another segmentation). Default is <code>NULL</code></p></dd>
+
+
 <dt>ontology_file</dt>
 <dd><p>a character string pointing to the ontology .csv or .txt file address. Default is <code>NULL</code></p></dd>
+
+
 <dt>outliers</dt>
 <dd><p>a numeric vector indicating outlier points to be eliminated before drawing polygons. Default is <code>NULL</code></p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>logical, should messages on the process be displayed? Default is <code>TRUE</code></p></dd>
+
+
 <dt>directions_from</dt>
 <dd><p>character, indicates the original orientation of the array. Default is <code>"RAS"</code> (Left to Right, Posterior to Anterior, Inferior to Superior).</p></dd>
+
+
 <dt>directions_to</dt>
 <dd><p>character, indicates the final orientation of the array. The array is rotated only if it is different from <code>directions_from</code>. Default is <code>"RAS"</code>, which results in the proper assignment of axis labels.</p></dd>
+
+
 <dt>planes</dt>
 <dd><p>character, either <code>"all"</code> (default) or any subset of <code>"sagittal"</code>, <code>"coronal"</code>, and <code>"axial"</code>. Determines along which axes the array wil be sliced.</p></dd>
+
+
 <dt>subset_structures</dt>
 <dd><p>character vector, structures to be subset for the segmentation. Default is <code>NULL</code></p></dd>
+
+
 <dt>draw_outline</dt>
 <dd><p>logical, should the outline of the whole array be drawn? Default is <code>TRUE</code></p></dd>
+
+
 <dt>subset_sagittal</dt>
 <dd><p>numeric vector, indicates a subset of slices along the sagittal plane that will be drawn. Default is <code>NULL</code></p></dd>
+
+
 <dt>subset_coronal</dt>
 <dd><p>numeric vector, indicates a subset of slices along the coronal plane that will be drawn. Default is <code>NULL</code></p></dd>
+
+
 <dt>subset_axial</dt>
 <dd><p>numeric vector, indicates a subset of slices along the axial plane that will be drawn. Default is <code>NULL</code></p></dd>
+
+
 <dt>reference_space</dt>
 <dd><p>character, what reference space does this segmentation use, e.g. <code>"MNI152"</code>, <code>"CCFv3"</code>, <code>"JFRC2010"</code>. Default is <code>NULL</code></p></dd>
+
+
 <dt>citation</dt>
 <dd><p>list of character strings, what is the citation for this segmentation? Default is <code>NULL</code>.</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>logical, should the polygons be drawn using parallel processing? Uses <code><a href="https://future.apply.futureverse.org/reference/future_lapply.html" class="external-link">future.apply::future_lapply()</a></code>, so the proper setup must be done beforehand. Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <code>segmentation</code> S4 object.</p>
+    
+
+<p>a <code>segmentation</code> S4 object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -157,32 +196,32 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">array_cubes</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_cubes.html">dummy_cubes</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ontology</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_ontology.html">dummy_ontology</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
-<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
-<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
-<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Keeping only the sagittal plane</span></span>
-<span class="r-in"> <span class="va">seg_sagittal</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
-<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
-<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
-<span class="r-in">  planes <span class="op">=</span> <span class="st">"sagittal"</span>,</span>
-<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Keeping only a subset of structures</span></span>
-<span class="r-in"> <span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span>
-<span class="r-in">  array <span class="op">=</span> <span class="va">array_cubes</span>,</span>
-<span class="r-in">  ontology <span class="op">=</span> <span class="va">ontology</span>,</span>
-<span class="r-in">  subset_structures <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
-<span class="r-in">  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">array_cubes</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_cubes.html">dummy_cubes</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ontology</span> <span class="op">&lt;-</span> <span class="fu"><a href="dummy_ontology.html">dummy_ontology</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  array <span class="op">=</span> <span class="va">array_cubes</span>,</span></span>
+<span class="r-in"><span>  ontology <span class="op">=</span> <span class="va">ontology</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Keeping only the sagittal plane</span></span></span>
+<span class="r-in"><span> <span class="va">seg_sagittal</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  array <span class="op">=</span> <span class="va">array_cubes</span>,</span></span>
+<span class="r-in"><span>  ontology <span class="op">=</span> <span class="va">ontology</span>,</span></span>
+<span class="r-in"><span>  planes <span class="op">=</span> <span class="st">"sagittal"</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Keeping only a subset of structures</span></span></span>
+<span class="r-in"><span> <span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu">seg_draw</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  array <span class="op">=</span> <span class="va">array_cubes</span>,</span></span>
+<span class="r-in"><span>  ontology <span class="op">=</span> <span class="va">ontology</span>,</span></span>
+<span class="r-in"><span>  subset_structures <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -197,7 +236,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -66,40 +66,57 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_projection_plot</span><span class="op">(</span>
-  <span class="va">segmentation</span>,
-  <span class="va">name</span>,
-  <span class="va">plane</span>,
-  minsize <span class="op">=</span> <span class="fl">10</span>,
-  smooth <span class="op">=</span> <span class="cn">TRUE</span>,
-  smoothness <span class="op">=</span> <span class="fl">3</span>,
-  show_labels <span class="op">=</span> <span class="cn">FALSE</span>,
-  remove_axes <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_projection_plot</span><span class="op">(</span></span>
+<span>  <span class="va">segmentation</span>,</span>
+<span>  <span class="va">name</span>,</span>
+<span>  <span class="va">plane</span>,</span>
+<span>  minsize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  smoothness <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  show_labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  remove_axes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>segmentation</dt>
 <dd><p>a <code>segmentation</code> class object.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>character, name of the projection to be plotted from the <code>segmentation</code> slot.</p></dd>
+
+
 <dt>plane</dt>
 <dd><p>character, name of the plane (one of `sagittal`, `coronal`, or `axial`)</p></dd>
+
+
 <dt>minsize</dt>
 <dd><p>numeric, minimum number of vertices to draw a polygon. Default is 10.</p></dd>
+
+
 <dt>smooth</dt>
 <dd><p>logical, should polygons be smoothed? Default is <code>TRUE</code></p></dd>
+
+
 <dt>smoothness</dt>
 <dd><p>numeric, the kernel bandwidth for kernel smoothing. Default is 3.</p></dd>
+
+
 <dt>show_labels</dt>
 <dd><p>logical, should structure acronyms be shown as labels? Default is <code>FALSE</code></p></dd>
+
+
 <dt>remove_axes</dt>
 <dd><p>logical, should axes be removed? Default is <code>TRUE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a `ggplot` plot of the projection in both directions</p>
+    
+
+<p>a `ggplot` plot of the projection in both directions</p>
     </div>
 
   </div>
@@ -114,7 +131,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

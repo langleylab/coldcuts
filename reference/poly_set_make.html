@@ -66,21 +66,28 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">poly_set_make</span><span class="op">(</span><span class="va">structure_list</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">poly_set_make</span><span class="op">(</span><span class="va">structure_list</span>, parallel <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>structure_list</dt>
 <dd><p>a list of point sets divided by structure</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>logical, should the drawing be done using multithreading? Uses the `future.apply` backend. Default is <code>NULL</code></p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>logical, should messages about the process be printed? Default is <code>FALSE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A nested list containing ordered coordinates of points for every polygon for every structure in every slice, each point with an identifier for its grouping and hole status.</p>
+    
+
+<p>A nested list containing ordered coordinates of points for every polygon for every structure in every slice, each point with an identifier for its grouping and hole status.</p>
     </div>
 
   </div>
@@ -95,7 +102,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

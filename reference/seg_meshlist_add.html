@@ -66,31 +66,42 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_meshlist_add</span><span class="op">(</span>
-  <span class="va">segmentation</span>,
-  structures <span class="op">=</span> <span class="cn">NULL</span>,
-  pct_reduce <span class="op">=</span> <span class="fl">0.1</span>,
-  puffiness <span class="op">=</span> <span class="fl">1</span>,
-  verbose <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_meshlist_add</span><span class="op">(</span></span>
+<span>  <span class="va">segmentation</span>,</span>
+<span>  structures <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pct_reduce <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  puffiness <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>segmentation</dt>
 <dd><p>a `segmentation` class object</p></dd>
+
+
 <dt>structures</dt>
 <dd><p>a character vector of structure acronyms, indicating the structure(s) to be rendered. Default is <code>NULL</code>, meaning all structures will be rendered.</p></dd>
+
+
 <dt>pct_reduce</dt>
 <dd><p>numeric, target percentage of vertices for downsampling and remeshing. Closer to 0 gives a simpler mesh. Default is 0.1.</p></dd>
+
+
 <dt>puffiness</dt>
 <dd><p>numeric, determines a slight inflation of the mesh. Default is 1.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>logical, show progress of the meshing? Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.</p>
+    
+
+<p>a `segmentation` class object with a list of triangular meshes (as `mesh3d` objects) in the `meshes` slot.</p>
     </div>
 
   </div>
@@ -105,7 +116,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -66,64 +66,97 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_feature_plot</span><span class="op">(</span>
-  <span class="va">segmentation</span>,
-  <span class="va">feature</span>,
-  <span class="va">assay</span>,
-  projection <span class="op">=</span> <span class="cn">NULL</span>,
-  plane <span class="op">=</span> <span class="st">"sagittal"</span>,
-  by <span class="op">=</span> <span class="cn">NULL</span>,
-  aggr_fun <span class="op">=</span> <span class="cn">NULL</span>,
-  rng <span class="op">=</span> <span class="cn">NULL</span>,
-  smooth <span class="op">=</span> <span class="cn">TRUE</span>,
-  smoothness <span class="op">=</span> <span class="fl">3</span>,
-  minsize <span class="op">=</span> <span class="fl">10</span>,
-  color_pal <span class="op">=</span> <span class="cn">NULL</span>,
-  show_side <span class="op">=</span> <span class="st">"both"</span>,
-  show_labels <span class="op">=</span> <span class="cn">TRUE</span>,
-  labelsize <span class="op">=</span> <span class="fl">2</span>,
-  remove_axes <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_feature_plot</span><span class="op">(</span></span>
+<span>  <span class="va">segmentation</span>,</span>
+<span>  <span class="va">feature</span>,</span>
+<span>  <span class="va">assay</span>,</span>
+<span>  projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plane <span class="op">=</span> <span class="st">"sagittal"</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggr_fun <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rng <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  smoothness <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  minsize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  color_pal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  show_side <span class="op">=</span> <span class="st">"both"</span>,</span>
+<span>  show_labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labelsize <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  remove_axes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>segmentation</dt>
 <dd><p>a <code>segmentation</code> class object.</p></dd>
+
+
 <dt>feature</dt>
 <dd><p>character, feature to be plotted from the <code>assay</code> slot.</p></dd>
+
+
 <dt>assay</dt>
 <dd><p>character, the name of the <code>assay</code> slot in the <code>segmentation</code>.</p></dd>
+
+
 <dt>projection</dt>
 <dd><p>Character, name of the maximum projection slot to be used? Default is <code>NULL</code>, which uses the same name as selected in <code>assay</code>.</p></dd>
+
+
 <dt>plane</dt>
 <dd><p>character, the plane for the maximum projection. Default is "sagittal".</p></dd>
+
+
 <dt>by</dt>
 <dd><p>character with two elements, [1] the name of the column in the <code>sampledata</code> of the <code>assay</code> to be used for subsetting and aggregating and [2] the value to which the column in [1] should be equal to</p></dd>
+
+
 <dt>aggr_fun</dt>
 <dd><p>function, the function to be used to aggregate samples across rows when using <code>by</code></p></dd>
+
+
 <dt>rng</dt>
 <dd><p>numeric with two elements with lower and upper bound for the color scale. Default is <code>NULL</code></p></dd>
+
+
 <dt>smooth</dt>
 <dd><p>logical, should shapes be smoothed? Default is <code>TRUE</code>.</p></dd>
+
+
 <dt>smoothness</dt>
 <dd><p>numeric, the smoothing to be used. Default is 3.</p></dd>
+
+
 <dt>minsize</dt>
 <dd><p>numeric, minimum number of vertices to draw a polygon. Default is 10.</p></dd>
+
+
 <dt>color_pal</dt>
 <dd><p>character, the color palette to be used. The default is the `Sunset` palette from <code>colorspace</code></p></dd>
+
+
 <dt>show_side</dt>
 <dd><p>character, the side of the projection to be plotted. one of "first" ,"second", or "both". Default is "both".</p></dd>
+
+
 <dt>show_labels</dt>
 <dd><p>logical, should segmentation labels be shown? Default is <code>TRUE</code></p></dd>
+
+
 <dt>labelsize</dt>
 <dd><p>numeric, the size of the labels. Default is 2.</p></dd>
+
+
 <dt>remove_axes</dt>
 <dd><p>logical, should axes be shown? Default is <code>FALSE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a `ggplot` plot in which structures are coloured according to a numeric value</p>
+    
+
+<p>a `ggplot` plot in which structures are coloured according to a numeric value</p>
     </div>
 
   </div>
@@ -138,7 +171,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -81,11 +81,12 @@
 
       
 
-      </header><script src="coldcuts_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started</h1>
-                        <h4 data-toc-skip class="author">Giuseppe D’Agostino</h4>
+                        <h4 data-toc-skip class="author">Giuseppe
+D’Agostino</h4>
             
             <h4 data-toc-skip class="date">10/26/2021</h4>
       
@@ -99,70 +100,118 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Voxel arrays can come in different forms, either as NIfTI files, NRRD files, RAW files or directly imported in R as such.</p>
-<p>These arrays host a value of 0 for “empty space”, and another numerical value corresponding to a structural ID in any other position.</p>
-<p>Once the user has added the relevant information, such as orientation, units of measurement, voxel size, etc (all optional), the package “slices” the array along the 3 anatomical axes. For the time being, we will always assume that the orientation of the array is <strong>RAS</strong>, i.e. from Left to <strong>R</strong>ight (x axis), from Posterior to <strong>A</strong>nterior (y axis) and from Inferior to <strong>S</strong>uperior (z axis). If you are importing an array that was created in a different orientation, such as PIR or LPS, you can use an argument in the functions to reorient the array to RAS. RAS being the default orientation means that the anatomical planes will always be in this order: <strong>sagittal</strong>, <strong>coronal</strong> and <strong>axial</strong>.</p>
-<p>Once the array has been sliced, the package computes the polygon(s) for each structure, i.e. for every group of pixels in each slice bearing the same numerical value. Polygons are computed through a marching squares algorithm (as implemented in the <code>isoband</code> package) which assigns non-consecutive polygons to different groups.</p>
-<p>Since some of the polygons can have holes in a specific slice - as is the case, for instance, of the forebrain white matter in the human segmentation - the package functions automatically detect which polygons within the same structure are contained by bigger polygons, and treat them as holes in draw time.</p>
-<p>Once the drawing procedure is finished, a <code>segmentation</code> object is created which can be plotted and accessed in different ways.</p>
+<p>Voxel arrays can come in different forms, either as NIfTI files, NRRD
+files, RAW files or directly imported in R as such.</p>
+<p>These arrays host a value of 0 for “empty space”, and another
+numerical value corresponding to a structural ID in any other
+position.</p>
+<p>Once the user has added the relevant information, such as
+orientation, units of measurement, voxel size, etc (all optional), the
+package “slices” the array along the 3 anatomical axes. For the time
+being, we will always assume that the orientation of the array is
+<strong>RAS</strong>, i.e. from Left to <strong>R</strong>ight (x axis),
+from Posterior to <strong>A</strong>nterior (y axis) and from Inferior
+to <strong>S</strong>uperior (z axis). If you are importing an array
+that was created in a different orientation, such as PIR or LPS, you can
+use an argument in the functions to reorient the array to RAS. RAS being
+the default orientation means that the anatomical planes will always be
+in this order: <strong>sagittal</strong>, <strong>coronal</strong> and
+<strong>axial</strong>.</p>
+<p>Once the array has been sliced, the package computes the polygon(s)
+for each structure, i.e. for every group of pixels in each slice bearing
+the same numerical value. Polygons are computed through a marching
+squares algorithm (as implemented in the <code>isoband</code> package)
+which assigns non-consecutive polygons to different groups.</p>
+<p>Since some of the polygons can have holes in a specific slice - as is
+the case, for instance, of the forebrain white matter in the human
+segmentation - the package functions automatically detect which polygons
+within the same structure are contained by bigger polygons, and treat
+them as holes in draw time.</p>
+<p>Once the drawing procedure is finished, a <code>segmentation</code>
+object is created which can be plotted and accessed in different
+ways.</p>
 </div>
 <div class="section level2">
 <h2 id="drawing-a-segmentation">Drawing a segmentation<a class="anchor" aria-label="anchor" href="#drawing-a-segmentation"></a>
 </h2>
-<p>In this package we refer to 2 different types of operations: <strong>drawing</strong> is the procedure which effectively constructs polygons, whereas <strong>plotting</strong> consists in creating plots where polygons are selected and coloured according to user-defined rules.</p>
-<p>Therefore the creation of a <code>segmentation</code> object is achieved by calling <code><a href="../reference/seg_draw.html">seg_draw()</a></code>.</p>
-<p>To use this function we need to have access to 2 files: the voxel array and the ontology table. We then have to instruct the function on whether array rotations are required, and add other types of metadata on the fly. In this example, we use the a NiFTi (<code>ABA_Human_half.nii.gz</code>) file from the Allen Institute for Brain Sciences which we can find <a href="https://github.com/langleylab/coldcuts_segmentations/tree/main/ABA_Human_half" class="external-link">here</a> together with its ontology, containing a 500μ-spaced voxel array with 141 annotated structures. We add the ontology file <code>ABA_Human_ontology.csv</code> as well. We add the MNI152 reference space to the metadata. Since this NIfTI file has already some relevant information in its header, the function will add it for us.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>seg &lt;-<span class="st"> </span><span class="kw">seg_draw</span>(<span class="dt">nifti_file =</span> <span class="st">"ABA_Human_half.nii.gz"</span>, </span>
-<span id="cb1-2"><a href="#cb1-2"></a>                        <span class="dt">ontology_file =</span> <span class="st">"ABA_Human_ontology.csv"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3"></a>                        <span class="dt">reference_space =</span> <span class="st">"MNI152"</span>,</span>
-<span id="cb1-4"><a href="#cb1-4"></a>                        <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb1-5"><a href="#cb1-5"></a>                        </span>
-<span id="cb1-6"><a href="#cb1-6"></a>seg</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a>Segmentation from file<span class="op">:</span><span class="st">  </span>ABA_Human_half.nii.gz </span>
-<span id="cb1-9"><a href="#cb1-9"></a>                    <span class="kw">Plane</span>(s)<span class="op">:</span><span class="st">  </span>sagittal, coronal, axial </span>
-<span id="cb1-10"><a href="#cb1-10"></a>                  Directions<span class="op">:</span><span class="st">  </span>RAS </span>
-<span id="cb1-11"><a href="#cb1-11"></a>       <span class="kw">Dimensions</span> (original)<span class="op">:</span><span class="st">  </span><span class="dv">394</span> x <span class="dv">466</span> x <span class="dv">378</span> </span>
-<span id="cb1-12"><a href="#cb1-12"></a>      <span class="kw">Dimensions</span> (effective)<span class="op">:</span><span class="st">  </span><span class="dv">148</span> x <span class="dv">362</span> x <span class="dv">310</span> </span>
-<span id="cb1-13"><a href="#cb1-13"></a>            Pixel dimensions<span class="op">:</span><span class="st">  </span><span class="fl">0.5</span> x <span class="fl">0.5</span> x <span class="fl">0.5</span> </span>
-<span id="cb1-14"><a href="#cb1-14"></a>             Dimension units<span class="op">:</span><span class="st">  </span>mm </span>
-<span id="cb1-15"><a href="#cb1-15"></a>             Reference space<span class="op">:</span><span class="st">  </span>MNI152 </span>
-<span id="cb1-16"><a href="#cb1-16"></a>              <span class="kw">Structures</span> (n)<span class="op">:</span><span class="st">  </span><span class="dv">141</span> </span>
-<span id="cb1-17"><a href="#cb1-17"></a>             <span class="kw">Structures</span> (ID)<span class="op">:</span><span class="st">  </span><span class="dv">10368</span>, <span class="dv">12805</span>, <span class="dv">10557</span>, <span class="dv">12369</span>, <span class="dv">10460</span>, <span class="dv">10602</span> and <span class="dv">135</span> more. </span>
-<span id="cb1-18"><a href="#cb1-18"></a>       <span class="kw">Structures</span> (acronyms)<span class="op">:</span><span class="st">  </span>BL, 4V, FWM, Aq, Pin, 3V and <span class="dv">135</span> more. </span>
-<span id="cb1-19"><a href="#cb1-19"></a>Type <span class="kw">citations</span>(<span class="st">"name_of_segmentation"</span>) to display the <span class="kw">citation</span>(s) <span class="cf">for</span> this segmentation.</span></code></pre></div>
+<p>In this package we refer to 2 different types of operations:
+<strong>drawing</strong> is the procedure which effectively constructs
+polygons, whereas <strong>plotting</strong> consists in creating plots
+where polygons are selected and coloured according to user-defined
+rules.</p>
+<p>Therefore the creation of a <code>segmentation</code> object is
+achieved by calling <code><a href="../reference/seg_draw.html">seg_draw()</a></code>.</p>
+<p>To use this function we need to have access to 2 files: the voxel
+array and the ontology table. We then have to instruct the function on
+whether array rotations are required, and add other types of metadata on
+the fly. In this example, we use the a NiFTi
+(<code>ABA_Human_half.nii.gz</code>) file from the Allen Institute for
+Brain Sciences which we can find <a href="https://github.com/langleylab/coldcuts_segmentations/tree/main/ABA_Human_half" class="external-link">here</a>
+together with its ontology, containing a 500μ-spaced voxel array with
+141 annotated structures. We add the ontology file
+<code>ABA_Human_ontology.csv</code> as well. We add the MNI152 reference
+space to the metadata. Since this NIfTI file has already some relevant
+information in its header, the function will add it for us.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>seg <span class="ot">&lt;-</span> <span class="fu">seg_draw</span>(<span class="at">nifti_file =</span> <span class="st">"ABA_Human_half.nii.gz"</span>, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ontology_file =</span> <span class="st">"ABA_Human_ontology.csv"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">reference_space =</span> <span class="st">"MNI152"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                        </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>seg</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Segmentation from file<span class="sc">:</span>  ABA_Human_half.nii.gz </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">Plane</span>(s)<span class="sc">:</span>  sagittal, coronal, axial </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                  Directions<span class="sc">:</span>  RAS </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>       <span class="fu">Dimensions</span> (original)<span class="sc">:</span>  <span class="dv">394</span> x <span class="dv">466</span> x <span class="dv">378</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Dimensions</span> (effective)<span class="sc">:</span>  <span class="dv">148</span> x <span class="dv">362</span> x <span class="dv">310</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            Pixel dimensions<span class="sc">:</span>  <span class="fl">0.5</span> x <span class="fl">0.5</span> x <span class="fl">0.5</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>             Dimension units<span class="sc">:</span>  mm </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>             Reference space<span class="sc">:</span>  MNI152 </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>              <span class="fu">Structures</span> (n)<span class="sc">:</span>  <span class="dv">141</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>             <span class="fu">Structures</span> (ID)<span class="sc">:</span>  <span class="dv">10368</span>, <span class="dv">12805</span>, <span class="dv">10557</span>, <span class="dv">12369</span>, <span class="dv">10460</span>, <span class="dv">10602</span> and <span class="dv">135</span> more. </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>       <span class="fu">Structures</span> (acronyms)<span class="sc">:</span>  BL, 4V, FWM, Aq, Pin, 3V and <span class="dv">135</span> more. </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Type <span class="fu">citations</span>(<span class="st">"name_of_segmentation"</span>) to display the <span class="fu">citation</span>(s) <span class="cf">for</span> this segmentation.</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspecting-a-segmentation-ontology">Inspecting a segmentation ontology<a class="anchor" aria-label="anchor" href="#inspecting-a-segmentation-ontology"></a>
 </h2>
-<p>We can access the <code>ontology</code> slot using the <code>ontology()</code> function:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">head</span>(<span class="kw">ontology</span>(seg))</span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a>         id atlas_id                       name acronym st_level ontology_id hemisphere_id weight parent_structure_id depth graph_id graph_order</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="dv">10153</span> <span class="dv">10153</span>       <span class="ot">NA</span>               neural plate      NP       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>                  <span class="ot">NA</span>     <span class="dv">0</span>       <span class="dv">16</span>           <span class="dv">0</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="dv">10154</span> <span class="dv">10154</span>       <span class="ot">NA</span>                neural tube      NT       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10153</span>     <span class="dv">1</span>       <span class="dv">16</span>           <span class="dv">1</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="dv">10155</span> <span class="dv">10155</span>       <span class="ot">NA</span>                      brain      Br       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10154</span>     <span class="dv">2</span>       <span class="dv">16</span>           <span class="dv">2</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="dv">10156</span> <span class="dv">10156</span>       <span class="ot">NA</span> <span class="kw">forebrain</span> (prosencephalon)       F       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10155</span>     <span class="dv">3</span>       <span class="dv">16</span>           <span class="dv">3</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="dv">10157</span> <span class="dv">10157</span>       <span class="ot">NA</span>   gray matter of forebrain     FGM       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10156</span>     <span class="dv">4</span>       <span class="dv">16</span>           <span class="dv">4</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="dv">10158</span> <span class="dv">10158</span>       <span class="ot">NA</span>              telencephalon     Tel       <span class="ot">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10157</span>     <span class="dv">5</span>       <span class="dv">16</span>         <span class="dv">657</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>                          structure_id_path color_hex_triplet neuro_name_structure_id neuro_name_structure_id_path failed sphinx_id structure_name_facet</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="dv">10153</span>                               <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="st">            </span>D7D8D8                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">6600</span>           <span class="dv">3041346888</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="dv">10154</span>                         <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="dv">10154</span><span class="op">/</span><span class="st">            </span>D0D0D1                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">6601</span>           <span class="dv">1172862311</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="dv">10155</span>                   <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="dv">10154</span><span class="op">/</span><span class="dv">10155</span><span class="op">/</span><span class="st">            </span>E0E0E0                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">6602</span>           <span class="dv">3016132225</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="dv">10156</span>             <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="dv">10154</span><span class="op">/</span><span class="dv">10155</span><span class="op">/</span><span class="dv">10156</span><span class="op">/</span><span class="st">            </span>EBD6D0                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">6603</span>           <span class="dv">2015023488</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="dv">10157</span>       <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="dv">10154</span><span class="op">/</span><span class="dv">10155</span><span class="op">/</span><span class="dv">10156</span><span class="op">/</span><span class="dv">10157</span><span class="op">/</span><span class="st">            </span>EBD6D0                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">6604</span>            <span class="dv">545890574</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="dv">10158</span> <span class="op">/</span><span class="dv">10153</span><span class="op">/</span><span class="dv">10154</span><span class="op">/</span><span class="dv">10155</span><span class="op">/</span><span class="dv">10156</span><span class="op">/</span><span class="dv">10157</span><span class="op">/</span><span class="dv">10158</span><span class="op">/</span><span class="st">            </span>EBD6D0                      <span class="ot">NA</span>                           <span class="ot">NA</span>      f      <span class="dv">7257</span>           <span class="dv">2480649783</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a>      failed_facet                  safe_name     col</span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="dv">10153</span>    <span class="dv">734881840</span>               neural plate <span class="co">#D7D8D8</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="dv">10154</span>    <span class="dv">734881840</span>                neural tube <span class="co">#D0D0D1</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="dv">10155</span>    <span class="dv">734881840</span>                      brain <span class="co">#E0E0E0</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="dv">10156</span>    <span class="dv">734881840</span> <span class="kw">forebrain</span> (prosencephalon) <span class="co">#EBD6D0</span></span>
-<span id="cb2-22"><a href="#cb2-22"></a><span class="dv">10157</span>    <span class="dv">734881840</span>   gray matter of forebrain <span class="co">#EBD6D0</span></span>
-<span id="cb2-23"><a href="#cb2-23"></a><span class="dv">10158</span>    <span class="dv">734881840</span>              telencephalon <span class="co">#EBD6D0</span></span></code></pre></div>
-<p>This ontology was downloaded from the Allen Brain Atlas API, and it contains several pieces of information that we will not need. However, we do need the <code>id</code>, <code>name</code>, <code>acronym</code>, <code>parent_structure_id</code>, <code>structure_id_path</code> and <code>col</code> fields.</p>
-<p>Ontologies may contain additional IDs, which are part of how the authors of the segmentation have classified structures into higher order groupings (e.g. “hipothalamus” as a higher order grouping for several hipothalamic nuclei). This ontology can be visualized as a tree using <code><a href="../reference/ontology_plot.html">ontology_plot()</a></code>:</p>
+<p>We can access the <code>ontology</code> slot using the
+<code>ontology()</code> function:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">ontology</span>(seg))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         id atlas_id                       name acronym st_level ontology_id hemisphere_id weight parent_structure_id depth graph_id graph_order</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dv">10153</span> <span class="dv">10153</span>       <span class="cn">NA</span>               neural plate      NP       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>                  <span class="cn">NA</span>     <span class="dv">0</span>       <span class="dv">16</span>           <span class="dv">0</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dv">10154</span> <span class="dv">10154</span>       <span class="cn">NA</span>                neural tube      NT       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10153</span>     <span class="dv">1</span>       <span class="dv">16</span>           <span class="dv">1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="dv">10155</span> <span class="dv">10155</span>       <span class="cn">NA</span>                      brain      Br       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10154</span>     <span class="dv">2</span>       <span class="dv">16</span>           <span class="dv">2</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="dv">10156</span> <span class="dv">10156</span>       <span class="cn">NA</span> <span class="fu">forebrain</span> (prosencephalon)       F       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10155</span>     <span class="dv">3</span>       <span class="dv">16</span>           <span class="dv">3</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="dv">10157</span> <span class="dv">10157</span>       <span class="cn">NA</span>   gray matter of forebrain     FGM       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10156</span>     <span class="dv">4</span>       <span class="dv">16</span>           <span class="dv">4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="dv">10158</span> <span class="dv">10158</span>       <span class="cn">NA</span>              telencephalon     Tel       <span class="cn">NA</span>          <span class="dv">11</span>             <span class="dv">3</span>   <span class="dv">8660</span>               <span class="dv">10157</span>     <span class="dv">5</span>       <span class="dv">16</span>         <span class="dv">657</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                          structure_id_path color_hex_triplet neuro_name_structure_id neuro_name_structure_id_path failed sphinx_id structure_name_facet</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="dv">10153</span>                               <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span>            D7D8D8                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">6600</span>           <span class="dv">3041346888</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="dv">10154</span>                         <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span><span class="dv">10154</span><span class="sc">/</span>            D0D0D1                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">6601</span>           <span class="dv">1172862311</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="dv">10155</span>                   <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span><span class="dv">10154</span><span class="sc">/</span><span class="dv">10155</span><span class="sc">/</span>            E0E0E0                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">6602</span>           <span class="dv">3016132225</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="dv">10156</span>             <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span><span class="dv">10154</span><span class="sc">/</span><span class="dv">10155</span><span class="sc">/</span><span class="dv">10156</span><span class="sc">/</span>            EBD6D0                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">6603</span>           <span class="dv">2015023488</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="dv">10157</span>       <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span><span class="dv">10154</span><span class="sc">/</span><span class="dv">10155</span><span class="sc">/</span><span class="dv">10156</span><span class="sc">/</span><span class="dv">10157</span><span class="sc">/</span>            EBD6D0                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">6604</span>            <span class="dv">545890574</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="dv">10158</span> <span class="sc">/</span><span class="dv">10153</span><span class="sc">/</span><span class="dv">10154</span><span class="sc">/</span><span class="dv">10155</span><span class="sc">/</span><span class="dv">10156</span><span class="sc">/</span><span class="dv">10157</span><span class="sc">/</span><span class="dv">10158</span><span class="sc">/</span>            EBD6D0                      <span class="cn">NA</span>                           <span class="cn">NA</span>      f      <span class="dv">7257</span>           <span class="dv">2480649783</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      failed_facet                  safe_name     col</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="dv">10153</span>    <span class="dv">734881840</span>               neural plate <span class="co">#D7D8D8</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="dv">10154</span>    <span class="dv">734881840</span>                neural tube <span class="co">#D0D0D1</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="dv">10155</span>    <span class="dv">734881840</span>                      brain <span class="co">#E0E0E0</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="dv">10156</span>    <span class="dv">734881840</span> <span class="fu">forebrain</span> (prosencephalon) <span class="co">#EBD6D0</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="dv">10157</span>    <span class="dv">734881840</span>   gray matter of forebrain <span class="co">#EBD6D0</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="dv">10158</span>    <span class="dv">734881840</span>              telencephalon <span class="co">#EBD6D0</span></span></code></pre></div>
+<p>This ontology was downloaded from the Allen Brain Atlas API, and it
+contains several pieces of information that we will not need. However,
+we do need the <code>id</code>, <code>name</code>, <code>acronym</code>,
+<code>parent_structure_id</code>, <code>structure_id_path</code> and
+<code>col</code> fields.</p>
+<p>Ontologies may contain additional IDs, which are part of how the
+authors of the segmentation have classified structures into higher order
+groupings (e.g. “hipothalamus” as a higher order grouping for several
+hipothalamic nuclei). This ontology can be visualized as a tree using
+<code><a href="../reference/ontology_plot.html">ontology_plot()</a></code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/ontology_plot.html">ontology_plot</a></span><span class="op">(</span><span class="va">seg</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ontology_plot.html">ontology_plot</a></span><span class="op">(</span><span class="va">seg</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="https://user-images.githubusercontent.com/21171362/172796707-7843b270-ebf0-4ee6-ad25-6e6167627be8.png" alt=""><p class="caption">ABA_Human_ontology_small</p>
 </div>
@@ -171,23 +220,29 @@
 <div class="section level2">
 <h2 id="plotting-a-segmentation">Plotting a segmentation<a class="anchor" aria-label="anchor" href="#plotting-a-segmentation"></a>
 </h2>
-<p>The basic functionality with no external datasets allows to plot all structures within specific slices. We pick 3 random slices with the <code>s_slice</code>, <code>c_slice</code> and <code>a_slice</code> arguments for sagittal, coronal and axial respectively.</p>
+<p>The basic functionality with no external datasets allows to plot all
+structures within specific slices. We pick 3 random slices with the
+<code>s_slice</code>, <code>c_slice</code> and <code>a_slice</code>
+arguments for sagittal, coronal and axial respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, c_slice <span class="op">=</span> <span class="fl">60</span>, a_slice <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, c_slice <span class="op">=</span> <span class="fl">60</span>, a_slice <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="https://user-images.githubusercontent.com/21171362/172796630-88a728a9-dcc7-4b39-82b0-1c956dd56983.png" alt=""><p class="caption">ABA_Human_half_allplanes_structures</p>
 </div>
-<p>We can also choose only one axis, and we can show structural labels (as acronyms from the ontology table):</p>
+<p>We can also choose only one axis, and we can show structural labels
+(as acronyms from the ontology table):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="https://user-images.githubusercontent.com/21171362/172796576-f8d86e58-5da4-4ced-b65b-826e97f31dbe.png" alt=""><p class="caption">ABA_Human_half_sagittal_structures</p>
 </div>
-<p>Additionally, we can subset a <code>segmentation</code> object by structure(s). Here is an example in which we isolate the Forebrain White Matter (FWM):</p>
+<p>Additionally, we can subset a <code>segmentation</code> object by
+structure(s). Here is an example in which we isolate the Forebrain White
+Matter (FWM):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_sub_str.html">seg_sub_str</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span>, structures <span class="op">=</span> <span class="st">"FWM"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg_sub</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seg_sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_sub_str.html">seg_sub_str</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span>, structures <span class="op">=</span> <span class="st">"FWM"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/seg_plot.html">seg_plot</a></span><span class="op">(</span><span class="va">seg_sub</span>, s_slice <span class="op">=</span> <span class="fl">50</span>, show_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="https://user-images.githubusercontent.com/21171362/172796431-ee2fd86f-44a0-4317-975e-aae8361d282f.png" alt=""><p class="caption">ABA_Human_half_FWM_structuresubset</p>
 </div>
@@ -195,97 +250,131 @@
 <div class="section level2">
 <h2 id="creating-a-segmentationassay">Creating a <code>segmentationAssay</code><a class="anchor" aria-label="anchor" href="#creating-a-segmentationassay"></a>
 </h2>
-<p>The <code>segmentationAssay</code> S4 class was created to host an external dataset, adding numerical tables and other information to a segmentation. For instance, in the case of GTEx brain data, a <code>segmentationAssay</code> can host the median TPM count table (in the <code>values</code> slot), additional information on the samples (in the <code>sampledata</code> slot) and, most importantly, the mapping from samples to structures (<code>mapping</code> slot).</p>
-<p>Depending on the segmentation, the assay may require a one-to-many mapping of samples to structures. For instance, the GTEx brain dataset contains “caudate basal ganglia”, which has to be mapped to 3 different structural IDs in the Allen Human Brain Atlas segmentation.</p>
-<p>This mapping has to be manually curated by the user, as there is no way to detect automatically this sort of correspondences.</p>
-<p>Here we will show how to create this mapping for the GTEx bulk RNA-seq data, using median gene-level TPM values.</p>
-<p>These values can be found <a href="https://www.gtexportal.org/home/datasets" class="external-link">here</a>, in particular the <em>GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz</em> file, which we will need to unzip.</p>
+<p>The <code>segmentationAssay</code> S4 class was created to host an
+external dataset, adding numerical tables and other information to a
+segmentation. For instance, in the case of GTEx brain data, a
+<code>segmentationAssay</code> can host the median TPM count table (in
+the <code>values</code> slot), additional information on the samples (in
+the <code>sampledata</code> slot) and, most importantly, the mapping
+from samples to structures (<code>mapping</code> slot).</p>
+<p>Depending on the segmentation, the assay may require a one-to-many
+mapping of samples to structures. For instance, the GTEx brain dataset
+contains “caudate basal ganglia”, which has to be mapped to 3 different
+structural IDs in the Allen Human Brain Atlas segmentation.</p>
+<p>This mapping has to be manually curated by the user, as there is no
+way to detect automatically this sort of correspondences.</p>
+<p>Here we will show how to create this mapping for the GTEx bulk
+RNA-seq data, using median gene-level TPM values.</p>
+<p>These values can be found <a href="https://www.gtexportal.org/home/datasets" class="external-link">here</a>, in particular
+the
+<em>GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz</em>
+file, which we will need to unzip.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># read the table</span>
-<span class="va">gtex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="st">"gtex_tpm.gct"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, skip <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-
-<span class="co"># subsetting and wrangling names</span>
-<span class="va">gtex</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Brain"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Brain..."</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"[.]"</span>, replacement <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"__"</span>, replacement <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"_$"</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span>
-
-<span class="co">#removing duplicates (mostly 0 TPM genes)</span>
-<span class="va">gtex</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">$</span><span class="va">Description</span><span class="op">)</span>,<span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">$</span><span class="va">Description</span></code></pre></div>
-<p>Once the table is subsetted and readable, we map samples to structural IDs creating a list:</p>
+<code class="sourceCode R"><span><span class="co"># read the table</span></span>
+<span><span class="va">gtex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="st">"gtex_tpm.gct"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, skip <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># subsetting and wrangling names</span></span>
+<span><span class="va">gtex</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Brain"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Brain..."</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"[.]"</span>, replacement <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"__"</span>, replacement <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"_$"</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#removing duplicates (mostly 0 TPM genes)</span></span>
+<span><span class="va">gtex</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">$</span><span class="va">Description</span><span class="op">)</span>,<span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gtex</span><span class="op">$</span><span class="va">Description</span></span></code></pre></div>
+<p>Once the table is subsetted and readable, we map samples to
+structural IDs creating a list:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create mapping</span>
-<span class="va">brain_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Amygdala"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span><span class="st">"amyg"</span>,
-                                                         x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Cortex"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"frontal"</span>,
-                                                       x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Frontal_Cortex_BA9"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"cingulate gyrus, rostral"</span>,
-                                                                   x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Caudate_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"caudate"</span>,
-                                                                      x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Putamen_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"putamen"</span>,
-                                                                      x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hypothalamus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span> <span class="op">==</span> <span class="st">"HTH"</span><span class="op">)</span>,<span class="st">"id"</span><span class="op">]</span>, <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">parent_structure_id</span><span class="op">)</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Substantia_nigra"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"SN"</span>, x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span><span class="op">)</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"hipp"</span>,
-                                                            x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Nucleus_accumbens_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"accumbens"</span>,
-                                                                                x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Cerebellum"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"cerebell"</span>,
-                                                           x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">]</span>
-
-<span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">!=</span> <span class="st">"10377"</span><span class="op">]</span></code></pre></div>
-<p>Then we make a very simple <code>sampledata</code> table since we don’t have many variables:</p>
+<code class="sourceCode R"><span><span class="co"># create mapping</span></span>
+<span><span class="va">brain_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Amygdala"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span><span class="st">"amyg"</span>,</span>
+<span>                                                  x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Cortex"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"frontal"</span>,</span>
+<span>                                                x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Frontal_Cortex_BA9"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"cingulate gyrus, rostral"</span>,</span>
+<span>                                                            x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Caudate_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"caudate"</span>,</span>
+<span>                                                               x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Putamen_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"putamen"</span>,</span>
+<span>                                                               x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">hth_region</span> <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span> <span class="op">==</span> <span class="st">"HTH"</span><span class="op">)</span>, <span class="st">"id"</span><span class="op">]</span></span>
+<span>  </span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hypothalamus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">parent_structure_id</span> <span class="op">==</span> <span class="va">hth_region</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Substantia_nigra"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"SN"</span>, x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"hipp"</span>,</span>
+<span>                                                     x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Nucleus_accumbens_basal_ganglia"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"accumbens"</span>,</span>
+<span>                                                                         x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Cerebellum"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span>pattern  <span class="op">=</span> <span class="st">"cerebell"</span>,</span>
+<span>                                                    x <span class="op">=</span> <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="st">"acronym"</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">brain_regions</span><span class="op">[[</span><span class="st">"Hippocampus"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Then we make a very simple <code>sampledata</code> table since we
+don’t have many variables:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">coldata_gtex</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sample_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span>, structure_acronym <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">coldata_gtex</span><span class="op">)</span> <span class="op">=</span> <span class="va">coldata_gtex</span><span class="op">$</span><span class="va">sample_id</span></code></pre></div>
-<p>We now have everything we need to create a <code>segmentationAssay</code> object and add it to our segmentation:</p>
+<code class="sourceCode R"><span></span>
+<span><span class="va">coldata_gtex</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sample_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span>, structure_acronym <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">coldata_gtex</span><span class="op">)</span> <span class="op">=</span> <span class="va">coldata_gtex</span><span class="op">$</span><span class="va">sample_id</span></span></code></pre></div>
+<p>We now have everything we need to create a
+<code>segmentationAssay</code> object and add it to our
+segmentation:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gtexAssay</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="st">"segmentationAssay"</span>,
-                 values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">[</span>,<span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
-                 mapping <span class="op">=</span> <span class="va">brain_regions</span>,
-                 sampledata <span class="op">=</span> <span class="va">coldata_gtex</span><span class="op">)</span>
-
-<span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_assay_add.html">seg_assay_add</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, 
-                        assay <span class="op">=</span> <span class="va">gtexAssay</span>, 
-                        name <span class="op">=</span> <span class="st">"gtex"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gtexAssay</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="st">"segmentationAssay"</span>,</span>
+<span>                 values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">[</span>,<span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">gtex</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>                 mapping <span class="op">=</span> <span class="va">brain_regions</span>,</span>
+<span>                 sampledata <span class="op">=</span> <span class="va">coldata_gtex</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_assay_add.html">seg_assay_add</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>, </span>
+<span>                        assay <span class="op">=</span> <span class="va">gtexAssay</span>, </span>
+<span>                        name <span class="op">=</span> <span class="st">"gtex"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="creating-a-maximum-projection-and-plotting-external-data">Creating a maximum projection and plotting external data<a class="anchor" aria-label="anchor" href="#creating-a-maximum-projection-and-plotting-external-data"></a>
 </h2>
-<p>When plotting data such as expression values in the segmentation, not all structures will be visible within the same slice, making the choice of a specific slice hard. For this reason we can create a maximum projection of structure slices on every plane, in both directions: slice-level polygons for every structure are joined together into single polygons and displayed in the order that they appear from both points of view, e.g. in the sagittal plane, from left to right (LR) and from right to left (RL).</p>
-<p>Structures can be subset for maximum projections, since using all structures may just result in producing a side view of the segmentation (which may be a desired behaviour in some cases). Since maximum projections are specifically important for plotting datasets, we create a projection that has the same name as the dataset using the <code><a href="../reference/seg_projection_add.html">seg_projection_add()</a></code> function, only for the sagittal plane:</p>
+<p>When plotting data such as expression values in the segmentation, not
+all structures will be visible within the same slice, making the choice
+of a specific slice hard. For this reason we can create a maximum
+projection of structure slices on every plane, in both directions:
+slice-level polygons for every structure are joined together into single
+polygons and displayed in the order that they appear from both points of
+view, e.g. in the sagittal plane, from left to right (LR) and from right
+to left (RL).</p>
+<p>Structures can be subset for maximum projections, since using all
+structures may just result in producing a side view of the segmentation
+(which may be a desired behaviour in some cases). Since maximum
+projections are specifically important for plotting datasets, we create
+a projection that has the same name as the dataset using the
+<code><a href="../reference/seg_projection_add.html">seg_projection_add()</a></code> function, only for the sagittal
+plane:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">structures_chosen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">assays</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">gtex</span><span class="op">@</span><span class="va">mapping</span><span class="op">)</span>
-<span class="va">structures_chosen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">structures_chosen</span>, <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span><span class="op">)</span>
-
-  
-<span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_projection_add.html">seg_projection_add</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"gtex"</span>, 
-                        segmentation <span class="op">=</span> <span class="va">seg</span>, 
-                        structures <span class="op">=</span> <span class="va">structures_chosen</span>, 
-                        planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span><span class="op">)</span></code></pre></div>
-<p>At this point we can plot data from one of our assays (GTEx) in the sagittal projection, using <code><a href="../reference/seg_feature_plot.html">seg_feature_plot()</a></code>, specifying the <code>assay</code> name and the gene (<code>feature</code> argument):</p>
+<code class="sourceCode R"><span></span>
+<span><span class="va">structures_chosen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">assays</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">gtex</span><span class="op">@</span><span class="va">mapping</span><span class="op">)</span></span>
+<span><span class="va">structures_chosen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">structures_chosen</span>, <span class="fu">ontology</span><span class="op">(</span><span class="va">seg</span><span class="op">)</span><span class="op">$</span><span class="va">acronym</span><span class="op">)</span></span>
+<span></span>
+<span>  </span>
+<span><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_projection_add.html">seg_projection_add</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"gtex"</span>, </span>
+<span>                        segmentation <span class="op">=</span> <span class="va">seg</span>, </span>
+<span>                        structures <span class="op">=</span> <span class="va">structures_chosen</span>, </span>
+<span>                        planes_chosen <span class="op">=</span> <span class="st">"sagittal"</span><span class="op">)</span></span></code></pre></div>
+<p>At this point we can plot data from one of our assays (GTEx) in the
+sagittal projection, using <code><a href="../reference/seg_feature_plot.html">seg_feature_plot()</a></code>, specifying
+the <code>assay</code> name and the gene (<code>feature</code>
+argument):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/seg_feature_plot.html">seg_feature_plot</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>,
-             assay <span class="op">=</span> <span class="st">"gtex"</span>,
-             feature <span class="op">=</span> <span class="st">"APP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/seg_feature_plot.html">seg_feature_plot</a></span><span class="op">(</span>segmentation <span class="op">=</span> <span class="va">seg</span>,</span>
+<span>             assay <span class="op">=</span> <span class="st">"gtex"</span>,</span>
+<span>             feature <span class="op">=</span> <span class="st">"APP"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="https://user-images.githubusercontent.com/21171362/172796337-38879ad0-9887-4331-bfde-28124a20c1d3.png" alt=""><p class="caption">ABA_Human_half_APP_featureplot</p>
 </div>
@@ -293,17 +382,23 @@
 <div class="section level2">
 <h2 id="building-and-rendering-3d-meshes">Building and rendering 3D meshes<a class="anchor" aria-label="anchor" href="#building-and-rendering-3d-meshes"></a>
 </h2>
-<p><code>coldcuts</code> can reuse polygons to rebuild the original volume array and, using a marching cubes algorithm together with quadric edge decimation (both as implemented in <code>Rvcg</code>) it can quickly render simplified triangular meshes that can be visualized in an interactive <code>rgl</code> session.</p>
-<p>In order to create and visualize 3D meshes for all our the structures in our segmentation, we only need 2 lines of code:</p>
+<p><code>coldcuts</code> can reuse polygons to rebuild the original
+volume array and, using a marching cubes algorithm together with quadric
+edge decimation (both as implemented in <code>Rvcg</code>) it can
+quickly render simplified triangular meshes that can be visualized in an
+interactive <code>rgl</code> session.</p>
+<p>In order to create and visualize 3D meshes for all our the structures
+in our segmentation, we only need 2 lines of code:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_meshlist_add.html">seg_meshlist_add</a></span><span class="op">(</span><span class="va">seg</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/seg_meshlist_render.html">seg_meshlist_render</a></span><span class="op">(</span><span class="va">seg</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">seg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seg_meshlist_add.html">seg_meshlist_add</a></span><span class="op">(</span><span class="va">seg</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/seg_meshlist_render.html">seg_meshlist_render</a></span><span class="op">(</span><span class="va">seg</span><span class="op">)</span></span></code></pre></div>
 <p><img width="780" alt="ABA_Human_half_render" src="https://user-images.githubusercontent.com/21171362/172796257-34719f94-fd94-46cc-ad80-b2f4f7d5ba7e.png"></p>
-<p>We can visualize only a subset of structures, e.g. all the structures of the frontal lobe (FroL in the ontology):</p>
+<p>We can visualize only a subset of structures, e.g. all the structures
+of the frontal lobe (FroL in the ontology):</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/seg_meshlist_render.html">seg_meshlist_render</a></span><span class="op">(</span><span class="va">seg</span>, subset_str <span class="op">=</span> <span class="st">"FroL"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/seg_meshlist_render.html">seg_meshlist_render</a></span><span class="op">(</span><span class="va">seg</span>, subset_str <span class="op">=</span> <span class="st">"FroL"</span><span class="op">)</span></span></code></pre></div>
 <p><img width="933" alt="ABA_Human_half_FroL_render" src="https://user-images.githubusercontent.com/21171362/172796201-7c003a94-43fb-45a4-9bcc-88fc4b077af5.png"></p>
 </div>
   </div>
@@ -325,7 +420,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

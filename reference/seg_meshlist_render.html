@@ -66,34 +66,47 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">seg_meshlist_render</span><span class="op">(</span>
-  <span class="va">segmentation</span>,
-  subset_str <span class="op">=</span> <span class="cn">NULL</span>,
-  iterations <span class="op">=</span> <span class="fl">4</span>,
-  group_first <span class="op">=</span> <span class="cn">TRUE</span>,
-  style <span class="op">=</span> <span class="st">"matte"</span>,
-  mono_color <span class="op">=</span> <span class="st">"gray"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">seg_meshlist_render</span><span class="op">(</span></span>
+<span>  <span class="va">segmentation</span>,</span>
+<span>  subset_str <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  iterations <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  group_first <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  style <span class="op">=</span> <span class="st">"matte"</span>,</span>
+<span>  mono_color <span class="op">=</span> <span class="st">"gray"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>segmentation</dt>
 <dd><p>a `segmentation` class object</p></dd>
+
+
 <dt>subset_str</dt>
 <dd><p>a character vector indicating the structure(s) to be rendered, by acronym. Default is <code>NULL</code>, meaning the whole segmentation will be rendered as a single mesh.</p></dd>
+
+
 <dt>iterations</dt>
 <dd><p>numeric, iterations for HC smoothing of the meshes</p></dd>
+
+
 <dt>group_first</dt>
 <dd><p>logical, in the case of ambiguous acronyms, should the rendering privilege plotting the group or the single structure? Default is <code>TRUE</code>, meaning the group will be given priority.</p></dd>
+
+
 <dt>style</dt>
 <dd><p>character, one of "matte", "shiny" or "monochrome" as a rendering style</p></dd>
+
+
 <dt>mono_color</dt>
 <dd><p>character, the color of meshes when character = "monochrome"</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a <code>rgl</code> window.</p>
+    
+
+<p>a plot of all meshes selected from the segmentation `meshes` slot, smoothed and rendered in a <code>rgl</code> window.</p>
     </div>
 
   </div>
@@ -108,7 +121,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
