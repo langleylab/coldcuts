@@ -63,6 +63,7 @@ setClass("segmentationAssay", representation(
 #'
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setGeneric("seg_metadata", function(x) {
@@ -73,6 +74,7 @@ setGeneric("seg_metadata", function(x) {
 #'
 #' S4 method to access the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setMethod("seg_metadata", c(x = "segmentation"), function(x) {
@@ -84,6 +86,7 @@ setMethod("seg_metadata", c(x = "segmentation"), function(x) {
 #' S4 method to set the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
+#' @export
 #' @noRd
 
 setGeneric("seg_metadata<-", function(x, value) {
@@ -95,6 +98,7 @@ setGeneric("seg_metadata<-", function(x, value) {
 #' S4 method to set the \code{metadata} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a list containing segmentation metadata
+#' @export
 #' @noRd
 
 setMethod("seg_metadata<-", c(x = "segmentation"), function(x, value) {
@@ -140,11 +144,12 @@ setMethod("ontology", c(x = "segmentation"), function(x) {
 #' S4 method to set the \code{ontology} slot in \code{segmentation} class objects, with sanity checks.
 #' @param x a \code{segmentation} class object
 #' @param value a table containing the ontology tree
+#' @export
 #' @noRd
 
 setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
   if (is.null(value)) stop("Segmentation objects must have an ontology")
-  if (class(value) != "data.frame") stop("The ontology must be of class `data.frame`")
+  if (!is(value, "data.frame")) stop("The ontology must be of class `data.frame`")
   missing_fields <- setdiff(c("id", "name", "acronym", "parent_structure_id", "structure_id_path", "col"), colnames(value))
   if (length(missing_fields) > 0) stop(paste0("Columns ", paste(missing_fields, collapse = ", ")), " were not found in the ontology. \n Please provide a complete ontology table.")
   x@ontology <- value
@@ -155,6 +160,7 @@ setMethod("ontology<-", c(x = "segmentation"), function(x, value) {
 #'
 #' S4 method to get the \code{assays} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setGeneric("assays", function(x) {
@@ -165,6 +171,7 @@ setGeneric("assays", function(x) {
 #'
 #' S4 method to get the \code{assays} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setMethod("assays", c(x = "segmentation"), function(x) {
@@ -176,6 +183,7 @@ setMethod("assays", c(x = "segmentation"), function(x) {
 #' S4 method to get the \code{projections} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param name character, the name of the projection
+#' @export
 #' @noRd
 
 setGeneric("projections", function(x, name) {
@@ -187,6 +195,7 @@ setGeneric("projections", function(x, name) {
 #' S4 method to get the \code{projections} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param name character, the name of the projection
+#' @export
 #' @noRd
 
 setMethod("projections", c(x = "segmentation"), function(x, name) {
@@ -220,6 +229,7 @@ setMethod("show", "segmentation", function(object) {
 #'
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setGeneric("citation", function(x) {
@@ -230,6 +240,7 @@ setGeneric("citation", function(x) {
 #'
 #' S4 method to show the \code{citation} slot of a \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setMethod("citation", "segmentation", function(x) {

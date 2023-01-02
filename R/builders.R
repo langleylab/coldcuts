@@ -10,7 +10,7 @@
 #' @export
 
 poly_build <- function(seg_point_set) {
-  if (class(seg_point_set) != "segPointSet") stop("Must provide a `segPointSet` class object")
+  if (!is(seg_point_set, "segPointSet")) stop("Must provide a `segPointSet` class object")
 
   return(as.data.frame(
     cbind(seg_point_set@coords[, 1:2],
@@ -459,9 +459,9 @@ poly_set_make <- function(structure_list,
 seg_assay_add <- function(segmentation,
                           assay,
                           name) {
-  if (class(assay) != "segmentationAssay" & !is.null(assay)) {
+  if (!is(assay,  "segmentationAssay") & !is.null(assay)) {
     stop("Must provide a `segmentationAssay` type object")
-  } else if (class(assay) == "segmentationAssay" & !is.null(assay)) {
+  } else if (is(assay, "segmentationAssay") & !is.null(assay)) {
     segmentation@assays[[name]] <- assay
   } else if (is.null(assay)) {
     segmentation@assays[[name]] <- NULL
@@ -483,8 +483,8 @@ seg_citation_add <- function(segmentation,
                              citation) {
   if (is.null(name)) stop("Must provide a name for the citation")
   if (is.null(citation)) stop("Must provide a citation string")
-  if (class(citation) != "character" | class(name) != "character") stop("Must provide a `character` type object for name and citation")
-  if (class(segmentation) != "segmentation") stop("Must provide a `segmentation` type object")
+  if (!is(citation, "character") | !is(name, "character")) stop("Must provide a `character` type object for name and citation")
+  if (!is(segmentation, "segmentation")) stop("Must provide a `segmentation` type object")
 
   segmentation@assays[[name]] <- citation
 

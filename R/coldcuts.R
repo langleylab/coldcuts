@@ -93,9 +93,9 @@ seg_draw <- function(nifti_file = NULL, nrrd_file = NULL, array = NULL,
   if (is.null(nifti_file) & is.null(nrrd_file) & is.null(array) & is.null(molten_array)) stop("Must provide at least a NIfTI/NRRD file, or an array/molten array.")
   if (is.null(ontology) & is.null(ontology_file)) stop("Must provide at least an ontology or an ontology file.")
   if (planes != "all" & !any(planes %in% c("sagittal", "coronal", "axial"))) stop("You must choose at least one plane among sagittal, coronal or axial.")
-  if (!is.null(subset_sagittal) & class(subset_sagittal) != "numeric") stop("You must provide numeric indices to subset planes")
-  if (!is.null(subset_coronal) & class(subset_coronal) != "numeric") stop("You must provide numeric indices to subset planes")
-  if (!is.null(subset_axial) & class(subset_axial) != "numeric") stop("You must provide numeric indices to subset planes")
+  if (!is.null(subset_sagittal) & is(subset_sagittal,"numeric")) stop("You must provide numeric indices to subset planes")
+  if (!is.null(subset_coronal) & is(subset_coronal, "numeric")) stop("You must provide numeric indices to subset planes")
+  if (!is.null(subset_axial) & is(subset_axial, "numeric")) stop("You must provide numeric indices to subset planes")
 
   if (verbose) cat("Adding ontology...")
   if (!is.null(ontology_file) & is.null(ontology)) {
@@ -500,8 +500,8 @@ outline_draw <- function(M, plane) {
 seg_get_slice <- function(segmentation, plane, slice, fill = FALSE) {
   if (!plane %in% c("sagittal", "coronal", "axial")) stop("The plane argument must be one of \"sagittal\", \"coronal\" or \"axial\".")
   if (!plane %in% names(segmentation@slices)) stop(paste0("the ", plane, " plane was not found in this segmentation."))
-  if (class(slice) == "numeric" & length(segmentation@slices[[plane]]) < slice) stop(paste0("Slice ", slice, " is higher than total amount of slices for this plane"))
-  if (class(slice) == "character" & !slice %in% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
+  if (is(slice, "numeric") & length(segmentation@slices[[plane]]) < slice) stop(paste0("Slice ", slice, " is higher than total amount of slices for this plane"))
+  if (is(slice, "character") & !slice %in% segmentation@structure_tables[[plane]]$slice) stop(paste0("Slice ", slice, " not found in this plane"))
 
   if (fill) {
     df <- do.call(rbind, lapply(segmentation@slices[[plane]][[slice]], function(x) do.call(rbind, lapply(x, function(y) poly_fill(poly_build(y))))))

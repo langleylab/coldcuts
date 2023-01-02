@@ -35,9 +35,7 @@ Imports:
     splancs,
     oro.nifti,
     polylabelr,
-    qualpalr,
     reshape2,
-    scales,
     stringr,
     tidygraph,
     gridExtra

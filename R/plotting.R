@@ -108,7 +108,7 @@ seg_plot <- function(segmentation, s_slice = NULL, c_slice = NULL,
                      show_labels = FALSE, label_size = 2, minsize = 10,
                      wrap_options = 1) {
   if (smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
   
   planes <- c("sagittal", "coronal", "axial")
   if (is.null(s_slice)) s_slice <- NULL
@@ -333,7 +333,7 @@ seg_feature_plot <- function(segmentation, feature, assay, projection = NULL,
                              show_labels = TRUE, labelsize = 2,
                              remove_axes = TRUE) {
   if (smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
   
   if (is.null(projection)) {
     if (length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
@@ -342,7 +342,7 @@ seg_feature_plot <- function(segmentation, feature, assay, projection = NULL,
     projection <- projection
   }
   if (length(feature) > 1) stop("You can only one plot one feature at a time.")
-  if (class(feature) != "character") stop("feature must be a character.")
+  if (!is(feature, "character")) stop("feature must be a character.")
   if (!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
   
   if (!is.null(by) & length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
@@ -424,7 +424,7 @@ seg_feature_plot <- function(segmentation, feature, assay, projection = NULL,
   
   struct_column <- unlist(segmentation@assays[[assay]]@mapping[struct_available])
   struct_names <- rep(struct_available, lengths(segmentation@assays[[assay]]@mapping[struct_available]))    
-  struct_column <- sapply(struct_column, function(x) ontology(seg)[ontology(seg)$acronym == x, "id"])
+  struct_column <- sapply(struct_column, function(x) ontology(segmentation)[ontology(segmentation)$acronym == x, "id"])
 
   struct_df <- data.frame("structures" = struct_names, 
                           "id" = struct_column)
@@ -607,7 +607,7 @@ seg_feature_complex_plot <- function(segmentation, feature, assay,
                                      minsize = 10, color_pal = NULL,
                                      show_labels = TRUE, labelsize = 2) {
   if (smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
   
   if (is.null(projection)) {
     if (length(segmentation@projections) == 0) stop("The segmentation must include a projection to plot assay data. Run `seg_projection_add()` first.")
@@ -616,7 +616,7 @@ seg_feature_complex_plot <- function(segmentation, feature, assay,
     projection <- projection
   }
   if (length(feature) > 1) stop("You can only one plot one feature at a time.")
-  if (class(feature) != "character") stop("feature must be a character.")
+  if (!is(feature, "character")) stop("feature must be a character.")
   if (!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
   
   if (length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
@@ -774,7 +774,7 @@ seg_feature_complex_plot <- function(segmentation, feature, assay,
 #' @export
 
 seg_projection_remove <- function(segmentation, name) {
-  if (class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
+  if (!is(segmentation, "segmentation")) stop("Must provide a segmentation class object")
   if (!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   segmentation@projections[name] <- NULL
   return(segmentation)
@@ -807,7 +807,7 @@ seg_projection_plot <- function(segmentation, name, plane, minsize = 10,
                                 smooth = TRUE, smoothness = 3,
                                 show_labels = FALSE, remove_axes = TRUE) {
   if (smooth & !"smoothr" %in% rownames(installed.packages())) stop("In order to use smoothing you must first install the package `smoothr`.")
-  if (class(segmentation) != "segmentation") stop("Must provide a segmentation class object")
+  if (!is(segmentation, "segmentation")) stop("Must provide a segmentation class object")
   if (!name %in% names(segmentation@projections)) stop(paste0("The projection named ", name, " was not found in this segmentation."))
   if (!plane %in% names(segmentation@projections[[name]])) stop(paste0("The plane named ", plane, " was not found in this segmentation's projection named ", name, "."))
   

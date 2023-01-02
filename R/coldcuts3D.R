@@ -19,7 +19,7 @@ seg_mesh_build <- function(segmentation,
                            puffiness = 1,
                            verbose = FALSE) {
   if (!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
   if (is.null(subset_str)) stop("You must specify a structure acronym")
   if (!subset_str %in% ontology(segmentation)[as.character(segmentation@metadata$structures), "acronym"]) stop(paste0("Structure ", subset_str, " was not found in this segmentation."))
   if (pct_reduce <= 0 | pct_reduce > 1) stop("pct_reduce must be between 0 (excluded) and 1 (included).")
@@ -137,9 +137,9 @@ seg_meshlist_render <- function(segmentation,
                                 mono_color = "gray") {
   if (!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
 
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
 
-  if (class(iterations) != "numeric") stop("Iterations must be an integer")
+  if (!is(iterations, "numeric")) stop("Iterations must be an integer")
   if (iterations %% 1 != 0) stop("Iterations must be an integer or coercible to an integer")
 
   # if(!is.null(subset_str) & any(!subset_str %in% names(segmentation@meshes))) stop("Some structures were not found in the meshes slot.")
@@ -206,8 +206,8 @@ seg_meshlist_add <- function(segmentation,
                              puffiness = 1,
                              verbose = FALSE) {
   if (!"rgl" %in% rownames(installed.packages()) | !"Rvcg" %in% rownames(installed.packages())) stop("In order to use 3D rendering you must first install `rgl` and `Rvcg`.")
-  if (class(segmentation) != "segmentation") stop("You must provide a segmentation class object.")
-  if (class(pct_reduce) != "numeric") stop("pct_reduce must be a numeric.")
+  if (!is(segmentation, "segmentation")) stop("You must provide a segmentation class object.")
+  if (!is(pct_reduce, "numeric")) stop("pct_reduce must be a numeric.")
   if (pct_reduce <= 0 | pct_reduce > 1) stop("pct_reduce must be between 0 (excluded) and 1 (included).")
 
   if (is.null(structures)) {
