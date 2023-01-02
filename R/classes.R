@@ -106,6 +106,7 @@ setMethod("seg_metadata<-", c(x = "segmentation"), function(x, value) {
 #'
 #' S4 method to get the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setGeneric("ontology", function(x) {
@@ -117,6 +118,7 @@ setGeneric("ontology", function(x) {
 #' S4 method to set the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
 #' @param value a table containing the ontology tree
+#' @export
 #' @noRd
 
 setGeneric("ontology<-", function(x, value) {

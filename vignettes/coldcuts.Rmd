@@ -170,36 +170,37 @@ Once the table is subsetted and readable, we map samples to structural IDs creat
 brain_regions <- list()
 
 brain_regions[["Amygdala"]] <- ontology(seg)[grep(pattern  ="amyg",
-                                                         x = ontology(seg)$name), "id"]
+                                                  x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Cortex"]] <- ontology(seg)[grep(pattern  = "frontal",
-                                                       x = ontology(seg)$name), "id"]
+                                                x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Frontal_Cortex_BA9"]] <- ontology(seg)[grep(pattern  = "cingulate gyrus, rostral",
-                                                                   x = ontology(seg)$name), "id"]
+                                                            x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Caudate_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "caudate",
-                                                                      x = ontology(seg)$name), "id"]
+                                                               x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Putamen_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "putamen",
-                                                                      x = ontology(seg)$name), "id"]
+                                                               x = ontology(seg)$name), "acronym"]
 
-brain_regions[["Hypothalamus"]] <- ontology(seg)$id[grep(ontology(seg)[which(ontology(seg)$acronym == "HTH"),"id"], ontology(seg)$parent_structure_id)]
+hth_region = ontology(seg)[which(ontology(seg)$acronym == "HTH"), "id"]
+  
+brain_regions[["Hypothalamus"]] <- ontology(seg)[which(ontology(seg)$parent_structure_id == hth_region), "acronym"]
 
-brain_regions[["Substantia_nigra"]] <- ontology(seg)$id[grep(pattern  = "SN", x = ontology(seg)$acronym)]
+brain_regions[["Substantia_nigra"]] <- ontology(seg)[grep(pattern  = "SN", x = ontology(seg)$acronym), "acronym"]
 
 brain_regions[["Hippocampus"]] <- ontology(seg)[grep(pattern  = "hipp",
-                                                            x = ontology(seg)$name), "id"]
+                                                     x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Nucleus_accumbens_basal_ganglia"]] <- ontology(seg)[grep(pattern  = "accumbens",
-                                                                                x = ontology(seg)$name), "id"]
+                                                                         x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Cerebellum"]] <- ontology(seg)[grep(pattern  = "cerebell",
-                                                           x = ontology(seg)$name), "id"]
+                                                    x = ontology(seg)$name), "acronym"]
 
 brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][2:length(brain_regions[["Hippocampus"]])]
 
-brain_regions[["Hippocampus"]] <- brain_regions[["Hippocampus"]][brain_regions[["Hippocampus"]] != "10377"]
 ```
 
 Then we make a very simple `sampledata` table since we don't have many variables:
