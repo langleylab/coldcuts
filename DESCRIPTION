@@ -46,5 +46,5 @@ Suggests:
     Rvcg,
     rgl,
     smoothr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.2
 VignetteBuilder: knitr
