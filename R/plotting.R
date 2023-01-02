@@ -422,14 +422,18 @@ seg_feature_plot <- function(segmentation, feature, assay, projection = NULL,
   
   struct_available <- intersect(names(segmentation@assays[[assay]]@mapping), colnames(values_plot))
   
-  struct_df <- data.frame(
-    "structures" = rep(struct_available, lengths(segmentation@assays[[assay]]@mapping[struct_available])),
-    "id" = sapply(unlist(segmentation@assays[[assay]]@mapping[struct_available]), function(x) ontology(segmentation)$id[ontology(segmentation)$acronym == x])
-  )
+  struct_column <- unlist(segmentation@assays[[assay]]@mapping[struct_available])
+  struct_names <- rep(struct_available, lengths(segmentation@assays[[assay]]@mapping[struct_available]))    
+  struct_column <- sapply(struct_column, function(x) ontology(seg)[ontology(seg)$acronym == x, "id"])
+
+  struct_df <- data.frame("structures" = struct_names, 
+                          "id" = struct_column)
   
-  struct_df$gene_expression <- values_plot[feature, struct_df$structures]
+  struct_df <- struct_df[which(!duplicated(struct_df$id)),]
   
-  struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures, , drop = FALSE]
+  struct_df$gene_expression <- as.numeric(values_plot[,struct_df$structures])
+  
+  struct_df <- struct_df[struct_df$id %in% seg_metadata(segmentation)$structures, ,drop = FALSE]
   
   rownames(struct_df) <- struct_df$id
   

@@ -293,6 +293,7 @@ seg_projection_add <- function(name,
     structure_projection <- fill_df[, c(1, 2, 4)]
     structure_projection$value <- 1
     colnames(structure_projection)[1:2] <- c("x", "y")
+    
     if (make_polygon) {
       ib_df <- do.call(rbind, lapply(unique(structure_projection$structure), function(x) {
         ib_temp <- poly_make(structure_projection[structure_projection$structure == x, ])
