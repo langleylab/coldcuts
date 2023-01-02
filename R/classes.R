@@ -133,6 +133,7 @@ setGeneric("ontology<-", function(x, value) {
 #'
 #' S4 method to get the \code{ontology} slot in \code{segmentation} class objects
 #' @param x a \code{segmentation} class object
+#' @export
 #' @noRd
 
 setMethod("ontology", c(x = "segmentation"), function(x) {
