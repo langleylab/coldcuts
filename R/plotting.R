@@ -619,7 +619,7 @@ seg_feature_complex_plot <- function(segmentation, feature, assay,
   if (!is(feature, "character")) stop("feature must be a character.")
   if (!feature %in% rownames(segmentation@assays[[assay]]@values)) stop(paste0("Feature ", feature, " cannot be found in the row names of assay ", assay, "."))
   
-  if (length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
+  if (!is.null(by) & length(by) != 2) stop("Argument `by` must contain exactly 2 elements: name of the column in `sampledata` and value of the column")
   if (!is.null(by) & is.null(aggr_fun)) stop("If `by` is not NULL you must specify an aggregation function for `aggr_fun`.")
   
   if (is.null(color_pal)) cpal <- colorspace::sequential_hcl(palette = "Sunset", n = 25) else cpal <- color_pal
