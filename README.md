@@ -4,8 +4,14 @@
 <!-- badges: end -->
 
 <img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200" />
+<div id="toc">
+	<ul align="left" style="list-style: none;">
+		<summary>
+			<h1>coldcuts</h1>
+		</summary>
+	</ul>
+</div>
 
-# coldcuts 
 
 **`coldcuts`** is an R package that allows you to **draw and plot automatically** segmentations from 3D voxel arrays. 
 
