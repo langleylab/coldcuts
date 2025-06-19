@@ -1,117 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/404.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/additional_details.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/coldcuts.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/articles/segmentations.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/index.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/box_make.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/dir_change.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/dummy_cubes.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/dummy_ontology.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/find_holes.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/ontology_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/outline_draw.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/poly_build.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/poly_fill.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/poly_make.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/poly_set_make.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/poly_smooth.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_assay_add.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_citation_add.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_draw.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_feature_complex_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_feature_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_get_slice.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_mesh_build.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_meshlist_add.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_meshlist_render.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_projection_add.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_projection_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_projection_remove.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_select_str.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_slice_check.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/seg_sub_str.html</loc>
-  </url>
-  <url>
-    <loc>https://langleylab.github.io/coldcuts/reference/slice_make.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://langleylab.github.io/coldcuts/404.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/LICENSE-text.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/articles/additional_details.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/articles/coldcuts.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/articles/index.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/articles/segmentations.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/authors.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/index.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/box_make.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/dir_change.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/dummy_cubes.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/dummy_ontology.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/find_holes.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/index.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/ontology_plot.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/outline_draw.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/poly_build.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/poly_fill.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/poly_make.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/poly_set_make.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/poly_smooth.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_assay_add.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_citation_add.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_draw.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_feature_complex_plot.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_feature_plot.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_get_slice.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_mesh_build.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_meshlist_add.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_meshlist_render.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_plot.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_projection_add.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_projection_plot.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_projection_remove.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_select_str.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_slice_check.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/seg_sub_str.html</loc></url>
+<url><loc>https://langleylab.github.io/coldcuts/reference/slice_make.html</loc></url>
 </urlset>
+

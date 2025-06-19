@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>coldcuts • coldcuts</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -22,7 +22,7 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -51,7 +51,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -68,7 +68,7 @@
 <li>
   <a href="https://github.com/langleylab/coldcuts/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -79,16 +79,19 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
 
 
-<p><img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200"></p>
-<div class="section level1">
-<div class="page-header"><h1 id="coldcuts">coldcuts<a class="anchor" aria-label="anchor" href="#coldcuts"></a>
-</h1></div>
+<img src="https://user-images.githubusercontent.com/21171362/131806935-ed890016-a845-4274-8cb3-cd78c16aeb00.png" align="right" alt="" width="200"><div id="toc">
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span>ul align<span class="ot">=</span><span class="st">"left"</span> style<span class="ot">=</span><span class="st">"list-style: none;"</span><span class="sc">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="er">&lt;</span>summary<span class="sc">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>        <span class="er">&lt;</span>h1<span class="sc">&gt;</span>coldcuts<span class="sc">&lt;</span><span class="er">/</span>h1<span class="sc">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="er">&lt;/</span>summary<span class="sc">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="er">&lt;/</span>ul<span class="sc">&gt;</span></span></code></pre></div>
+</div>
 <p><strong><code>coldcuts</code></strong> is an R package that allows you to <strong>draw and plot automatically</strong> segmentations from 3D voxel arrays.</p>
 <p>The name is inspired by one of Italy’s best products.</p>
 <p>🎓 You can find the documentation and a tutorial to get started at the package’s page: <a href="https://langleylab.github.io/coldcuts" class="uri">https://langleylab.github.io/coldcuts</a></p>
@@ -123,7 +126,7 @@
 <h2 id="installing-the-package">Installing the package<a class="anchor" aria-label="anchor" href="#installing-the-package"></a>
 </h2>
 <p>⬇️ You can install this package using <code>devtools::install_github()</code>:</p>
-<pre class="{r}"><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"langleylab/coldcuts"</span><span class="op">)</span></span></code></pre>
+<p><code>{r} devtools::install_github("langleylab/coldcuts")</code></p>
 <p>Note: <strong><code>coldcuts</code></strong> uses <strong><code>smoothr</code></strong> to smooth 2D polygons. This package requires the installation of <strong><code>terra</code></strong> which has some system dependencies for spatial data, such as GDAL, GEOS and PROJ that can sometimes be difficult to install, especially in machines on which you do not have admin rights.</p>
 <p>One possible workaround when you do not have admin rights is to use <strong>conda</strong> <a href="https://docs.conda.io/en/latest/" class="external-link">virtual environments</a> to install GDAL and other libraries using the conda-forge channel: <a href="https://anaconda.org/conda-forge/libgdal" class="external-link">link</a></p>
 </div>
@@ -131,7 +134,6 @@
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
 <p>🏃🏽‍♀️ You can find a small example to get started <a href="https://langleylab.github.io/coldcuts/articles/coldcuts.html">here</a></p>
-</div>
 </div>
 
   </div>
@@ -165,8 +167,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Giuseppe D'Agostino <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8315-7406" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Sarah Langley <br><small class="roles"> Author </small>  </li>
+<li>Giuseppe D'Agostino <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8315-7406" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Sarah Langley <br><small class="roles"> Author </small>   </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -190,16 +192,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
